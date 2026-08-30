@@ -1,10 +1,18 @@
 from app.agent.agent_factory import build_agent
-agent=build_agent()
-question=[
-   "summarize my sbTask doc in 3 sentences"
-]
-for q in question:
-    print("Q :",q)
-    response=agent.invoke({"messages":[{"role":"user","content":q}]})
-    print("A :",response["messages"][-1].content)
-    print("-------------")
+if __name__ == "__main__":
+    agent = build_agent()
+
+    r1 = agent.invoke({"messages": [
+        {"role": "user", "content": "email rejaaziz686@gmail.com with subject 'Test' saying hello"}
+    ]})
+    print("=== TURN 1 FULL TRACE ===")
+    for m in r1["messages"]:
+        print(type(m).__name__, "-", getattr(m, "content", None))
+    print()
+
+    r2 = agent.invoke({"messages": r1["messages"] + [
+        {"role": "user", "content": "yes, send it"}
+    ]})
+    print("=== TURN 2 FULL TRACE ===")
+    for m in r2["messages"]:
+        print(type(m).__name__, "-", getattr(m, "content", None))

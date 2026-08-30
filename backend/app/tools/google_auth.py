@@ -9,7 +9,9 @@ scopes =  [
     "https://www.googleapis.com/auth/tasks",
     "https://www.googleapis.com/auth/calendar.readonly",
     "https://www.googleapis.com/auth/documents.readonly",
-    "https://www.googleapis.com/auth/drive.readonly"
+    "https://www.googleapis.com/auth/drive.readonly",
+    "https://www.googleapis.com/auth/gmail.readonly",
+    "https://www.googleapis.com/auth/gmail.send"
 ]
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 TOKEN_PATH = PROJECT_ROOT / "token.json"
