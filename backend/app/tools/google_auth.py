@@ -5,7 +5,12 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
-scopes = ["https://www.googleapis.com/auth/tasks"]
+scopes =  [
+    "https://www.googleapis.com/auth/tasks",
+    "https://www.googleapis.com/auth/calendar.readonly",
+    "https://www.googleapis.com/auth/documents.readonly",
+    "https://www.googleapis.com/auth/drive.readonly"
+]
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 TOKEN_PATH = PROJECT_ROOT / "token.json"
 CREDENTIAL_PATH = PROJECT_ROOT / "credential.json"
