@@ -4,6 +4,8 @@ from app.config import OPENROUTER_API_KEY
 from app.config import GROQ_API_KEY
 from app.tools.github_tool import list_github_issues
 from app.tools.test_tool_calling import get_weather
+from langchain.agents import create_agent
+
 def build_agent():
     llm=ChatOpenAI(
         model="openai/gpt-oss-20b",
