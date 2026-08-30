@@ -13,7 +13,7 @@ def build_agent():
         openai_api_key=GROQ_API_KEY,
         openai_api_base="https://api.groq.com/openai/v1"
     )
-    tools=[list_github_issues,get_weather,list_google_tasks,list_upcoming_events]
+    tools=[list_github_issues,get_weather,list_google_tasks,list_upcoming_events,read_google_docs]
     agent = create_agent(
         model=llm,
         tools=tools,

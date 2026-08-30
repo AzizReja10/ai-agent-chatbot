@@ -19,7 +19,10 @@ def extract_text(document):
 
 @tool
 def read_google_docs(doc_name:str)->str:
-    """find a google doc by its title and return its text content."""
+    """Find a Google Doc by its title and return its full text content.
+    Use this whenever the user asks about, summarizes, references, or wants
+    information from a specific named document — always fetch the content
+    with this tool first before answering, never ask the user to paste text."""
     creds=get_google_credentials()
     drive_service=build("drive","v3",credentials=creds)
     docs_service=build("docs","v1",credentials=creds)
