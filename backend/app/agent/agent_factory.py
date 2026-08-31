@@ -1,6 +1,7 @@
 from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 from app.config import OPENROUTER_API_KEY
+from langgraph.checkpoint.memory import InMemorySaver
 from app.config import GROQ_API_KEY
 from app.tools.web_search_tool import web_search
 from app.tools.github_tool import list_github_issues
@@ -27,6 +28,7 @@ def build_agent():
         draft_slack_message,
         list_slack_channels
     ]
+    checkpointer=InMemorySaver()
     agent = create_agent(
         model=llm,
         tools=tools,
@@ -35,6 +37,7 @@ def build_agent():
             "asks you to email someone, ALWAYS call draft_email first and "
             "show the draft. NEVER call send_email until the user has "
             "explicitly confirmed in a separate message that the draft "
-            "should be sent."
+            "should be sent.",
+        checkpointer=checkpointer
     )
     return agent
