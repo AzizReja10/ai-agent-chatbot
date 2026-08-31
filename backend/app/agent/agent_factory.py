@@ -2,10 +2,12 @@ from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 from app.config import OPENROUTER_API_KEY
 from app.config import GROQ_API_KEY
+from app.tools.web_search_tool import web_search
 from app.tools.github_tool import list_github_issues
 # from app.tools.test_tool_calling import get_weather
 from app.tools.tasks_tool import list_google_tasks
 from app.tools.calender_tool import list_upcoming_events
+from app.tools.slack_tool import list_slack_channels,draft_slack_message
 from app.tools.docs_tool import read_google_docs
 from app.tools.gmail_tool import list_recent_emails,draft_email,send_email
 def build_agent():
@@ -21,6 +23,9 @@ def build_agent():
         read_google_docs,
         list_recent_emails,
         draft_email,
+        web_search,
+        draft_slack_message,
+        list_slack_channels
     ]
     agent = create_agent(
         model=llm,
