@@ -1,0 +1,18 @@
+/* src/styles/theme.css */
+:root {
+  --bg-base: #0F1115;
+  --text-primary: #F5F6F7;
+  --text-muted: #8B93A1;
+  --accent-primary: #5B8DEF;
+  --accent-warning: #E8A33D;
+  --accent-success: #3ECF8E;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  margin: 0;
+}
