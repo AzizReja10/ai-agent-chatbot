@@ -10,8 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "framer-motion": "^13.1.1",
+    "lucide-react": "^1.39.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-feather": "^2.0.10",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@types/react": "^19.2.18",

@@ -16,3 +16,27 @@ body {
   font-family: var(--font-sans);
   margin: 0;
 }
+.markdown-body table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 8px 0;
+  font-size: 13px;
+}
+.markdown-body th, .markdown-body td {
+  border: 1px solid #2A2E36;
+  padding: 6px 10px;
+  text-align: left;
+}
+.markdown-body th {
+  background: #1F232B;
+}
+.markdown-body code {
+  background: #23262D;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+}
+.markdown-body p {
+  margin: 4px 0;
+}

@@ -4,7 +4,16 @@ from app.agent.agent_factory import build_agent
 from fastapi.responses import StreamingResponse
 from app.agent.safe_action_flow import find_pending_draft,is_confirmation,draft_to_action as DRAFT_TO_ACTION,handle_user_turn
 from langchain_core.messages import HumanMessage,AIMessage
+from fastapi.middleware.cors import CORSMiddleware
+import json
 app=FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 agent=build_agent()
 
 class ChatRequest(BaseModel):
@@ -28,8 +37,8 @@ async def event_generator(thread_id: str, message: str):
             "messages": [HumanMessage(content=message), AIMessage(content=result)]
         })
 
-        yield f"data: {result}\n\n"
-        yield "data: [DONE]\n\n"
+        yield f"data: {json.dumps({'type':'token','content':result})}\n\n"
+        yield f"data: {json.dumps({'type':'done'})}"
         return
 
     full_response = ""
@@ -41,42 +50,34 @@ async def event_generator(thread_id: str, message: str):
     version="v2",
 ):
         if event["event"] == "on_tool_start":
-            print("TOOL START:", event.get("name"), "| in DRAFT_TO_ACTION?", event.get("name") in DRAFT_TO_ACTION)
+            yield f"data: {json.dumps({'type': 'tool_start', 'name': event.get('name'), 'args': event['data'].get('input', {})})}\n\n"
+            if event.get("name") in DRAFT_TO_ACTION:
+                tool_call_record = {"name": event["name"], "args": event["data"]["input"]}
 
-        if event["event"] == "on_tool_start" and event.get("name") in DRAFT_TO_ACTION:
-            tool_call_record = {
-                "name": event["name"],
-                "args": event["data"]["input"],
-            }
+        if event["event"] == "on_tool_end":
+            yield f"data: {json.dumps({'type': 'tool_end', 'name': event.get('name')})}\n\n"
 
         if event["event"] == "on_chat_model_stream":
             chunk = event["data"]["chunk"]
             if chunk.content:
                 full_response += chunk.content
-                yield f"data: {chunk.content}\n\n"
+                yield f"data: {json.dumps({'type': 'token', 'content': chunk.content})}\n\n"
 
-    # Persist history properly, INCLUDING the tool call if one happened
     new_messages = [HumanMessage(content=message)]
-
     if tool_call_record:
         import uuid
-        call_id = f"call_{uuid.uuid4()}"
         new_messages.append(AIMessage(
             content="",
             tool_calls=[{
                 "name": tool_call_record["name"],
                 "args": tool_call_record["args"],
-                "id": call_id,
+                "id": f"call_{uuid.uuid4()}",
             }],
         ))
-        # We don't have the exact ToolMessage content here without re-deriving it,
-        # but find_pending_draft only needs the AIMessage.tool_calls to work.
-
     new_messages.append(AIMessage(content=full_response))
-
     agent.update_state(config, {"messages": new_messages})
 
-    yield "data: [DONE]\n\n"
+    yield f"data: {json.dumps({'type': 'done'})}\n\n"
 @app.post("/chat/stream")
 async def chat_stream(request:ChatRequest):
     return StreamingResponse(
