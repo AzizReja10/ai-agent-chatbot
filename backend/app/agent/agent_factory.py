@@ -12,10 +12,10 @@ from app.tools.slack_tool import list_slack_channels,draft_slack_message
 from app.tools.docs_tool import read_google_docs
 from app.tools.gmail_tool import list_recent_emails,draft_email,send_email
 def build_agent():
-    llm=ChatOpenAI(
-        model="openai/gpt-oss-120b",
-        openai_api_key=GROQ_API_KEY,
-        openai_api_base="https://api.groq.com/openai/v1"
+    llm = ChatOpenAI(
+        model="nvidia/nemotron-3-ultra-550b-a55b:free",
+        openai_api_key=OPENROUTER_API_KEY,
+        openai_api_base="https://openrouter.ai/api/v1",
     )
     tools=[
         list_github_issues,

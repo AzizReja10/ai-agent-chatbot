@@ -9,8 +9,7 @@ import json
 app=FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=["http://localhost:5173"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -38,7 +37,7 @@ async def event_generator(thread_id: str, message: str):
         })
 
         yield f"data: {json.dumps({'type':'token','content':result})}\n\n"
-        yield f"data: {json.dumps({'type':'done'})}"
+        yield f"data: {json.dumps({'type':'done'})}\n\n"
         return
 
     full_response = ""

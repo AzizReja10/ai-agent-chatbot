@@ -5,13 +5,13 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
-scopes =  [
-    "https://www.googleapis.com/auth/tasks",
-    "https://www.googleapis.com/auth/calendar.readonly",
-    "https://www.googleapis.com/auth/documents.readonly",
-    "https://www.googleapis.com/auth/drive.readonly",
+scopes = [
+    "https://www.googleapis.com/auth/tasks",  # already full read/write, no change needed
+    "https://www.googleapis.com/auth/calendar",  # was calendar.readonly — full access now
+    "https://www.googleapis.com/auth/documents",  # was documents.readonly — full access now
+    "https://www.googleapis.com/auth/drive",  # was drive.readonly — needed to create new Docs, not just find existing ones
     "https://www.googleapis.com/auth/gmail.readonly",
-    "https://www.googleapis.com/auth/gmail.send"
+    "https://www.googleapis.com/auth/gmail.send",
 ]
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 TOKEN_PATH = PROJECT_ROOT / "token.json"

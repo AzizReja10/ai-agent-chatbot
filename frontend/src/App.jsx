@@ -6,21 +6,33 @@ import ToolActivitySidebar from "./components/ToolActivitySidebar";
 import { streamChat } from "./api/chat";
 import "./styles/theme.css";
 
-const THREAD_ID = "frontend-session-1"; // fine as a constant for now
+const THREAD_ID = "frontend-session-1";
 
 function App() {
   const [messages, setMessages] = useState([]);
   const [activeTools, setActiveTools] = useState([]);
-  const handleSend = (text) => {
+  const [pendingDraft, setPendingDraft] = useState(null);
+
+// src/App.jsx — track whether we're waiting for the first chunk
+const [isWaiting, setIsWaiting] = useState(false);
+
+const handleSend = (text) => {
   setMessages((prev) => [...prev, { role: "user", content: text }]);
-  setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
   setActiveTools([]);
+  setPendingDraft(null);
+  setIsWaiting(true); // show the indicator immediately
 
   let agentReply = "";
   let toolIdCounter = 0;
+  let firstTokenReceived = false;
 
   streamChat(THREAD_ID, text, {
     onToken: (chunk) => {
+      if (!firstTokenReceived) {
+        firstTokenReceived = true;
+        setIsWaiting(false);
+        setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+      }
       agentReply += chunk;
       setMessages((prev) => {
         const updated = [...prev];
@@ -28,29 +40,47 @@ function App() {
         return updated;
       });
     },
-    onToolStart: (name) => {
+    onToolStart: (name, args) => {
       const id = toolIdCounter++;
       setActiveTools((prev) => [...prev, { id, name, done: false }]);
+      if (name === "draft_email" || name === "draft_slack_message") {
+        setPendingDraft({ toolName: name, args });
+      }
     },
     onToolEnd: (name) => {
       setActiveTools((prev) =>
         prev.map((t) => (t.name === name && !t.done ? { ...t, done: true } : t))
       );
     },
-    onDone: () => {},
+    onDone: () => setIsWaiting(false),
   });
 };
 
-  // src/App.jsx — the return statement specifically
-return (
-  <div style={{ display: "flex", height: "100vh" }}>
-    <ToolActivitySidebar activeTools={activeTools} />
-    <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
-      <ChatWindow messages={messages} />
-      <MessageInput onSend={handleSend} />
+  const handleConfirm = () => {
+    setPendingDraft(null);
+    handleSend("yes send it");
+  };
+
+  const handleCancel = () => {
+    setPendingDraft(null);
+    setMessages((prev) => [...prev, { role: "assistant", content: "Okay, I won't send that." }]);
+  };
+
+  return (
+    <div style={{ display: "flex", height: "100vh" }}>
+      <ToolActivitySidebar activeTools={activeTools} />
+      <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+        <ChatWindow
+  messages={messages}
+  pendingDraft={pendingDraft}
+  onConfirm={handleConfirm}
+  onCancel={handleCancel}
+  isWaiting={isWaiting}
+/>
+        <MessageInput onSend={handleSend} />
+      </div>
     </div>
-  </div>
-);
+  );
 }
 
 export default App;
