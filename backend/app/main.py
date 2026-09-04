@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session as DBSession
 from app.db import Base, engine, SessionLocal
 from app.google_oauth_routes import router as google_oauth_router
 from app import models  # noqa: F401
+from app.user_context import current_user_id
 from app.models import User
 from app.auth import hash_password, verify_password, create_session, get_current_user
 from fastapi import Request
@@ -115,6 +116,8 @@ def chat(request: ChatRequest, http_request: Request, db: DBSession = Depends(ge
     user = get_current_user(http_request, db)
     if not user:
         raise HTTPException(status_code=401, detail="Not logged in")
+
+    current_user_id.set(user.id)  # <-- every tool call during this request can now read this
 
     thread_id = f"user-{user.id}"
     reply = handle_user_turn(agent, thread_id, request.message)

@@ -3,11 +3,15 @@ from googleapiclient.discovery import build
 from app.tools.google_auth import get_google_credentials
 import base64
 from email.mime.text import MIMEText
+from app.tools.google_auth import get_google_credentials, GoogleNotConnectedError
 @tool
 def list_recent_emails(max_results:int=5)->str:
     """List the user's most recent emails from their Gmail indox,showing sender and subject. Use this when user asks about recent emails,
     their inbox or messages from someone."""
-    creds=get_google_credentials()
+    try:
+        creds = get_google_credentials()
+    except GoogleNotConnectedError as e:
+        return str(e)
     service=build("gmail","v1",credentials=creds)
     results=service.users().messages().list(
         userId="me",maxResults=max_results

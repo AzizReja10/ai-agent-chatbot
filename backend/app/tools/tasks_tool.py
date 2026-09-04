@@ -1,11 +1,15 @@
 from langchain_core.tools import tool
 from googleapiclient.discovery import build
 from app.tools.google_auth import get_google_credentials
-
+from app.tools.google_auth import get_google_credentials, GoogleNotConnectedError
+from app.tools.google_auth import get_google_credentials, GoogleNotConnectedError
 @tool
-def list_google_tasks()->str:
-    """List the user's pending tasks from their default Google Task List."""
-    creds = get_google_credentials()
+def list_google_tasks() -> str:
+    """List the user's pending tasks from their default Google Tasks list."""
+    try:
+        creds = get_google_credentials()
+    except GoogleNotConnectedError as e:
+        return str(e)
     service = build("tasks", "v1", credentials=creds)
     results = service.tasks().list(tasklist="@default").execute()
     items = results.get("items", [])

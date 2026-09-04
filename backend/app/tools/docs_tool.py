@@ -1,7 +1,7 @@
 from langchain_core.tools import tool
 from googleapiclient.discovery import build
 from app.tools.google_auth import get_google_credentials
-
+from app.tools.google_auth import get_google_credentials, GoogleNotConnectedError
 
 def extract_text(document):
     content = document["body"]["content"]
@@ -23,7 +23,10 @@ def read_google_docs(doc_name:str)->str:
     Use this whenever the user asks about, summarizes, references, or wants
     information from a specific named document — always fetch the content
     with this tool first before answering, never ask the user to paste text."""
-    creds=get_google_credentials()
+    try:
+        creds = get_google_credentials()
+    except GoogleNotConnectedError as e:
+        return str(e)
     drive_service=build("drive","v3",credentials=creds)
     docs_service=build("docs","v1",credentials=creds)
     query=f"name='{doc_name}' and mimeType= 'application/vnd.google-apps.document'"
