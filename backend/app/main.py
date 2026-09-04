@@ -9,6 +9,7 @@ import json
 from fastapi import Depends, HTTPException, Response, Request
 from sqlalchemy.orm import Session as DBSession
 from app.db import Base, engine, SessionLocal
+from app.google_oauth_routes import router as google_oauth_router
 from app import models  # noqa: F401
 from app.models import User
 from app.auth import hash_password, verify_password, create_session, get_current_user
@@ -34,7 +35,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 agent=build_agent()
-
+app.include_router(google_oauth_router)
 class ChatRequest(BaseModel):
     message: str 
 class ChatResponse(BaseModel):
@@ -143,15 +144,15 @@ def login(request: SignupRequest, response: Response, db: DBSession = Depends(ge
     response.set_cookie(key="session_id", value=session_id, httponly=True, samesite="lax")
     return {"email": user.email}
 
+# app/main.py — update the /auth/me route
 @app.get("/auth/me")
 def me(request: Request, db: DBSession = Depends(get_db)):
     user = get_current_user(request, db)
     if not user:
         raise HTTPException(status_code=401, detail="Not logged in")
-    return {"email": user.email}
-@app.get("/auth/me")
-def me(request: Request, db: DBSession = Depends(get_db)):
-    user = get_current_user(request, db)
-    if not user:
-        raise HTTPException(status_code=401, detail="Not logged in")
-    return {"email": user.email}
+    return {"id": user.id, "email": user.email}
+@app.get("/debug/google-creds/{user_id}")
+def debug_google_creds(user_id: int, db: DBSession = Depends(get_db)):
+    from app.models import GoogleCredential
+    cred = db.query(GoogleCredential).filter(GoogleCredential.user_id == user_id).first()
+    return {"found": cred is not None, "token_json_length": len(cred.token_json) if cred else 0}
