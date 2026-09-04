@@ -2,3 +2,4 @@ venv
 .env
 credential.json
 token.json
+credentials_web.json
