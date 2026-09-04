@@ -37,7 +37,45 @@ def read_google_docs(doc_name:str)->str:
     if not text.strip():
         return f"the document '{doc_name}' appears to be empty."
     return text
+# app/tools/docs_tool.py — add this function
 
-if __name__=="__main__":
-    results=read_google_docs.invoke({"doc_name":"sbTask"})
-    print(results)
+@tool
+def append_to_google_doc(doc_name: str, text: str) -> str:
+    """Append text to the end of an existing Google Doc, found by title.
+    Use this when the user asks to add, write, or append content to a doc."""
+    creds = get_google_credentials()
+    drive_service = build("drive", "v3", credentials=creds)
+    docs_service = build("docs", "v1", credentials=creds)
+
+    query = f"name = '{doc_name}' and mimeType = 'application/vnd.google-apps.document'"
+    results = drive_service.files().list(q=query, fields="files(id, name)").execute()
+    files = results.get("files", [])
+
+    if not files:
+        return f"No Google Doc found with the name '{doc_name}'."
+
+    doc_id = files[0]["id"]
+    document = docs_service.documents().get(documentId=doc_id).execute()
+
+    end_index = document["body"]["content"][-1]["endIndex"] - 1
+
+    requests_body = [
+        {
+            "insertText": {
+                "location": {"index": end_index},
+                "text": f"\n{text}",
+            }
+        }
+    ]
+
+    try:
+        docs_service.documents().batchUpdate(
+            documentId=doc_id, body={"requests": requests_body}
+        ).execute()
+    except Exception as e:
+        return f"Failed to update document: {e}"
+
+    return f"Appended text to '{doc_name}'."
+
+if __name__ == "__main__":
+    print(append_to_google_doc.invoke({"doc_name": "sbTask", "text": "This is a test append."}))

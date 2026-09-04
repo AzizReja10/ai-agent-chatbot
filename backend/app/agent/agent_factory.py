@@ -6,22 +6,25 @@ from app.config import GROQ_API_KEY
 from app.tools.web_search_tool import web_search
 from app.tools.github_tool import list_github_issues
 # from app.tools.test_tool_calling import get_weather
-from app.tools.tasks_tool import list_google_tasks
-from app.tools.calender_tool import list_upcoming_events
+from app.tools.tasks_tool import list_google_tasks,create_google_task
+from app.tools.calender_tool import list_upcoming_events,create_calendar_event
 from app.tools.slack_tool import list_slack_channels,draft_slack_message
-from app.tools.docs_tool import read_google_docs
+from app.tools.docs_tool import read_google_docs,append_to_google_doc
 from app.tools.gmail_tool import list_recent_emails,draft_email,send_email
 def build_agent():
     llm = ChatOpenAI(
-        model="nvidia/nemotron-3-ultra-550b-a55b:free",
-        openai_api_key=OPENROUTER_API_KEY,
-        openai_api_base="https://openrouter.ai/api/v1",
+        model="openai/gpt-oss-20b",
+        openai_api_key=GROQ_API_KEY,
+        openai_api_base="https://api.groq.com/openai/v1",
     )
     tools=[
         list_github_issues,
         list_google_tasks,
+        create_google_task,
         list_upcoming_events,
+        create_calendar_event,
         read_google_docs,
+        append_to_google_doc,
         list_recent_emails,
         draft_email,
         web_search,
