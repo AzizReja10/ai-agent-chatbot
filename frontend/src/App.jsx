@@ -7,8 +7,6 @@ import { streamChat } from "./api/chat";
 import LandingPage from "./pages/LandingPage";
 import "./styles/theme.css";
 
-const THREAD_ID = "frontend-session-1";
-
 function App() {
   const [messages, setMessages] = useState([]);
   const [activeTools, setActiveTools] = useState([]);
@@ -26,7 +24,7 @@ function App() {
     let toolIdCounter = 0;
     let firstTokenReceived = false;
 
-    streamChat(THREAD_ID, text, {
+    streamChat(text, {
       onToken: (chunk) => {
         if (!firstTokenReceived) {
           firstTokenReceived = true;

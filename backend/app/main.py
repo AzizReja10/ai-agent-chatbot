@@ -6,18 +6,37 @@ from app.agent.safe_action_flow import find_pending_draft,is_confirmation,draft_
 from langchain_core.messages import HumanMessage,AIMessage
 from fastapi.middleware.cors import CORSMiddleware
 import json
+from fastapi import Depends, HTTPException, Response, Request
+from sqlalchemy.orm import Session as DBSession
+from app.db import Base, engine, SessionLocal
+from app import models  # noqa: F401
+from app.models import User
+from app.auth import hash_password, verify_password, create_session, get_current_user
+from fastapi import Request
 app=FastAPI()
+Base.metadata.create_all(bind=engine)
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+class SignupRequest(BaseModel):
+    email: str
+    password: str
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 agent=build_agent()
 
 class ChatRequest(BaseModel):
-    thread_id:str
-    message:str
+    message: str 
 class ChatResponse(BaseModel):
     reply:str
 async def event_generator(thread_id: str, message: str):
@@ -78,12 +97,61 @@ async def event_generator(thread_id: str, message: str):
 
     yield f"data: {json.dumps({'type': 'done'})}\n\n"
 @app.post("/chat/stream")
-async def chat_stream(request:ChatRequest):
+async def chat_stream(request: ChatRequest, http_request: Request, db: DBSession = Depends(get_db)):
+    user = get_current_user(http_request, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not logged in")
+
+    thread_id = f"user-{user.id}"
     return StreamingResponse(
-        event_generator(request.thread_id,request.message),
-        media_type="text/event-stream"
+        event_generator(thread_id, request.message),
+        media_type="text/event-stream",
     )
-@app.post("/chat",response_model=ChatResponse)
-def chat(request:ChatRequest):
-    reply=handle_user_turn(agent,request.thread_id,request.message)
+# app/main.py — updated /chat and /chat/stream
+
+@app.post("/chat", response_model=ChatResponse)
+def chat(request: ChatRequest, http_request: Request, db: DBSession = Depends(get_db)):
+    user = get_current_user(http_request, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not logged in")
+
+    thread_id = f"user-{user.id}"
+    reply = handle_user_turn(agent, thread_id, request.message)
     return ChatResponse(reply=reply)
+@app.post("/auth/signup")
+def signup(request: SignupRequest, response: Response, db: DBSession = Depends(get_db)):
+    existing = db.query(User).filter(User.email == request.email).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    user = User(email=request.email, hashed_password=hash_password(request.password))
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    session_id = create_session(db, user.id)
+    response.set_cookie(key="session_id", value=session_id, httponly=True, samesite="lax")
+    return {"email": user.email}
+
+@app.post("/auth/login")
+def login(request: SignupRequest, response: Response, db: DBSession = Depends(get_db)):
+    user = db.query(User).filter(User.email == request.email).first()
+    if not user or not verify_password(request.password, user.hashed_password):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+    session_id = create_session(db, user.id)
+    response.set_cookie(key="session_id", value=session_id, httponly=True, samesite="lax")
+    return {"email": user.email}
+
+@app.get("/auth/me")
+def me(request: Request, db: DBSession = Depends(get_db)):
+    user = get_current_user(request, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not logged in")
+    return {"email": user.email}
+@app.get("/auth/me")
+def me(request: Request, db: DBSession = Depends(get_db)):
+    user = get_current_user(request, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not logged in")
+    return {"email": user.email}

@@ -1,9 +1,10 @@
 // src/api/chat.js
-export async function streamChat(threadId, message, handlers) {
+export async function streamChat(message, handlers) {
   const response = await fetch("http://127.0.0.1:8000/chat/stream", {
     method: "POST",
+    credentials: "include",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ thread_id: threadId, message }),
+    body: JSON.stringify({ message }),
   });
 
   const reader = response.body.getReader();
