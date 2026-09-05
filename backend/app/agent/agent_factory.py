@@ -3,6 +3,7 @@ from langchain_openai import ChatOpenAI
 from app.config import OPENROUTER_API_KEY
 from langgraph.checkpoint.memory import InMemorySaver
 from app.config import GROQ_API_KEY
+from app.tools.weather_tool import get_weather
 from app.tools.web_search_tool import web_search
 from app.tools.github_tool import list_github_issues
 # from app.tools.test_tool_calling import get_weather
@@ -19,6 +20,7 @@ def build_agent():
     )
     tools=[
         list_github_issues,
+        get_weather,
         list_google_tasks,
         create_google_task,
         list_upcoming_events,
