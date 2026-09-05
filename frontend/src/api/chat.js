@@ -1,6 +1,6 @@
 // src/api/chat.js
 export async function streamChat(message, handlers) {
-  const response = await fetch("http://127.0.0.1:8000/chat/stream", {
+  const response = await fetch("/chat/stream", {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },

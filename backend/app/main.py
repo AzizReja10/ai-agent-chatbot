@@ -6,6 +6,7 @@ from app.agent.safe_action_flow import find_pending_draft,is_confirmation,draft_
 from langchain_core.messages import HumanMessage,AIMessage
 from fastapi.middleware.cors import CORSMiddleware
 import json
+from app.models import Session as SessionModel
 from fastapi import Depends, HTTPException, Response, Request
 from sqlalchemy.orm import Session as DBSession
 from app.db import Base, engine, SessionLocal
@@ -104,6 +105,8 @@ async def chat_stream(request: ChatRequest, http_request: Request, db: DBSession
     if not user:
         raise HTTPException(status_code=401, detail="Not logged in")
 
+    current_user_id.set(user.id)  # <-- this line was missing here
+
     thread_id = f"user-{user.id}"
     return StreamingResponse(
         event_generator(thread_id, request.message),
@@ -134,7 +137,13 @@ def signup(request: SignupRequest, response: Response, db: DBSession = Depends(g
     db.refresh(user)
 
     session_id = create_session(db, user.id)
-    response.set_cookie(key="session_id", value=session_id, httponly=True, samesite="lax")
+    response.set_cookie(
+    key="session_id",
+    value=session_id,
+    httponly=True,
+    samesite="lax",
+    max_age=60 * 60 * 24 * 7,  # 7 days
+)
     return {"email": user.email}
 
 @app.post("/auth/login")
@@ -144,9 +153,24 @@ def login(request: SignupRequest, response: Response, db: DBSession = Depends(ge
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     session_id = create_session(db, user.id)
-    response.set_cookie(key="session_id", value=session_id, httponly=True, samesite="lax")
+    response.set_cookie(
+    key="session_id",
+    value=session_id,
+    httponly=True,
+    samesite="lax",
+    max_age=60 * 60 * 24 * 7,  # 7 days
+)
     return {"email": user.email}
+# app/main.py
+@app.post("/auth/logout")
+def logout(request: Request, response: Response, db: DBSession = Depends(get_db)):
+    session_id = request.cookies.get("session_id")
+    if session_id:
+        db.query(SessionModel).filter(SessionModel.id == session_id).delete()
+        db.commit()
 
+    response.delete_cookie("session_id")
+    return {"logged_out": True}
 # app/main.py — update the /auth/me route
 @app.get("/auth/me")
 def me(request: Request, db: DBSession = Depends(get_db)):
@@ -159,3 +183,13 @@ def debug_google_creds(user_id: int, db: DBSession = Depends(get_db)):
     from app.models import GoogleCredential
     cred = db.query(GoogleCredential).filter(GoogleCredential.user_id == user_id).first()
     return {"found": cred is not None, "token_json_length": len(cred.token_json) if cred else 0}
+# app/main.py
+@app.get("/auth/google/status")
+def google_status(request: Request, db: DBSession = Depends(get_db)):
+    user = get_current_user(request, db)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not logged in")
+
+    from app.models import GoogleCredential
+    connected = db.query(GoogleCredential).filter(GoogleCredential.user_id == user.id).first() is not None
+    return {"connected": connected}

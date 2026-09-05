@@ -1,10 +1,12 @@
 // src/App.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ChatWindow from "./components/ChatWindow";
 import MessageInput from "./components/MessageInput";
 import ToolActivitySidebar from "./components/ToolActivitySidebar";
 import { streamChat } from "./api/chat";
+import { getCurrentUser, logout, getGoogleStatus } from "./api/auth";
 import LandingPage from "./pages/LandingPage";
+import AuthForm from "./components/AuthForm";
 import "./styles/theme.css";
 
 function App() {
@@ -13,6 +15,22 @@ function App() {
   const [pendingDraft, setPendingDraft] = useState(null);
   const [isWaiting, setIsWaiting] = useState(false);
   const [started, setStarted] = useState(false);
+  const [user, setUser] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [googleConnected, setGoogleConnected] = useState(false);
+
+  useEffect(() => {
+    getCurrentUser().then((u) => {
+      setUser(u);
+      setAuthChecked(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      getGoogleStatus().then((s) => setGoogleConnected(s.connected));
+    }
+  }, [user, window.location.search]);
 
   const handleSend = (text) => {
     setMessages((prev) => [...prev, { role: "user", content: text }]);
@@ -64,12 +82,57 @@ function App() {
     setMessages((prev) => [...prev, { role: "assistant", content: "Okay, I won't send that." }]);
   };
 
-  if (!started) {
-    return <LandingPage onGetStarted={() => setStarted(true)} />;
+  const handleLogout = async () => {
+    await logout();
+    setUser(null);
+    setStarted(false);
+  };
+
+  if (!authChecked) {
+    return null;
+  }
+
+  if (!user) {
+    if (!started) {
+      return <LandingPage onGetStarted={() => setStarted(true)} />;
+    }
+    return <AuthForm onAuthenticated={setUser} />;
   }
 
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
+    <div style={{ display: "flex", height: "100vh", position: "relative" }}>
+      <div style={{ position: "absolute", top: 16, right: 16, display: "flex", gap: 8, zIndex: 10 }}>
+        {!googleConnected && (
+          <a
+            href="/auth/google/login"
+            style={{
+              background: "var(--accent-warning)",
+              color: "#0F1115",
+              borderRadius: 8,
+              padding: "6px 12px",
+              fontSize: 13,
+              fontWeight: 600,
+              textDecoration: "none",
+            }}
+          >
+            Connect Google Account
+          </a>
+        )}
+        <button
+          onClick={handleLogout}
+          style={{
+            background: "transparent",
+            border: "1px solid #2A2E36",
+            color: "var(--text-muted)",
+            borderRadius: 8,
+            padding: "6px 12px",
+            cursor: "pointer",
+          }}
+        >
+          Log out
+        </button>
+      </div>
+
       <ToolActivitySidebar activeTools={activeTools} />
       <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
         <ChatWindow
