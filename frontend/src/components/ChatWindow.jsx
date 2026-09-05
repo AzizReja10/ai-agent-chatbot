@@ -97,12 +97,12 @@ export default function ChatWindow({
                 width: 68,
                 height: 68,
                 borderRadius: 22,
-                background: "linear-gradient(135deg, #111624 0%, #07090E 100%)",
-                border: "1px solid rgba(255, 255, 255, 0.15)",
+                background: "var(--bg-surface)",
+                border: "1px solid var(--border-glass)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                boxShadow: "0 10px 25px rgba(0, 0, 0, 0.6)",
+                boxShadow: "var(--shadow-lg)",
               }}
             >
               <Sparkles size={32} color="#818CF8" />
@@ -115,9 +115,7 @@ export default function ChatWindow({
               fontSize: 28,
               fontWeight: 700,
               margin: "0 0 10px",
-              background: "linear-gradient(180deg, #FFFFFF 0%, #94A3B8 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
+              color: "var(--text-primary)",
             }}
           >
             How can Nova assist you today?
@@ -156,9 +154,10 @@ export default function ChatWindow({
                   gap: 12,
                   padding: "16px 18px",
                   borderRadius: 14,
-                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%)",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  background: "var(--bg-glass)",
+                  border: "1px solid var(--border-subtle)",
                   backdropFilter: "blur(10px)",
+                  boxShadow: "var(--shadow-sm)",
                   cursor: "pointer",
                   transition: "all 0.2s ease",
                 }}
@@ -168,7 +167,8 @@ export default function ChatWindow({
                     style={{
                       padding: 8,
                       borderRadius: 10,
-                      background: "rgba(255, 255, 255, 0.05)",
+                      background: "var(--bg-surface)",
+                      border: "1px solid var(--border-subtle)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -178,7 +178,7 @@ export default function ChatWindow({
                     {starter.icon}
                   </div>
                   <div>
-                    <div style={{ fontSize: 13.5, fontWeight: 600, color: "#F8FAFC", marginBottom: 4 }}>
+                    <div style={{ fontSize: 13.5, fontWeight: 600, color: "var(--text-primary)", marginBottom: 4 }}>
                       {starter.title}
                     </div>
                     <div style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.4 }}>

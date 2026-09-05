@@ -48,7 +48,7 @@ export default function ToolActivitySidebar({ activeTools = [] }) {
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        background: "rgba(11, 14, 23, 0.75)",
+        background: "var(--bg-glass)",
         backdropFilter: "blur(16px)",
         WebkitBackdropFilter: "blur(16px)",
         borderRight: "1px solid var(--border-subtle)",
@@ -243,7 +243,7 @@ export default function ToolActivitySidebar({ activeTools = [] }) {
                   gap: 10,
                   padding: "8px 10px",
                   borderRadius: 8,
-                  background: "rgba(255, 255, 255, 0.02)",
+                  background: "var(--bg-surface)",
                   border: "1px solid var(--border-subtle)",
                 }}
               >

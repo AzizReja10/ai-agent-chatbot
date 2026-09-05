@@ -7,6 +7,7 @@ import { streamChat } from "./api/chat";
 import { getCurrentUser, logout, getGoogleStatus, finalizeSignin, getGitHubStatus } from "./api/auth";
 import LandingPage from "./pages/LandingPage";
 import AuthForm from "./components/AuthForm";
+import ThemeToggle from "./components/ThemeToggle";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Sparkles, 
@@ -162,7 +163,7 @@ function App() {
           alignItems: "center",
           justifyContent: "space-between",
           padding: "12px 20px",
-          background: "rgba(11, 14, 23, 0.8)",
+          background: "var(--bg-glass)",
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
           borderBottom: "1px solid var(--border-subtle)",
@@ -174,7 +175,7 @@ function App() {
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowSidebar((prev) => !prev)}
             style={{
-              background: "rgba(255, 255, 255, 0.05)",
+              background: "var(--bg-surface)",
               border: "1px solid var(--border-subtle)",
               borderRadius: 8,
               padding: 6,
@@ -205,7 +206,7 @@ function App() {
               <Sparkles size={16} color="#FFFFFF" />
             </div>
             <div>
-              <div style={{ fontWeight: 700, fontSize: 16, fontFamily: "var(--font-heading)", letterSpacing: "-0.3px" }}>
+              <div style={{ fontWeight: 700, fontSize: 16, fontFamily: "var(--font-heading)", letterSpacing: "-0.3px", color: "var(--text-primary)" }}>
                 Nova AI
               </div>
               <div style={{ fontSize: 11, color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
@@ -250,7 +251,7 @@ function App() {
                 borderRadius: 8,
                 background: "rgba(245, 158, 11, 0.15)",
                 border: "1px solid rgba(245, 158, 11, 0.35)",
-                color: "#FDE68A",
+                color: "#F59E0B",
                 fontSize: 12,
                 fontWeight: 600,
                 textDecoration: "none",
@@ -293,7 +294,7 @@ function App() {
                 gap: 6,
                 padding: "6px 12px",
                 borderRadius: 8,
-                background: "rgba(255, 255, 255, 0.05)",
+                background: "var(--bg-surface)",
                 border: "1px solid var(--border-subtle)",
                 color: "var(--text-primary)",
                 fontSize: 12,
@@ -306,6 +307,9 @@ function App() {
             </motion.a>
           )}
 
+          {/* Day / Night Theme Toggle */}
+          <ThemeToggle size="sm" />
+
           {/* User Profile Pill */}
           {user && (
             <div
@@ -313,9 +317,9 @@ function App() {
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                padding: "4px 10px",
+                padding: "5px 10px",
                 borderRadius: 8,
-                background: "rgba(255, 255, 255, 0.04)",
+                background: "var(--bg-surface)",
                 border: "1px solid var(--border-subtle)",
                 fontSize: 12,
                 color: "var(--text-secondary)",
@@ -337,7 +341,7 @@ function App() {
               display: "flex",
               alignItems: "center",
               gap: 6,
-              background: "rgba(255, 255, 255, 0.03)",
+              background: "var(--bg-surface)",
               border: "1px solid var(--border-subtle)",
               color: "var(--text-muted)",
               borderRadius: 8,

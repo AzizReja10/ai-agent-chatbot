@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { login, signup } from "../api/auth";
+import ThemeToggle from "./ThemeToggle";
 import { Sparkles, Mail, Lock, AlertCircle, ArrowRight, Loader2 } from "lucide-react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 
@@ -54,14 +55,19 @@ export default function AuthForm({ onAuthenticated }) {
           width: "100%",
           maxWidth: 420,
           padding: "36px 32px",
-          background: "rgba(17, 22, 36, 0.75)",
+          background: "var(--bg-glass)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          border: "1px solid rgba(255, 255, 255, 0.12)",
+          border: "1px solid var(--border-glass)",
           borderRadius: 24,
-          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 30px rgba(99, 102, 241, 0.2)",
+          boxShadow: "var(--shadow-lg), var(--glow-primary)",
         }}
       >
+        {/* Day/Night Theme Toggle in top-right */}
+        <div style={{ position: "absolute", top: 18, right: 18 }}>
+          <ThemeToggle size="sm" />
+        </div>
+
         {/* Header Icon */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 24 }}>
           <div
@@ -85,7 +91,7 @@ export default function AuthForm({ onAuthenticated }) {
               fontSize: 24,
               fontWeight: 700,
               margin: "0 0 6px",
-              color: "#F8FAFC",
+              color: "var(--text-primary)",
             }}
           >
             {mode === "login" ? "Welcome back" : "Create your account"}
@@ -99,7 +105,7 @@ export default function AuthForm({ onAuthenticated }) {
         <div
           style={{
             display: "flex",
-            background: "rgba(7, 9, 14, 0.6)",
+            background: "var(--bg-surface)",
             padding: 4,
             borderRadius: 12,
             border: "1px solid var(--border-subtle)",
@@ -115,7 +121,7 @@ export default function AuthForm({ onAuthenticated }) {
               padding: "8px 0",
               background: "transparent",
               border: "none",
-              color: mode === "login" ? "#FFFFFF" : "var(--text-muted)",
+              color: mode === "login" ? "var(--text-primary)" : "var(--text-muted)",
               fontWeight: 600,
               fontSize: 13,
               cursor: "pointer",
@@ -131,9 +137,10 @@ export default function AuthForm({ onAuthenticated }) {
                 style={{
                   position: "absolute",
                   inset: 0,
-                  background: "rgba(255, 255, 255, 0.1)",
+                  background: "var(--gradient-glass)",
                   borderRadius: 8,
-                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  border: "1px solid var(--border-glass)",
+                  boxShadow: "var(--shadow-sm)",
                   zIndex: -1,
                 }}
                 transition={{ type: "spring", stiffness: 350, damping: 30 }}
@@ -149,7 +156,7 @@ export default function AuthForm({ onAuthenticated }) {
               padding: "8px 0",
               background: "transparent",
               border: "none",
-              color: mode === "signup" ? "#FFFFFF" : "var(--text-muted)",
+              color: mode === "signup" ? "var(--text-primary)" : "var(--text-muted)",
               fontWeight: 600,
               fontSize: 13,
               cursor: "pointer",
@@ -165,9 +172,10 @@ export default function AuthForm({ onAuthenticated }) {
                 style={{
                   position: "absolute",
                   inset: 0,
-                  background: "rgba(255, 255, 255, 0.1)",
+                  background: "var(--gradient-glass)",
                   borderRadius: 8,
-                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  border: "1px solid var(--border-glass)",
+                  boxShadow: "var(--shadow-sm)",
                   zIndex: -1,
                 }}
                 transition={{ type: "spring", stiffness: 350, damping: 30 }}
@@ -179,7 +187,7 @@ export default function AuthForm({ onAuthenticated }) {
         {/* OAuth Buttons */}
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
           <motion.a
-            whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
+            whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             href="/auth/google/signin"
             style={{
@@ -189,12 +197,13 @@ export default function AuthForm({ onAuthenticated }) {
               gap: 10,
               padding: "11px 0",
               borderRadius: 12,
-              background: "rgba(255, 255, 255, 0.04)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
+              background: "var(--bg-surface)",
+              border: "1px solid var(--border-subtle)",
               color: "var(--text-primary)",
               textDecoration: "none",
               fontSize: 13.5,
               fontWeight: 600,
+              boxShadow: "var(--shadow-sm)",
               transition: "all 0.2s ease",
             }}
           >
@@ -203,7 +212,7 @@ export default function AuthForm({ onAuthenticated }) {
           </motion.a>
 
           <motion.a
-            whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
+            whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             href="/auth/github/signin"
             style={{
@@ -213,12 +222,13 @@ export default function AuthForm({ onAuthenticated }) {
               gap: 10,
               padding: "11px 0",
               borderRadius: 12,
-              background: "rgba(255, 255, 255, 0.04)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
+              background: "var(--bg-surface)",
+              border: "1px solid var(--border-subtle)",
               color: "var(--text-primary)",
               textDecoration: "none",
               fontSize: 13.5,
               fontWeight: 600,
+              boxShadow: "var(--shadow-sm)",
               transition: "all 0.2s ease",
             }}
           >
@@ -251,7 +261,7 @@ export default function AuthForm({ onAuthenticated }) {
                 display: "flex",
                 alignItems: "center",
                 gap: 10,
-                background: "rgba(7, 9, 14, 0.8)",
+                background: "var(--bg-base)",
                 border: "1px solid var(--border-subtle)",
                 borderRadius: 12,
                 padding: "10px 14px",
@@ -269,7 +279,7 @@ export default function AuthForm({ onAuthenticated }) {
                   background: "transparent",
                   border: "none",
                   outline: "none",
-                  color: "#F8FAFC",
+                  color: "var(--text-primary)",
                   fontSize: 14,
                   width: "100%",
                 }}
@@ -283,7 +293,7 @@ export default function AuthForm({ onAuthenticated }) {
                 display: "flex",
                 alignItems: "center",
                 gap: 10,
-                background: "rgba(7, 9, 14, 0.8)",
+                background: "var(--bg-base)",
                 border: "1px solid var(--border-subtle)",
                 borderRadius: 12,
                 padding: "10px 14px",
@@ -301,7 +311,7 @@ export default function AuthForm({ onAuthenticated }) {
                   background: "transparent",
                   border: "none",
                   outline: "none",
-                  color: "#F8FAFC",
+                  color: "var(--text-primary)",
                   fontSize: 14,
                   width: "100%",
                 }}
@@ -356,7 +366,7 @@ export default function AuthForm({ onAuthenticated }) {
             }}
           >
             {loading ? (
-              <Loader2 size={18} className="spin" style={{ animation: "spin 1s linear infinite" }} />
+              <Loader2 size={18} className="spin" />
             ) : (
               <>
                 <span>{mode === "login" ? "Sign In" : "Create Account"}</span>

@@ -86,19 +86,19 @@ export default function MessageBubble({ role, content }) {
           style={{
             position: "relative",
             background: isUser
-              ? "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)"
-              : "rgba(17, 22, 36, 0.8)",
+              ? "var(--gradient-brand)"
+              : "var(--bg-glass)",
             backdropFilter: isUser ? "none" : "blur(14px)",
             WebkitBackdropFilter: isUser ? "none" : "blur(14px)",
             border: isUser
-              ? "1px solid rgba(255, 255, 255, 0.15)"
-              : "1px solid rgba(255, 255, 255, 0.08)",
+              ? "none"
+              : "1px solid var(--border-glass)",
             color: isUser ? "#FFFFFF" : "var(--text-primary)",
             padding: "12px 18px",
             borderRadius: isUser ? "18px 4px 18px 18px" : "4px 18px 18px 18px",
             boxShadow: isUser
               ? "0 4px 18px rgba(99, 102, 241, 0.3)"
-              : "0 6px 24px rgba(0, 0, 0, 0.4)",
+              : "var(--shadow-sm)",
             wordBreak: "break-word",
           }}
         >
@@ -120,7 +120,7 @@ export default function MessageBubble({ role, content }) {
                 justifyContent: "flex-end",
                 marginTop: 8,
                 paddingTop: 6,
-                borderTop: "1px solid rgba(255, 255, 255, 0.05)",
+                borderTop: "1px solid var(--border-subtle)",
               }}
             >
               <motion.button
@@ -131,8 +131,8 @@ export default function MessageBubble({ role, content }) {
                   display: "flex",
                   alignItems: "center",
                   gap: 5,
-                  background: "rgba(255, 255, 255, 0.04)",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  background: "var(--bg-surface)",
+                  border: "1px solid var(--border-subtle)",
                   borderRadius: 6,
                   padding: "4px 8px",
                   fontSize: 11.5,

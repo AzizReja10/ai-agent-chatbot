@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import FloatingIcon from "../components/landing/FloatingIcon";
 import LogoMarquee from "../components/landing/LogoMarquee";
+import ThemeToggle from "../components/ThemeToggle";
 import { FaGithub, FaSlack, FaGoogle } from "react-icons/fa";
 import { 
   Mail, 
@@ -101,7 +102,7 @@ export default function LandingPage({ onGetStarted }) {
           justifyContent: "space-between",
           alignItems: "center",
           padding: "16px 36px",
-          background: "rgba(11, 14, 23, 0.65)",
+          background: "var(--bg-glass)",
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
           borderBottom: "1px solid var(--border-subtle)",
@@ -128,9 +129,7 @@ export default function LandingPage({ onGetStarted }) {
               fontSize: 22,
               fontWeight: 700,
               letterSpacing: "-0.5px",
-              background: "linear-gradient(180deg, #FFFFFF 0%, #94A3B8 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
+              color: "var(--text-primary)",
             }}
           >
             Nova
@@ -165,28 +164,31 @@ export default function LandingPage({ onGetStarted }) {
           </div>
         </div>
 
-        <motion.button
-          whileHover={{ scale: 1.04, boxShadow: "0 0 25px rgba(99, 102, 241, 0.6)" }}
-          whileTap={{ scale: 0.96 }}
-          onClick={onGetStarted}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            background: "var(--gradient-brand)",
-            color: "#FFFFFF",
-            border: "none",
-            borderRadius: 10,
-            padding: "10px 22px",
-            fontWeight: 600,
-            fontSize: 14,
-            cursor: "pointer",
-            boxShadow: "0 4px 18px rgba(99, 102, 241, 0.35)",
-          }}
-        >
-          <span>Get Started</span>
-          <ArrowRight size={16} />
-        </motion.button>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <ThemeToggle showLabel={true} />
+          <motion.button
+            whileHover={{ scale: 1.04, boxShadow: "0 0 25px rgba(99, 102, 241, 0.6)" }}
+            whileTap={{ scale: 0.96 }}
+            onClick={onGetStarted}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              background: "var(--gradient-brand)",
+              color: "#FFFFFF",
+              border: "none",
+              borderRadius: 10,
+              padding: "10px 22px",
+              fontWeight: 600,
+              fontSize: 14,
+              cursor: "pointer",
+              boxShadow: "0 4px 18px rgba(99, 102, 241, 0.35)",
+            }}
+          >
+            <span>Get Started</span>
+            <ArrowRight size={16} />
+          </motion.button>
+        </div>
       </nav>
 
       {/* Main Hero Container */}
@@ -335,8 +337,8 @@ export default function LandingPage({ onGetStarted }) {
               whileHover={{ scale: 1.03, borderColor: "rgba(99, 102, 241, 0.5)" }}
               onClick={onGetStarted}
               style={{
-                background: "rgba(17, 22, 36, 0.6)",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
+                background: "var(--bg-glass)",
+                border: "1px solid var(--border-subtle)",
                 borderRadius: 24,
                 padding: "8px 16px",
                 fontSize: 13,
@@ -403,7 +405,7 @@ export default function LandingPage({ onGetStarted }) {
                 alignItems: "center",
                 justifyContent: "center",
                 marginBottom: 18,
-                border: "1px solid rgba(255, 255, 255, 0.1)",
+                border: "1px solid var(--border-subtle)",
               }}
             >
               {feat.icon}
@@ -414,7 +416,7 @@ export default function LandingPage({ onGetStarted }) {
                 fontSize: 18,
                 fontWeight: 600,
                 margin: "0 0 10px",
-                color: "#F8FAFC",
+                color: "var(--text-primary)",
               }}
             >
               {feat.title}
@@ -436,7 +438,7 @@ export default function LandingPage({ onGetStarted }) {
           alignItems: "center",
           color: "var(--text-muted)",
           fontSize: 13,
-          background: "rgba(7, 9, 14, 0.8)",
+          background: "var(--bg-glass)",
           position: "relative",
           zIndex: 10,
         }}

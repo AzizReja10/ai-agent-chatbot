@@ -41,16 +41,16 @@ export default function MessageInput({ onSend, disabled = false }) {
           alignItems: "center",
           gap: 12,
           padding: "8px 12px 8px 18px",
-          background: "rgba(17, 22, 36, 0.8)",
+          background: "var(--bg-glass-strong)",
           backdropFilter: "blur(18px)",
           WebkitBackdropFilter: "blur(18px)",
           borderRadius: 16,
           border: isFocused
-            ? "1px solid rgba(99, 102, 241, 0.6)"
-            : "1px solid rgba(255, 255, 255, 0.1)",
+            ? "1px solid var(--border-focus)"
+            : "1px solid var(--border-glass)",
           boxShadow: isFocused
-            ? "0 10px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.25)"
-            : "0 8px 24px rgba(0, 0, 0, 0.4)",
+            ? "var(--shadow-lg), var(--glow-primary)"
+            : "var(--shadow-sm)",
           transition: "all 0.25s ease",
         }}
       >
@@ -72,7 +72,7 @@ export default function MessageInput({ onSend, disabled = false }) {
             background: "transparent",
             border: "none",
             outline: "none",
-            color: "#F8FAFC",
+            color: "var(--text-primary)",
             fontSize: 14.5,
             fontFamily: "var(--font-sans)",
           }}
@@ -87,10 +87,10 @@ export default function MessageInput({ onSend, disabled = false }) {
               fontSize: 11,
               fontFamily: "var(--font-mono)",
               color: "var(--text-muted)",
-              background: "rgba(255, 255, 255, 0.04)",
+              background: "var(--bg-surface)",
               padding: "3px 7px",
               borderRadius: 6,
-              border: "1px solid rgba(255, 255, 255, 0.06)",
+              border: "1px solid var(--border-subtle)",
             }}
           >
             <span>Enter</span>
@@ -110,7 +110,7 @@ export default function MessageInput({ onSend, disabled = false }) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: text.trim() ? "var(--gradient-brand)" : "rgba(255, 255, 255, 0.05)",
+              background: text.trim() ? "var(--gradient-brand)" : "var(--bg-surface)",
               color: text.trim() ? "#FFFFFF" : "var(--text-muted)",
               cursor: text.trim() && !disabled ? "pointer" : "default",
               boxShadow: text.trim() ? "0 4px 14px rgba(99, 102, 241, 0.4)" : "none",

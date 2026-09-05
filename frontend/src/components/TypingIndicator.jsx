@@ -15,14 +15,14 @@ export default function TypingIndicator() {
         gap: 12,
         alignSelf: "flex-start",
         padding: "10px 18px",
-        background: "rgba(17, 22, 36, 0.75)",
+        background: "var(--bg-glass-strong)",
         backdropFilter: "blur(14px)",
         WebkitBackdropFilter: "blur(14px)",
-        border: "1px solid rgba(99, 102, 241, 0.25)",
+        border: "1px solid var(--border-focus)",
         borderRadius: "16px 16px 16px 4px",
         marginBottom: 12,
         width: "fit-content",
-        boxShadow: "0 8px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(99, 102, 241, 0.15)",
+        boxShadow: "var(--shadow-sm), var(--glow-primary)",
       }}
     >
       <motion.div

@@ -18,11 +18,11 @@ export default function ConfirmationCard({ toolName, args, onConfirm, onCancel }
         borderRadius: 16,
         padding: "20px 24px",
         marginBottom: 16,
-        background: "linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(17, 22, 36, 0.85) 100%)",
+        background: "linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, var(--bg-glass-strong) 100%)",
         border: "1px solid rgba(245, 158, 11, 0.35)",
         backdropFilter: "blur(16px)",
         WebkitBackdropFilter: "blur(16px)",
-        boxShadow: "0 10px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(245, 158, 11, 0.15)",
+        boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2), 0 0 25px rgba(245, 158, 11, 0.15)",
       }}
     >
       {/* Header Badge */}
@@ -43,7 +43,7 @@ export default function ConfirmationCard({ toolName, args, onConfirm, onCancel }
             {isEmail ? <Mail size={16} color="#F59E0B" /> : <MessageSquare size={16} color="#F59E0B" />}
           </div>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#FDE68A", fontFamily: "var(--font-heading)" }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#F59E0B", fontFamily: "var(--font-heading)" }}>
               {isEmail ? "Approval Required: Draft Email" : "Approval Required: Slack Message"}
             </div>
             <div style={{ fontSize: 11, color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
@@ -74,7 +74,7 @@ export default function ConfirmationCard({ toolName, args, onConfirm, onCancel }
       {/* Payload Details */}
       <div
         style={{
-          background: "rgba(11, 14, 23, 0.7)",
+          background: "var(--bg-surface)",
           border: "1px solid var(--border-subtle)",
           borderRadius: 12,
           padding: 14,
@@ -87,11 +87,11 @@ export default function ConfirmationCard({ toolName, args, onConfirm, onCancel }
           <>
             <div style={{ display: "flex", gap: 8, marginBottom: 4 }}>
               <span style={{ color: "var(--text-muted)", minWidth: 60 }}>Recipient:</span>
-              <span style={{ color: "#F8FAFC", fontWeight: 600 }}>{args.to}</span>
+              <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>{args.to}</span>
             </div>
             <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
               <span style={{ color: "var(--text-muted)", minWidth: 60 }}>Subject:</span>
-              <span style={{ color: "#F8FAFC", fontWeight: 500 }}>{args.subject}</span>
+              <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{args.subject}</span>
             </div>
             <div
               style={{
