@@ -223,3 +223,6 @@ def google_status(request: Request, db: DBSession = Depends(get_db)):
     from app.models import GoogleCredential
     connected = db.query(GoogleCredential).filter(GoogleCredential.user_id == user.id).first() is not None
     return {"connected": connected}
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}

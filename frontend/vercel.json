@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/auth/:path*", "destination": "https://https://ai-agent-chatbot-mi94.onrender.com/auth/:path*" },
+    { "source": "/chat/:path*", "destination": "https://https://ai-agent-chatbot-mi94.onrender.com/chat/:path*" },
+    { "source": "/debug/:path*", "destination": "https://https://ai-agent-chatbot-mi94.onrender.com/debug/:path*" }
+  ]
+}
