@@ -8,11 +8,26 @@ from sqlalchemy.orm import Session as DBSession
 from app.db import SessionLocal
 from app.models import GoogleCredential
 from app.auth import get_current_user, store_oauth_state, pop_oauth_state, create_signin_handoff
-
+import json
+import tempfile
 router = APIRouter()
-
 BASE_DIR = Path(__file__).resolve().parent.parent
-CREDENTIALS_FILE = str(BASE_DIR / "credentials_web.json")
+
+def get_credentials_file_path():
+    local_path = BASE_DIR / "credentials_web.json"
+    if local_path.exists():
+        return str(local_path)
+
+    creds_json = os.getenv("GOOGLE_CREDENTIALS_JSON")
+    if not creds_json:
+        raise RuntimeError("Neither credentials_web.json nor GOOGLE_CREDENTIALS_JSON env var is available")
+
+    tmp = tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False)
+    tmp.write(creds_json)
+    tmp.close()
+    return tmp.name
+
+CREDENTIALS_FILE = get_credentials_file_path()
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
 SCOPES = [
