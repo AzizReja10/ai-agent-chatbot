@@ -24,3 +24,9 @@ class GoogleCredential(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
     token_json = Column(Text, nullable=False)  # full serialized Google credentials
+# app/models.py — add this
+class GitHubCredential(Base):
+    __tablename__ = "github_credentials"
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
+    access_token = Column(String, nullable=False)

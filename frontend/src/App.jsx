@@ -4,7 +4,8 @@ import ChatWindow from "./components/ChatWindow";
 import MessageInput from "./components/MessageInput";
 import ToolActivitySidebar from "./components/ToolActivitySidebar";
 import { streamChat } from "./api/chat";
-import { getCurrentUser, logout, getGoogleStatus , finalizeGoogleSignin } from "./api/auth";
+// src/App.jsx — update this import line
+import { getCurrentUser, logout, getGoogleStatus, finalizeSignin, getGitHubStatus } from "./api/auth";
 import LandingPage from "./pages/LandingPage";
 import AuthForm from "./components/AuthForm";
 
@@ -19,18 +20,24 @@ function App() {
   const [user, setUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [googleConnected, setGoogleConnected] = useState(false);
-
+const [githubConnected, setGithubConnected] = useState(false);
   useEffect(() => {
     getCurrentUser().then((u) => {
       setUser(u);
       setAuthChecked(true);
     });
   }, []);
+  useEffect(() => {
+  if (user) {
+    getGitHubStatus().then((s) => setGithubConnected(s.connected));
+  }
+}, [user, window.location.search]);
+// and update this useEffect
 useEffect(() => {
   const params = new URLSearchParams(window.location.search);
   const signinToken = params.get("signin_token");
   if (signinToken) {
-    finalizeGoogleSignin(signinToken).then(() => {
+    finalizeSignin(signinToken).then(() => {
       window.history.replaceState({}, "", "/");
       getCurrentUser().then((u) => {
         setUser(u);
@@ -131,6 +138,22 @@ useEffect(() => {
             Connect Google Account
           </a>
         )}
+        {!githubConnected && (
+          <a href="/auth/github/login"
+          style={{
+            background: "#2A2E36",
+            color: "var(--text-primary)",
+            borderRadius: 8,
+            padding: "6px 12px",
+            fontSize: 13,
+            fontWeight: 600,
+            textDecoration: "none",
+            border: "1px solid #3A3E46",
+          }}
+        >
+    Connect GitHub
+  </a>
+)}
         <button
           onClick={handleLogout}
           style={{

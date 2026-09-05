@@ -36,3 +36,15 @@ export async function finalizeGoogleSignin(token) {
   });
   return response.ok;
 }
+export async function getGitHubStatus() {
+  const response = await fetch("/auth/github/status", { credentials: "include" });
+  if (!response.ok) return { connected: false };
+  return response.json();
+}
+export async function finalizeSignin(token) {
+  const response = await fetch(`/auth/finalize?token=${encodeURIComponent(token)}`, {
+    method: "POST",
+    credentials: "include",
+  });
+  return response.ok;
+}

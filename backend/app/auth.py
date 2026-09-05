@@ -3,7 +3,7 @@ import secrets
 import bcrypt
 from sqlalchemy.orm import Session as DBSession
 from app.models import User, Session as SessionModel
-
+PENDING_SIGNIN_TOKENS = {} 
 
 def hash_password(password: str) -> str:
     pwd_bytes = password.encode("utf-8")[:72]
@@ -34,3 +34,7 @@ def get_current_user(request, db: DBSession):
         return None
 
     return db.query(User).filter(User.id == session.user_id).first()
+def create_signin_handoff(user_id: int) -> str:
+    token = secrets.token_urlsafe(24)
+    PENDING_SIGNIN_TOKENS[token] = user_id
+    return token

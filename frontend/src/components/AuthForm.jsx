@@ -111,7 +111,19 @@ export default function AuthForm({ onAuthenticated }) {
         >
           Continue with Google
         </a>
-
+          <a href="/auth/github/signin"
+            style={{
+              textAlign: "center",
+              padding: "10px 0",
+              borderRadius: 10,
+              border: "1px solid #2A2E36",
+              color: "var(--text-primary)",
+              textDecoration: "none",
+              fontSize: 14,
+            }}
+          >
+  Continue with GitHub
+</a>
         <button
           type="button"
           onClick={() => setMode(mode === "login" ? "signup" : "login")}

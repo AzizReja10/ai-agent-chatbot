@@ -1,15 +1,15 @@
 # app/google_oauth_routes.py
 import os
-import secrets
 from pathlib import Path
-from fastapi import APIRouter, Depends, HTTPException, Request, Response
+from app.auth import create_signin_handoff
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import RedirectResponse
 # pyrefly: ignore [missing-import]
 from google_auth_oauthlib.flow import Flow
 from sqlalchemy.orm import Session as DBSession
 from app.db import SessionLocal
 from app.models import GoogleCredential
-from app.auth import create_session, get_current_user
+from app.auth import get_current_user
 
 router = APIRouter()
 
@@ -31,7 +31,6 @@ SIGNIN_REDIRECT_URI = "http://127.0.0.1:8000/auth/google/signin/callback"
 
 PENDING_STATES = {}  # state -> {"user_id": ..., "code_verifier": ...}
 PENDING_SIGNIN_STATES = {}  # state -> code_verifier
-PENDING_SIGNIN_TOKENS = {}  # one-time handoff token -> user_id
 
 
 def get_db():
@@ -120,18 +119,5 @@ def google_signin_callback(code: str, state: str, db: DBSession = Depends(get_db
         db.commit()
         db.refresh(user)
 
-    handoff_token = secrets.token_urlsafe(24)
-    PENDING_SIGNIN_TOKENS[handoff_token] = user.id
-
+    handoff_token = create_signin_handoff(user.id)
     return RedirectResponse(f"{FRONTEND_URL}?signin_token={handoff_token}")
-
-
-@router.post("/auth/google/finalize")
-def finalize_signin(token: str, response: Response, db: DBSession = Depends(get_db)):
-    user_id = PENDING_SIGNIN_TOKENS.pop(token, None)
-    if not user_id:
-        raise HTTPException(status_code=400, detail="Invalid or expired sign-in token")
-
-    session_id = create_session(db, user_id)
-    response.set_cookie(key="session_id", value=session_id, httponly=True, samesite="lax", max_age=60 * 60 * 24 * 7)
-    return {"ok": True}
