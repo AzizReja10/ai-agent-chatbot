@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { login, signup } from "../api/auth";
+import { Sparkles, Mail, Lock, AlertCircle, ArrowRight, Loader2 } from "lucide-react";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 
 export default function AuthForm({ onAuthenticated }) {
   const [mode, setMode] = useState("login"); // "login" | "signup"
@@ -18,130 +20,352 @@ export default function AuthForm({ onAuthenticated }) {
       const user = mode === "login" ? await login(email, password) : await signup(email, password);
       onAuthenticated(user);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Authentication failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
-      <motion.form
-        onSubmit={handleSubmit}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
+    <div
+      style={{
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        padding: 24,
+        overflow: "hidden",
+      }}
+    >
+      {/* Background Ambient Glows */}
+      <div className="ambient-bg">
+        <div className="ambient-orb orb-1" />
+        <div className="ambient-orb orb-2" />
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         style={{
-          width: 320,
-          padding: 32,
-          background: "#1A1D23",
-          borderRadius: 16,
-          display: "flex",
-          flexDirection: "column",
-          gap: 14,
+          position: "relative",
+          zIndex: 10,
+          width: "100%",
+          maxWidth: 420,
+          padding: "36px 32px",
+          background: "rgba(17, 22, 36, 0.75)",
+          backdropFilter: "blur(20px)",
+          WebkitBackdropFilter: "blur(20px)",
+          border: "1px solid rgba(255, 255, 255, 0.12)",
+          borderRadius: 24,
+          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 30px rgba(99, 102, 241, 0.2)",
         }}
       >
-        <h2 style={{ margin: 0, textAlign: "center" }}>
-          {mode === "login" ? "Log in" : "Create account"}
-        </h2>
-
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={inputStyle}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          style={inputStyle}
-        />
-
-        <AnimatePresence>
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              style={{ color: "#E85D5D", fontSize: 13 }}
-            >
-              {error}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          type="submit"
-          disabled={loading}
-          style={{
-            background: "var(--accent-primary)",
-            color: "#0F1115",
-            border: "none",
-            borderRadius: 10,
-            padding: "10px 0",
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
-        >
-          {loading ? "..." : mode === "login" ? "Log in" : "Sign up"}
-        </motion.button>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 10, color: "var(--text-muted)", fontSize: 12 }}>
-          <div style={{ flex: 1, height: 1, background: "#2A2E36" }} />
-          or
-          <div style={{ flex: 1, height: 1, background: "#2A2E36" }} />
-        </div>
-
-        <a
-          href="/auth/google/signin"
-          style={{
-            textAlign: "center",
-            padding: "10px 0",
-            borderRadius: 10,
-            border: "1px solid #2A2E36",
-            color: "var(--text-primary)",
-            textDecoration: "none",
-            fontSize: 14,
-          }}
-        >
-          Continue with Google
-        </a>
-          <a href="/auth/github/signin"
+        {/* Header Icon */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 24 }}>
+          <div
             style={{
-              textAlign: "center",
-              padding: "10px 0",
-              borderRadius: 10,
-              border: "1px solid #2A2E36",
-              color: "var(--text-primary)",
-              textDecoration: "none",
-              fontSize: 14,
+              width: 48,
+              height: 48,
+              borderRadius: 16,
+              background: "var(--gradient-brand)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 0 20px rgba(99, 102, 241, 0.5)",
+              marginBottom: 14,
             }}
           >
-  Continue with GitHub
-</a>
-        <button
-          type="button"
-          onClick={() => setMode(mode === "login" ? "signup" : "login")}
-          style={{ background: "none", border: "none", color: "var(--text-muted)", cursor: "pointer", fontSize: 13 }}
+            <Sparkles size={24} color="#FFFFFF" />
+          </div>
+          <h2
+            style={{
+              fontFamily: "var(--font-heading)",
+              fontSize: 24,
+              fontWeight: 700,
+              margin: "0 0 6px",
+              color: "#F8FAFC",
+            }}
+          >
+            {mode === "login" ? "Welcome back" : "Create your account"}
+          </h2>
+          <p style={{ color: "var(--text-secondary)", fontSize: 13, margin: 0 }}>
+            {mode === "login" ? "Log in to access your AI agent workspace" : "Get started with your autonomous assistant"}
+          </p>
+        </div>
+
+        {/* Tab Switcher */}
+        <div
+          style={{
+            display: "flex",
+            background: "rgba(7, 9, 14, 0.6)",
+            padding: 4,
+            borderRadius: 12,
+            border: "1px solid var(--border-subtle)",
+            marginBottom: 24,
+            position: "relative",
+          }}
         >
-          {mode === "login" ? "Need an account? Sign up" : "Already have an account? Log in"}
-        </button>
-      </motion.form>
+          <button
+            type="button"
+            onClick={() => { setMode("login"); setError(""); }}
+            style={{
+              flex: 1,
+              padding: "8px 0",
+              background: "transparent",
+              border: "none",
+              color: mode === "login" ? "#FFFFFF" : "var(--text-muted)",
+              fontWeight: 600,
+              fontSize: 13,
+              cursor: "pointer",
+              position: "relative",
+              zIndex: 2,
+              transition: "color 0.2s",
+            }}
+          >
+            Sign In
+            {mode === "login" && (
+              <motion.div
+                layoutId="activeTab"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "rgba(255, 255, 255, 0.1)",
+                  borderRadius: 8,
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  zIndex: -1,
+                }}
+                transition={{ type: "spring", stiffness: 350, damping: 30 }}
+              />
+            )}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => { setMode("signup"); setError(""); }}
+            style={{
+              flex: 1,
+              padding: "8px 0",
+              background: "transparent",
+              border: "none",
+              color: mode === "signup" ? "#FFFFFF" : "var(--text-muted)",
+              fontWeight: 600,
+              fontSize: 13,
+              cursor: "pointer",
+              position: "relative",
+              zIndex: 2,
+              transition: "color 0.2s",
+            }}
+          >
+            Sign Up
+            {mode === "signup" && (
+              <motion.div
+                layoutId="activeTab"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "rgba(255, 255, 255, 0.1)",
+                  borderRadius: 8,
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
+                  zIndex: -1,
+                }}
+                transition={{ type: "spring", stiffness: 350, damping: 30 }}
+              />
+            )}
+          </button>
+        </div>
+
+        {/* OAuth Buttons */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
+          <motion.a
+            whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
+            whileTap={{ scale: 0.98 }}
+            href="/auth/google/signin"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+              padding: "11px 0",
+              borderRadius: 12,
+              background: "rgba(255, 255, 255, 0.04)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              color: "var(--text-primary)",
+              textDecoration: "none",
+              fontSize: 13.5,
+              fontWeight: 600,
+              transition: "all 0.2s ease",
+            }}
+          >
+            <FaGoogle size={16} color="#EA4335" />
+            <span>Continue with Google</span>
+          </motion.a>
+
+          <motion.a
+            whileHover={{ scale: 1.02, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
+            whileTap={{ scale: 0.98 }}
+            href="/auth/github/signin"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+              padding: "11px 0",
+              borderRadius: 12,
+              background: "rgba(255, 255, 255, 0.04)",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              color: "var(--text-primary)",
+              textDecoration: "none",
+              fontSize: 13.5,
+              fontWeight: 600,
+              transition: "all 0.2s ease",
+            }}
+          >
+            <FaGithub size={17} />
+            <span>Continue with GitHub</span>
+          </motion.a>
+        </div>
+
+        {/* Divider */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            color: "var(--text-muted)",
+            fontSize: 12,
+            margin: "20px 0",
+          }}
+        >
+          <div style={{ flex: 1, height: 1, background: "var(--border-subtle)" }} />
+          <span>or continue with email</span>
+          <div style={{ flex: 1, height: 1, background: "var(--border-subtle)" }} />
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                background: "rgba(7, 9, 14, 0.8)",
+                border: "1px solid var(--border-subtle)",
+                borderRadius: 12,
+                padding: "10px 14px",
+                transition: "border-color 0.2s",
+              }}
+            >
+              <Mail size={16} color="var(--text-muted)" />
+              <input
+                type="email"
+                placeholder="name@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  outline: "none",
+                  color: "#F8FAFC",
+                  fontSize: 14,
+                  width: "100%",
+                }}
+              />
+            </div>
+          </div>
+
+          <div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                background: "rgba(7, 9, 14, 0.8)",
+                border: "1px solid var(--border-subtle)",
+                borderRadius: 12,
+                padding: "10px 14px",
+                transition: "border-color 0.2s",
+              }}
+            >
+              <Lock size={16} color="var(--text-muted)" />
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  outline: "none",
+                  color: "#F8FAFC",
+                  fontSize: 14,
+                  width: "100%",
+                }}
+              />
+            </div>
+          </div>
+
+          <AnimatePresence>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, height: 0, y: -5 }}
+                animate={{ opacity: 1, height: "auto", y: 0 }}
+                exit={{ opacity: 0, height: 0 }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  color: "#F87171",
+                  background: "rgba(239, 68, 68, 0.1)",
+                  border: "1px solid rgba(239, 68, 68, 0.25)",
+                  padding: "8px 12px",
+                  borderRadius: 8,
+                  fontSize: 13,
+                }}
+              >
+                <AlertCircle size={15} style={{ flexShrink: 0 }} />
+                <span>{error}</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <motion.button
+            whileHover={{ scale: 1.02, boxShadow: "0 0 25px rgba(99, 102, 241, 0.5)" }}
+            whileTap={{ scale: 0.98 }}
+            type="submit"
+            disabled={loading}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              background: "var(--gradient-brand)",
+              color: "#FFFFFF",
+              border: "none",
+              borderRadius: 12,
+              padding: "12px 0",
+              fontWeight: 600,
+              fontSize: 14,
+              cursor: loading ? "not-allowed" : "pointer",
+              boxShadow: "0 4px 15px rgba(99, 102, 241, 0.35)",
+              marginTop: 6,
+            }}
+          >
+            {loading ? (
+              <Loader2 size={18} className="spin" style={{ animation: "spin 1s linear infinite" }} />
+            ) : (
+              <>
+                <span>{mode === "login" ? "Sign In" : "Create Account"}</span>
+                <ArrowRight size={16} />
+              </>
+            )}
+          </motion.button>
+        </form>
+      </motion.div>
     </div>
   );
 }
-
-const inputStyle = {
-  background: "#0F1115",
-  border: "1px solid #2A2E36",
-  borderRadius: 8,
-  padding: "10px 12px",
-  color: "var(--text-primary)",
-  fontSize: 14,
-  outline: "none",
-};

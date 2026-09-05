@@ -1,20 +1,49 @@
 // src/components/landing/LogoMarquee.jsx
 import { motion } from "framer-motion";
 
-export default function LogoMarquee({ logos }) {
-  // Duplicate the list so the loop feels seamless (no visible gap/jump)
-  const items = [...logos, ...logos];
+export default function LogoMarquee({ items }) {
+  // Duplicate the list for seamless continuous infinite scroll
+  const duplicated = [...items, ...items, ...items];
 
   return (
-    <div style={{ overflow: "hidden", width: "100%", padding: "20px 0" }}>
+    <div
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        width: "100%",
+        padding: "24px 0",
+        maskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+        WebkitMaskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+      }}
+    >
       <motion.div
-        style={{ display: "flex", gap: 48, width: "fit-content" }}
-        animate={{ x: ["0%", "-50%"] }}
-        transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+        style={{ display: "flex", gap: 24, width: "max-content" }}
+        animate={{ x: ["0%", "-33.333%"] }}
+        transition={{ repeat: Infinity, duration: 24, ease: "linear" }}
       >
-        {items.map((logo, i) => (
-          <div key={i} style={{ flexShrink: 0, opacity: 0.7 }}>
-            {logo}
+        {duplicated.map((item, i) => (
+          <div
+            key={i}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+              padding: "10px 20px",
+              borderRadius: 12,
+              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)",
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              backdropFilter: "blur(10px)",
+              color: "var(--text-secondary)",
+              fontSize: 14,
+              fontWeight: 500,
+              flexShrink: 0,
+              transition: "all 0.3s ease",
+            }}
+          >
+            <span style={{ color: item.color || "var(--accent-primary)", display: "flex", alignItems: "center" }}>
+              {item.icon}
+            </span>
+            <span>{item.name}</span>
           </div>
         ))}
       </motion.div>
