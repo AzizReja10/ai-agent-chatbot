@@ -45,6 +45,15 @@
   --glow-success: 0 0 20px rgba(16, 185, 129, 0.3);
   --shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
   --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  /* Button & Tag Tokens - Dark */
+  --btn-primary-bg: #4F46E5;
+  --btn-primary-hover: #4338CA;
+  --btn-primary-text: #FFFFFF;
+  --tag-bg: rgba(99, 102, 241, 0.18);
+  --tag-border: rgba(99, 102, 241, 0.4);
+  --tag-text: #E0E7FF;
+  --tag-icon: #818CF8;
 }
 
 /* Day Theme (Light) */
@@ -88,6 +97,15 @@
   --glow-success: 0 0 20px rgba(5, 150, 105, 0.2);
   --shadow-lg: 0 20px 35px -10px rgba(0, 0, 0, 0.08);
   --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.04);
+
+  /* Button & Tag Tokens - Light (Clean & Simple) */
+  --btn-primary-bg: #0F172A;
+  --btn-primary-hover: #1E293B;
+  --btn-primary-text: #FFFFFF;
+  --tag-bg: rgba(79, 70, 229, 0.1);
+  --tag-border: rgba(79, 70, 229, 0.35);
+  --tag-text: #3730A3;
+  --tag-icon: #4F46E5;
 }
 
 * {

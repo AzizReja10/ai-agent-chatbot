@@ -344,7 +344,7 @@ export default function AuthForm({ onAuthenticated }) {
           </AnimatePresence>
 
           <motion.button
-            whileHover={{ scale: 1.02, boxShadow: "0 0 25px rgba(99, 102, 241, 0.5)" }}
+            whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="submit"
             disabled={loading}
@@ -353,16 +353,17 @@ export default function AuthForm({ onAuthenticated }) {
               alignItems: "center",
               justifyContent: "center",
               gap: 8,
-              background: "var(--gradient-brand)",
-              color: "#FFFFFF",
+              background: "var(--btn-primary-bg)",
+              color: "var(--btn-primary-text)",
               border: "none",
               borderRadius: 12,
               padding: "12px 0",
               fontWeight: 600,
               fontSize: 14,
               cursor: loading ? "not-allowed" : "pointer",
-              boxShadow: "0 4px 15px rgba(99, 102, 241, 0.35)",
+              boxShadow: "0 2px 10px rgba(0, 0, 0, 0.15)",
               marginTop: 6,
+              transition: "background 0.2s ease",
             }}
           >
             {loading ? (

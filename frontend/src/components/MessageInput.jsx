@@ -110,10 +110,10 @@ export default function MessageInput({ onSend, disabled = false }) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: text.trim() ? "var(--gradient-brand)" : "var(--bg-surface)",
-              color: text.trim() ? "#FFFFFF" : "var(--text-muted)",
+              background: text.trim() ? "var(--btn-primary-bg)" : "var(--bg-surface)",
+              color: text.trim() ? "var(--btn-primary-text)" : "var(--text-muted)",
               cursor: text.trim() && !disabled ? "pointer" : "default",
-              boxShadow: text.trim() ? "0 4px 14px rgba(99, 102, 241, 0.4)" : "none",
+              boxShadow: text.trim() ? "var(--shadow-sm)" : "none",
               transition: "background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease",
             }}
           >

@@ -22,34 +22,34 @@ const floatingItems = [
   { 
     icon: <FaGithub size={26} />, 
     label: "GitHub", 
-    style: { top: "16%", left: "8%" }, 
+    style: { top: "4%", left: "1%" }, 
     duration: 3.8, 
     delay: 0.1,
-    glowColor: "rgba(168, 85, 247, 0.4)" 
+    glowColor: "rgba(168, 85, 247, 0.25)" 
   },
   { 
     icon: <FaSlack size={26} />, 
     label: "Slack", 
-    style: { top: "18%", right: "8%" }, 
+    style: { top: "4%", right: "1%" }, 
     duration: 3.2, 
     delay: 0.4,
-    glowColor: "rgba(236, 72, 153, 0.4)" 
+    glowColor: "rgba(236, 72, 153, 0.25)" 
   },
   { 
     icon: <Mail size={26} />, 
     label: "Gmail", 
-    style: { top: "62%", left: "10%" }, 
+    style: { top: "72%", left: "1%" }, 
     duration: 4.2, 
     delay: 0.8,
-    glowColor: "rgba(239, 68, 68, 0.4)" 
+    glowColor: "rgba(239, 68, 68, 0.25)" 
   },
   { 
     icon: <Calendar size={26} />, 
     label: "Calendar", 
-    style: { top: "60%", right: "10%" }, 
+    style: { top: "70%", right: "1%" }, 
     duration: 3.5, 
     delay: 0.6,
-    glowColor: "rgba(6, 182, 212, 0.4)" 
+    glowColor: "rgba(6, 182, 212, 0.25)" 
   },
 ];
 
@@ -167,26 +167,27 @@ export default function LandingPage({ onGetStarted }) {
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <ThemeToggle showLabel={true} />
           <motion.button
-            whileHover={{ scale: 1.04, boxShadow: "0 0 25px rgba(99, 102, 241, 0.6)" }}
-            whileTap={{ scale: 0.96 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             onClick={onGetStarted}
             style={{
               display: "flex",
               alignItems: "center",
               gap: 8,
-              background: "var(--gradient-brand)",
-              color: "#FFFFFF",
+              background: "var(--btn-primary-bg)",
+              color: "var(--btn-primary-text)",
               border: "none",
               borderRadius: 10,
-              padding: "10px 22px",
+              padding: "10px 20px",
               fontWeight: 600,
               fontSize: 14,
               cursor: "pointer",
-              boxShadow: "0 4px 18px rgba(99, 102, 241, 0.35)",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.12)",
+              transition: "background 0.2s ease, transform 0.2s ease",
             }}
           >
             <span>Get Started</span>
-            <ArrowRight size={16} />
+            <ArrowRight size={15} />
           </motion.button>
         </div>
       </nav>
@@ -226,15 +227,16 @@ export default function LandingPage({ onGetStarted }) {
             gap: 8,
             padding: "6px 14px",
             borderRadius: 30,
-            background: "linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.1) 100%)",
-            border: "1px solid rgba(99, 102, 241, 0.3)",
+            background: "var(--tag-bg)",
+            border: "1px solid var(--tag-border)",
             marginBottom: 24,
             fontSize: 13,
             fontWeight: 600,
-            color: "#C7D2FE",
+            color: "var(--tag-text)",
+            boxShadow: "var(--shadow-sm)",
           }}
         >
-          <Sparkles size={14} color="#818CF8" />
+          <Sparkles size={14} color="var(--tag-icon)" />
           <span>The Autonomous Multi-Tool AI Agent</span>
         </motion.div>
 
@@ -256,7 +258,7 @@ export default function LandingPage({ onGetStarted }) {
           <br />
           <span
             style={{
-              background: "linear-gradient(135deg, #818CF8 0%, #C084FC 50%, #38BDF8 100%)",
+              background: "linear-gradient(135deg, #6366F1 0%, #A855F7 50%, #06B6D4 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -290,26 +292,27 @@ export default function LandingPage({ onGetStarted }) {
           style={{ display: "flex", justifyContent: "center", gap: 14, flexWrap: "wrap" }}
         >
           <motion.button
-            whileHover={{ scale: 1.05, boxShadow: "0 0 35px rgba(99, 102, 241, 0.7)" }}
-            whileTap={{ scale: 0.96 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             onClick={onGetStarted}
             style={{
               display: "flex",
               alignItems: "center",
               gap: 10,
-              background: "var(--gradient-brand)",
-              color: "#FFFFFF",
+              background: "var(--btn-primary-bg)",
+              color: "var(--btn-primary-text)",
               border: "none",
               borderRadius: 12,
-              padding: "14px 32px",
-              fontSize: 16,
+              padding: "14px 30px",
+              fontSize: 15,
               fontWeight: 600,
               cursor: "pointer",
-              boxShadow: "0 10px 30px rgba(99, 102, 241, 0.4)",
+              boxShadow: "0 4px 14px rgba(0, 0, 0, 0.15)",
+              transition: "background 0.2s ease, transform 0.2s ease",
             }}
           >
             <span>Launch Workspace</span>
-            <ArrowRight size={18} />
+            <ArrowRight size={17} />
           </motion.button>
         </motion.div>
 
