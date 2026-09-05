@@ -91,6 +91,27 @@ export default function AuthForm({ onAuthenticated }) {
           {loading ? "..." : mode === "login" ? "Log in" : "Sign up"}
         </motion.button>
 
+        <div style={{ display: "flex", alignItems: "center", gap: 10, color: "var(--text-muted)", fontSize: 12 }}>
+          <div style={{ flex: 1, height: 1, background: "#2A2E36" }} />
+          or
+          <div style={{ flex: 1, height: 1, background: "#2A2E36" }} />
+        </div>
+
+        <a
+          href="/auth/google/signin"
+          style={{
+            textAlign: "center",
+            padding: "10px 0",
+            borderRadius: 10,
+            border: "1px solid #2A2E36",
+            color: "var(--text-primary)",
+            textDecoration: "none",
+            fontSize: 14,
+          }}
+        >
+          Continue with Google
+        </a>
+
         <button
           type="button"
           onClick={() => setMode(mode === "login" ? "signup" : "login")}

@@ -4,13 +4,13 @@ from datetime import datetime, timezone
 from app.db import Base
 
 
+# app/models.py — update User
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     email = Column(String, unique=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
+    hashed_password = Column(String, nullable=True)  # was nullable=False — now optional
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
-
 
 class Session(Base):
     __tablename__ = "sessions"
