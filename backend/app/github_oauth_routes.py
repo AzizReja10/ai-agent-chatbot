@@ -1,4 +1,5 @@
 # app/github_oauth_routes.py
+import os
 import requests
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import RedirectResponse
@@ -9,8 +10,9 @@ from app.auth import get_current_user, store_oauth_state, pop_oauth_state, creat
 from app.config import GITHUB_OAUTH_CLIENT_ID, GITHUB_OAUTH_CLIENT_SECRET
 
 router = APIRouter()
-FRONTEND_URL = "http://localhost:5173"
-GITHUB_REDIRECT_URI = "http://127.0.0.1:8000/auth/github/callback"
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
+GITHUB_REDIRECT_URI = f"{BACKEND_URL}/auth/github/callback"
 
 
 def get_db():

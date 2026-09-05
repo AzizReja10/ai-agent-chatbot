@@ -10,8 +10,10 @@ from app.models import GoogleCredential
 from app.auth import get_current_user, store_oauth_state, pop_oauth_state, create_signin_handoff
 import json
 import tempfile
+
 router = APIRouter()
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 def get_credentials_file_path():
     local_path = BASE_DIR / "credentials_web.json"
@@ -27,8 +29,10 @@ def get_credentials_file_path():
     tmp.close()
     return tmp.name
 
+
 CREDENTIALS_FILE = get_credentials_file_path()
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
 
 SCOPES = [
     "https://www.googleapis.com/auth/tasks",
@@ -38,9 +42,9 @@ SCOPES = [
     "https://www.googleapis.com/auth/gmail.readonly",
     "https://www.googleapis.com/auth/gmail.send",
 ]
-REDIRECT_URI = "http://127.0.0.1:8000/auth/google/callback"
+REDIRECT_URI = f"{BACKEND_URL}/auth/google/callback"
 SIGNIN_SCOPES = ["openid", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"]
-SIGNIN_REDIRECT_URI = "http://127.0.0.1:8000/auth/google/signin/callback"
+SIGNIN_REDIRECT_URI = f"{BACKEND_URL}/auth/google/signin/callback"
 
 
 def get_db():
@@ -57,7 +61,6 @@ def google_signin(db: DBSession = Depends(get_db)):
         CREDENTIALS_FILE, scopes=SIGNIN_SCOPES, redirect_uri=SIGNIN_REDIRECT_URI
     )
     auth_url, state = flow.authorization_url(prompt="select_account")
-    print("PRODUCTION AUTH URL:", auth_url)  # temporary debug
     store_oauth_state(db, state, {"code_verifier": flow.code_verifier})
     return RedirectResponse(auth_url)
 
