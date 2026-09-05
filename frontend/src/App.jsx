@@ -1,5 +1,5 @@
 // src/App.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect ,useRef } from "react";
 import ChatWindow from "./components/ChatWindow";
 import MessageInput from "./components/MessageInput";
 import ToolActivitySidebar from "./components/ToolActivitySidebar";
@@ -20,7 +20,8 @@ function App() {
   const [user, setUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
   const [googleConnected, setGoogleConnected] = useState(false);
-const [githubConnected, setGithubConnected] = useState(false);
+  const [githubConnected, setGithubConnected] = useState(false);
+  const finalizeRan = useRef(false);
   useEffect(() => {
     getCurrentUser().then((u) => {
       setUser(u);
@@ -28,12 +29,15 @@ const [githubConnected, setGithubConnected] = useState(false);
     });
   }, []);
   useEffect(() => {
-  if (user) {
-    getGitHubStatus().then((s) => setGithubConnected(s.connected));
-  }
-}, [user, window.location.search]);
-// and update this useEffect
+    if (user) {
+      getGitHubStatus().then((s) => setGithubConnected(s.connected));
+    }
+  }, [user, window.location.search]);
+// replace the signin_token useEffect with this guarded version
 useEffect(() => {
+  if (finalizeRan.current) return;
+  finalizeRan.current = true;
+
   const params = new URLSearchParams(window.location.search);
   const signinToken = params.get("signin_token");
   if (signinToken) {
@@ -140,20 +144,20 @@ useEffect(() => {
         )}
         {!githubConnected && (
           <a href="/auth/github/login"
-          style={{
-            background: "#2A2E36",
-            color: "var(--text-primary)",
-            borderRadius: 8,
-            padding: "6px 12px",
-            fontSize: 13,
-            fontWeight: 600,
-            textDecoration: "none",
-            border: "1px solid #3A3E46",
-          }}
-        >
-    Connect GitHub
-  </a>
-)}
+            style={{
+              background: "#2A2E36",
+              color: "var(--text-primary)",
+              borderRadius: 8,
+              padding: "6px 12px",
+              fontSize: 13,
+              fontWeight: 600,
+              textDecoration: "none",
+              border: "1px solid #3A3E46",
+            }}
+          >
+            Connect GitHub
+          </a>
+        )}
         <button
           onClick={handleLogout}
           style={{

@@ -1,15 +1,13 @@
 # app/google_oauth_routes.py
 import os
 from pathlib import Path
-from app.auth import create_signin_handoff
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import RedirectResponse
-# pyrefly: ignore [missing-import]
 from google_auth_oauthlib.flow import Flow
 from sqlalchemy.orm import Session as DBSession
 from app.db import SessionLocal
 from app.models import GoogleCredential
-from app.auth import get_current_user
+from app.auth import get_current_user, store_oauth_state, pop_oauth_state, create_signin_handoff
 
 router = APIRouter()
 
@@ -29,9 +27,6 @@ REDIRECT_URI = "http://127.0.0.1:8000/auth/google/callback"
 SIGNIN_SCOPES = ["openid", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"]
 SIGNIN_REDIRECT_URI = "http://127.0.0.1:8000/auth/google/signin/callback"
 
-PENDING_STATES = {}  # state -> {"user_id": ..., "code_verifier": ...}
-PENDING_SIGNIN_STATES = {}  # state -> code_verifier
-
 
 def get_db():
     db = SessionLocal()
@@ -42,12 +37,12 @@ def get_db():
 
 
 @router.get("/auth/google/signin")
-def google_signin():
+def google_signin(db: DBSession = Depends(get_db)):
     flow = Flow.from_client_secrets_file(
         CREDENTIALS_FILE, scopes=SIGNIN_SCOPES, redirect_uri=SIGNIN_REDIRECT_URI
     )
     auth_url, state = flow.authorization_url(prompt="select_account")
-    PENDING_SIGNIN_STATES[state] = flow.code_verifier
+    store_oauth_state(db, state, {"code_verifier": flow.code_verifier})
     return RedirectResponse(auth_url)
 
 
@@ -61,15 +56,13 @@ def google_login(request: Request, db: DBSession = Depends(get_db)):
         CREDENTIALS_FILE, scopes=SCOPES, redirect_uri=REDIRECT_URI
     )
     auth_url, state = flow.authorization_url(access_type="offline", prompt="consent")
-
-    PENDING_STATES[state] = {"user_id": user.id, "code_verifier": flow.code_verifier}
-
+    store_oauth_state(db, state, {"user_id": user.id, "code_verifier": flow.code_verifier})
     return RedirectResponse(auth_url)
 
 
 @router.get("/auth/google/callback")
-def google_callback(request: Request, code: str, state: str, db: DBSession = Depends(get_db)):
-    pending = PENDING_STATES.pop(state, None)
+def google_callback(code: str, state: str, db: DBSession = Depends(get_db)):
+    pending = pop_oauth_state(db, state)
     if not pending:
         raise HTTPException(status_code=400, detail="Invalid or expired OAuth state")
 
@@ -94,14 +87,14 @@ def google_callback(request: Request, code: str, state: str, db: DBSession = Dep
 
 @router.get("/auth/google/signin/callback")
 def google_signin_callback(code: str, state: str, db: DBSession = Depends(get_db)):
-    code_verifier = PENDING_SIGNIN_STATES.pop(state, None)
-    if not code_verifier:
+    pending = pop_oauth_state(db, state)
+    if not pending:
         raise HTTPException(status_code=400, detail="Invalid or expired sign-in state")
 
     flow = Flow.from_client_secrets_file(
         CREDENTIALS_FILE, scopes=SIGNIN_SCOPES, redirect_uri=SIGNIN_REDIRECT_URI
     )
-    flow.code_verifier = code_verifier
+    flow.code_verifier = pending["code_verifier"]
     flow.fetch_token(code=code)
 
     import requests as pyrequests
@@ -119,5 +112,5 @@ def google_signin_callback(code: str, state: str, db: DBSession = Depends(get_db
         db.commit()
         db.refresh(user)
 
-    handoff_token = create_signin_handoff(user.id)
+    handoff_token = create_signin_handoff(db, user.id)
     return RedirectResponse(f"{FRONTEND_URL}?signin_token={handoff_token}")
