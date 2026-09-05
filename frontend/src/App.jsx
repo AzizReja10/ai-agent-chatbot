@@ -4,9 +4,10 @@ import ChatWindow from "./components/ChatWindow";
 import MessageInput from "./components/MessageInput";
 import ToolActivitySidebar from "./components/ToolActivitySidebar";
 import { streamChat } from "./api/chat";
-import { getCurrentUser, logout, getGoogleStatus } from "./api/auth";
+import { getCurrentUser, logout, getGoogleStatus , finalizeGoogleSignin } from "./api/auth";
 import LandingPage from "./pages/LandingPage";
 import AuthForm from "./components/AuthForm";
+
 import "./styles/theme.css";
 
 function App() {
@@ -25,7 +26,19 @@ function App() {
       setAuthChecked(true);
     });
   }, []);
-
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const signinToken = params.get("signin_token");
+  if (signinToken) {
+    finalizeGoogleSignin(signinToken).then(() => {
+      window.history.replaceState({}, "", "/");
+      getCurrentUser().then((u) => {
+        setUser(u);
+        setAuthChecked(true);
+      });
+    });
+  }
+}, []);
   useEffect(() => {
     if (user) {
       getGoogleStatus().then((s) => setGoogleConnected(s.connected));

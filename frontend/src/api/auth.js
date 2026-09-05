@@ -29,3 +29,10 @@ export async function getGoogleStatus() {
   if (!response.ok) return { connected: false };
   return response.json();
 }
+export async function finalizeGoogleSignin(token) {
+  const response = await fetch(`/auth/google/finalize?token=${encodeURIComponent(token)}`, {
+    method: "POST",
+    credentials: "include",
+  });
+  return response.ok;
+}
