@@ -57,6 +57,7 @@ def google_signin(db: DBSession = Depends(get_db)):
         CREDENTIALS_FILE, scopes=SIGNIN_SCOPES, redirect_uri=SIGNIN_REDIRECT_URI
     )
     auth_url, state = flow.authorization_url(prompt="select_account")
+    print("PRODUCTION AUTH URL:", auth_url)  # temporary debug
     store_oauth_state(db, state, {"code_verifier": flow.code_verifier})
     return RedirectResponse(auth_url)
 
