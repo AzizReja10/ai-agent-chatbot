@@ -3,11 +3,11 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { login, signup } from "../api/auth";
 import ThemeToggle from "./ThemeToggle";
-import { Sparkles, Mail, Lock, AlertCircle, ArrowRight, Loader2 } from "lucide-react";
+import { Sparkles, Mail, Lock, AlertCircle, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 
-export default function AuthForm({ onAuthenticated }) {
-  const [mode, setMode] = useState("login"); // "login" | "signup"
+export default function AuthForm({ onAuthenticated, onBack, initialMode = "login" }) {
+  const [mode, setMode] = useState(initialMode); // "login" | "signup"
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -63,6 +63,40 @@ export default function AuthForm({ onAuthenticated }) {
           boxShadow: "var(--shadow-lg), var(--glow-primary)",
         }}
       >
+        {/* Back to Home button in top-left */}
+        {onBack && (
+          <motion.button
+            whileHover={{ scale: 1.05, x: -2 }}
+            whileTap={{ scale: 0.95 }}
+            type="button"
+            onClick={onBack}
+            aria-label="Back to home page"
+            style={{
+              position: "absolute",
+              top: 18,
+              left: 18,
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "6px 12px 6px 10px",
+              borderRadius: 20,
+              background: "var(--bg-surface)",
+              border: "1px solid var(--border-subtle)",
+              color: "var(--text-secondary)",
+              fontSize: 12.5,
+              fontWeight: 500,
+              cursor: "pointer",
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
+              boxShadow: "var(--shadow-sm)",
+              transition: "all 0.2s ease",
+            }}
+          >
+            <ArrowLeft size={14} />
+            <span>Home</span>
+          </motion.button>
+        )}
+
         {/* Day/Night Theme Toggle in top-right */}
         <div style={{ position: "absolute", top: 18, right: 18 }}>
           <ThemeToggle size="sm" />
@@ -376,6 +410,39 @@ export default function AuthForm({ onAuthenticated }) {
             )}
           </motion.button>
         </form>
+
+        {/* Back to Home option */}
+        {onBack && (
+          <div style={{ marginTop: 20, textAlign: "center" }}>
+            <button
+              type="button"
+              onClick={onBack}
+              style={{
+                background: "transparent",
+                border: "none",
+                color: "var(--text-muted)",
+                fontSize: 13,
+                fontWeight: 500,
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "4px 8px",
+                borderRadius: 8,
+                transition: "color 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = "var(--text-primary)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = "var(--text-muted)";
+              }}
+            >
+              <ArrowLeft size={14} />
+              <span>Back to Home</span>
+            </button>
+          </div>
+        )}
       </motion.div>
     </div>
   );

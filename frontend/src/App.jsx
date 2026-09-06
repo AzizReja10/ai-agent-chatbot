@@ -143,7 +143,7 @@ function App() {
     if (!started) {
       return <LandingPage onGetStarted={() => setStarted(true)} />;
     }
-    return <AuthForm onAuthenticated={setUser} />;
+    return <AuthForm onAuthenticated={setUser} onBack={() => setStarted(false)} />;
   }
 
   return (
