@@ -134,34 +134,6 @@ export default function LandingPage({ onGetStarted }) {
           >
             Nova
           </span>
-
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              background: "rgba(16, 185, 129, 0.12)",
-              border: "1px solid rgba(16, 185, 129, 0.25)",
-              padding: "4px 10px",
-              borderRadius: 20,
-              fontSize: 12,
-              fontWeight: 600,
-              color: "var(--accent-success)",
-              marginLeft: 12,
-            }}
-          >
-            <motion.span
-              animate={{ opacity: [1, 0.3, 1] }}
-              transition={{ repeat: Infinity, duration: 1.5 }}
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: "var(--accent-success)",
-              }}
-            />
-            FastMCP Ready
-          </div>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
