@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 export default function FloatingIcon({ icon, label, style, duration = 3.5, delay = 0, glowColor = "rgba(99, 102, 241, 0.4)" }) {
   return (
     <motion.div
+      className="landing-floating-icon"
       style={{
         position: "absolute",
         display: "flex",

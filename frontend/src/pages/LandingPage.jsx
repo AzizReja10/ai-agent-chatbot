@@ -94,6 +94,7 @@ export default function LandingPage({ onGetStarted }) {
 
       {/* Top Navigation */}
       <nav
+        className="landing-header"
         style={{
           position: "sticky",
           top: 0,
@@ -101,47 +102,51 @@ export default function LandingPage({ onGetStarted }) {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: "16px 36px",
           background: "var(--bg-glass)",
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
           borderBottom: "1px solid var(--border-subtle)",
+          boxSizing: "border-box",
+          width: "100%",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
           <div
             style={{
-              width: 38,
-              height: 38,
-              borderRadius: 12,
+              width: 36,
+              height: 36,
+              borderRadius: 10,
               background: "var(--gradient-brand)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 0 20px rgba(99, 102, 241, 0.5)",
+              boxShadow: "0 0 18px rgba(99, 102, 241, 0.45)",
+              flexShrink: 0,
             }}
           >
-            <Sparkles size={20} color="#FFFFFF" />
+            <Sparkles size={18} color="#FFFFFF" />
           </div>
           <span
             style={{
               fontFamily: "var(--font-heading)",
-              fontSize: 22,
+              fontSize: 21,
               fontWeight: 700,
               letterSpacing: "-0.5px",
               color: "var(--text-primary)",
+              whiteSpace: "nowrap",
             }}
           >
             Nova
           </span>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        <div className="landing-header-right" style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
           <ThemeToggle showLabel={true} />
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={onGetStarted}
+            className="landing-header-btn"
             style={{
               display: "flex",
               alignItems: "center",
@@ -150,12 +155,12 @@ export default function LandingPage({ onGetStarted }) {
               color: "var(--btn-primary-text)",
               border: "none",
               borderRadius: 10,
-              padding: "10px 20px",
               fontWeight: 600,
-              fontSize: 14,
               cursor: "pointer",
               boxShadow: "0 2px 8px rgba(0, 0, 0, 0.12)",
               transition: "background 0.2s ease, transform 0.2s ease",
+              whiteSpace: "nowrap",
+              flexShrink: 0,
             }}
           >
             <span>Get Started</span>

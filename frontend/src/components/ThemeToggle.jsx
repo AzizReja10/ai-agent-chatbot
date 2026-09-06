@@ -15,6 +15,7 @@ export default function ThemeToggle({ showLabel = false, size = "md" }) {
       whileTap={{ scale: 0.92 }}
       onClick={toggleTheme}
       title={isDark ? "Switch to Day mode" : "Switch to Night mode"}
+      className="theme-toggle-btn"
       style={{
         display: "flex",
         alignItems: "center",
@@ -67,6 +68,7 @@ export default function ThemeToggle({ showLabel = false, size = "md" }) {
 
       {showLabel && (
         <span
+          className="theme-toggle-label"
           style={{
             fontSize: isSmall ? 12 : 13,
             fontWeight: 600,
