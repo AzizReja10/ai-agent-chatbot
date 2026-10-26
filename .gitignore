@@ -4,3 +4,6 @@ credential.json
 token.json
 credentials_web.json
 test.db
+node_modules/
+package-lock.json
+
