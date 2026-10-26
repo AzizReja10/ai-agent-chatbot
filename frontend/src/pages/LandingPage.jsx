@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import FloatingIcon from "../components/landing/FloatingIcon";
 import LogoMarquee from "../components/landing/LogoMarquee";
 import ThemeToggle from "../components/ThemeToggle";
-import { FaGithub, FaSlack, FaGoogle } from "react-icons/fa";
+import { FaGithub, FaSlack } from "react-icons/fa";
 import { 
   Mail, 
   Calendar, 
@@ -12,7 +12,6 @@ import {
   ShieldCheck, 
   Cpu, 
   Terminal, 
-  CheckCircle2, 
   CloudSun, 
   Search, 
   FileText 
@@ -54,15 +53,64 @@ const floatingItems = [
 ];
 
 const marqueeIntegrations = [
-  { name: "Google Mail", icon: <Mail size={18} />, color: "#EA4335" },
-  { name: "GitHub Issues & PRs", icon: <FaGithub size={18} />, color: "#F8FAFC" },
-  { name: "Slack Channels", icon: <FaSlack size={18} />, color: "#E01E5A" },
-  { name: "Google Calendar", icon: <Calendar size={18} />, color: "#4285F4" },
-  { name: "Google Docs", icon: <FileText size={18} />, color: "#34A853" },
-  { name: "Live Weather API", icon: <CloudSun size={18} />, color: "#F59E0B" },
-  { name: "DuckDuckGo Web Search", icon: <Search size={18} />, color: "#06B6D4" },
-  { name: "FastMCP Protocol", icon: <Terminal size={18} />, color: "#A855F7" },
+  { 
+    name: "Google Mail", 
+    username: "@gmail", 
+    body: "Triage inbox, search email threads, and draft replies autonomously.", 
+    icon: <Mail size={18} />, 
+    color: "#EA4335" 
+  },
+  { 
+    name: "GitHub Issues & PRs", 
+    username: "@github", 
+    body: "Review PR diffs, triage open issues, and inspect repository commits.", 
+    icon: <FaGithub size={18} />, 
+    color: "#F8FAFC" 
+  },
+  { 
+    name: "Slack Channels", 
+    username: "@slack", 
+    body: "Broadcast live updates, ping team members, and request card confirmations.", 
+    icon: <FaSlack size={18} />, 
+    color: "#E01E5A" 
+  },
+  { 
+    name: "Google Calendar", 
+    username: "@calendar", 
+    body: "Manage schedules, check real-time availability, and create appointments.", 
+    icon: <Calendar size={18} />, 
+    color: "#4285F4" 
+  },
+  { 
+    name: "Google Docs", 
+    username: "@docs", 
+    body: "Draft markdown summaries, edit documents, and export structured reports.", 
+    icon: <FileText size={18} />, 
+    color: "#34A853" 
+  },
+  { 
+    name: "Live Weather API", 
+    username: "@weather", 
+    body: "Real-time atmospheric forecasts, hourly trends, and radar alerts.", 
+    icon: <CloudSun size={18} />, 
+    color: "#F59E0B" 
+  },
+  { 
+    name: "DuckDuckGo Web Search", 
+    username: "@ddg", 
+    body: "Privacy-first live web search with citations and up-to-the-minute retrieval.", 
+    icon: <Search size={18} />, 
+    color: "#06B6D4" 
+  },
+  { 
+    name: "FastMCP Protocol", 
+    username: "@fastmcp", 
+    body: "Extensible Model Context Protocol connecting custom tools & local scripts.", 
+    icon: <Terminal size={18} />, 
+    color: "#A855F7" 
+  },
 ];
+
 
 const features = [
   {
@@ -406,6 +454,35 @@ export default function LandingPage({ onGetStarted }) {
             </p>
           </motion.div>
         ))}
+      </div>
+
+      {/* Community Testimonials Marquee */}
+      <div style={{ margin: "0 auto 80px", maxWidth: "100%", textAlign: "center", position: "relative", zIndex: 10 }}>
+        <div
+          style={{
+            fontSize: 12,
+            fontFamily: "var(--font-mono)",
+            textTransform: "uppercase",
+            letterSpacing: "1.5px",
+            color: "var(--text-muted)",
+            marginBottom: 8,
+          }}
+        >
+          Loved By Developers & Teams
+        </div>
+        <h2
+          style={{
+            fontFamily: "var(--font-heading)",
+            fontSize: "clamp(24px, 3.5vw, 36px)",
+            fontWeight: 700,
+            margin: "0 0 24px",
+            color: "var(--text-primary)",
+            letterSpacing: "-0.5px",
+          }}
+        >
+          What People Are Saying
+        </h2>
+        <LogoMarquee />
       </div>
 
       {/* Footer */}
