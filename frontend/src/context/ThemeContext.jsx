@@ -1,25 +1,21 @@
 // src/context/ThemeContext.jsx
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect } from "react";
 
-const ThemeContext = createContext();
+const ThemeContext = createContext({
+  theme: "dark",
+  toggleTheme: () => {},
+  isDark: true,
+});
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => {
-    const saved = localStorage.getItem("nova_theme");
-    return saved === "dark" ? "dark" : "light";
-  });
-
   useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("nova_theme", theme);
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
-  };
+    const root = document.documentElement;
+    root.setAttribute("data-theme", "dark");
+    root.classList.add("dark");
+  }, []);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, isDark: theme === "dark" }}>
+    <ThemeContext.Provider value={{ theme: "dark", toggleTheme: () => {}, isDark: true }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -27,8 +23,5 @@ export function ThemeProvider({ children }) {
 
 export function useTheme() {
   const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error("useTheme must be used within a ThemeProvider");
-  }
   return context;
 }

@@ -1,177 +1,105 @@
 // src/components/ConfirmationCard.jsx
 import { motion } from "framer-motion";
-import { Mail, Send, X, AlertTriangle, MessageSquare, ShieldAlert } from "lucide-react";
+import { Mail, X, ShieldCheck, Check } from "lucide-react";
+import { FaSlack } from "react-icons/fa";
+import { BorderBeam } from "./magicui/border-beam";
+import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
 
 export default function ConfirmationCard({ toolName, args, onConfirm, onCancel }) {
   const isEmail = toolName === "draft_email";
+  const isSlack = toolName === "draft_slack_message";
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.92, y: 15 }}
+      initial={{ opacity: 0, scale: 0.95, y: 12 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.9, y: 10 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      style={{
-        alignSelf: "flex-start",
-        maxWidth: "85%",
-        width: "100%",
-        borderRadius: 16,
-        padding: "20px 24px",
-        marginBottom: 16,
-        background: "linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, var(--bg-glass-strong) 100%)",
-        border: "1px solid rgba(245, 158, 11, 0.35)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2), 0 0 25px rgba(245, 158, 11, 0.15)",
-      }}
+      exit={{ opacity: 0, scale: 0.95, y: 8 }}
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      className="relative mb-6 w-full max-w-2xl overflow-hidden rounded-2xl border border-amber-300/80 bg-white/95 p-5 shadow-lg backdrop-blur-xl dark:border-amber-500/30 dark:bg-zinc-900/90 dark:shadow-[0_8px_30px_rgba(245,158,11,0.12)]"
     >
-      {/* Header Badge */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: 8,
-              background: "rgba(245, 158, 11, 0.2)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "1px solid rgba(245, 158, 11, 0.4)",
-            }}
-          >
-            {isEmail ? <Mail size={16} color="#F59E0B" /> : <MessageSquare size={16} color="#F59E0B" />}
+      <BorderBeam size={180} duration={8} colorFrom="#F59E0B" colorTo="#EF4444" />
+
+      {/* Header */}
+      <div className="flex items-center justify-between pb-3.5 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 border border-amber-500/20">
+            {isEmail ? <Mail className="h-4 w-4" /> : <FaSlack className="h-4 w-4" />}
           </div>
           <div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: "#F59E0B", fontFamily: "var(--font-heading)" }}>
-              {isEmail ? "Approval Required: Draft Email" : "Approval Required: Slack Message"}
-            </div>
-            <div style={{ fontSize: 11, color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
-              tool: {toolName}
-            </div>
+            <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+              {isEmail ? "Approval Required: Send Email" : "Approval Required: Post Slack Message"}
+            </h4>
+            <span className="font-mono text-[11px] text-zinc-400 dark:text-zinc-500">
+              Tool target: {toolName}
+            </span>
           </div>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 5,
-            background: "rgba(245, 158, 11, 0.15)",
-            border: "1px solid rgba(245, 158, 11, 0.3)",
-            padding: "4px 10px",
-            borderRadius: 20,
-            fontSize: 11,
-            fontWeight: 600,
-            color: "#F59E0B",
-          }}
-        >
-          <ShieldAlert size={12} />
-          <span>Pending Confirmation</span>
-        </div>
+        <Badge variant="warning" className="flex items-center gap-1">
+          <ShieldCheck className="h-3 w-3" />
+          <span>Human-in-the-Loop</span>
+        </Badge>
       </div>
 
-      {/* Payload Details */}
-      <div
-        style={{
-          background: "var(--bg-surface)",
-          border: "1px solid var(--border-subtle)",
-          borderRadius: 12,
-          padding: 14,
-          fontSize: 13.5,
-          lineHeight: 1.6,
-          marginBottom: 18,
-        }}
-      >
-        {isEmail ? (
+      {/* Payload preview container */}
+      <div className="my-4 rounded-xl border border-zinc-200/80 bg-zinc-50/80 p-4 text-xs dark:border-zinc-800 dark:bg-zinc-950/60 font-sans space-y-2.5">
+        {isEmail && (
           <>
-            <div style={{ display: "flex", gap: 8, marginBottom: 4 }}>
-              <span style={{ color: "var(--text-muted)", minWidth: 60 }}>Recipient:</span>
-              <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>{args.to}</span>
+            <div className="flex items-start gap-2">
+              <span className="w-16 shrink-0 font-mono text-zinc-400 dark:text-zinc-500 font-medium">To:</span>
+              <span className="font-semibold text-zinc-900 dark:text-zinc-100">{args.to}</span>
             </div>
-            <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-              <span style={{ color: "var(--text-muted)", minWidth: 60 }}>Subject:</span>
-              <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{args.subject}</span>
+            <div className="flex items-start gap-2">
+              <span className="w-16 shrink-0 font-mono text-zinc-400 dark:text-zinc-500 font-medium">Subject:</span>
+              <span className="font-medium text-zinc-800 dark:text-zinc-200">{args.subject}</span>
             </div>
-            <div
-              style={{
-                marginTop: 8,
-                paddingTop: 8,
-                borderTop: "1px solid var(--border-subtle)",
-                color: "var(--text-secondary)",
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {args.body}
+            <div className="pt-2 border-t border-zinc-200/60 dark:border-zinc-800/80">
+              <span className="block font-mono text-zinc-400 dark:text-zinc-500 mb-1 font-medium">Body:</span>
+              <div className="rounded-lg bg-white p-3 border border-zinc-200/60 dark:bg-zinc-900 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap font-sans leading-relaxed">
+                {args.body}
+              </div>
             </div>
           </>
-        ) : (
+        )}
+
+        {isSlack && (
           <>
-            <div style={{ display: "flex", gap: 8, marginBottom: 6 }}>
-              <span style={{ color: "var(--text-muted)", minWidth: 60 }}>Channel:</span>
-              <span style={{ color: "#60A5FA", fontWeight: 600 }}>#{args.channel}</span>
+            <div className="flex items-start gap-2">
+              <span className="w-16 shrink-0 font-mono text-zinc-400 dark:text-zinc-500 font-medium">Channel:</span>
+              <span className="font-semibold text-zinc-900 dark:text-zinc-100">#{args.channel}</span>
             </div>
-            <div
-              style={{
-                marginTop: 8,
-                paddingTop: 8,
-                borderTop: "1px solid var(--border-subtle)",
-                color: "var(--text-secondary)",
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {args.text}
+            <div className="pt-2 border-t border-zinc-200/60 dark:border-zinc-800/80">
+              <span className="block font-mono text-zinc-400 dark:text-zinc-500 mb-1 font-medium">Message:</span>
+              <div className="rounded-lg bg-white p-3 border border-zinc-200/60 dark:bg-zinc-900 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap font-sans leading-relaxed">
+                {args.message}
+              </div>
             </div>
           </>
         )}
       </div>
 
       {/* Action Buttons */}
-      <div style={{ display: "flex", gap: 10 }}>
-        <motion.button
-          whileHover={{ scale: 1.03, boxShadow: "0 0 20px rgba(16, 185, 129, 0.4)" }}
-          whileTap={{ scale: 0.96 }}
-          onClick={onConfirm}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            background: "linear-gradient(135deg, #10B981 0%, #059669 100%)",
-            color: "#FFFFFF",
-            border: "none",
-            borderRadius: 10,
-            padding: "9px 18px",
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: "pointer",
-            boxShadow: "0 4px 12px rgba(16, 185, 129, 0.3)",
-          }}
-        >
-          <Send size={14} />
-          <span>Authorize & Send</span>
-        </motion.button>
-
-        <motion.button
-          whileHover={{ scale: 1.03, backgroundColor: "rgba(255, 255, 255, 0.08)" }}
-          whileTap={{ scale: 0.96 }}
+      <div className="flex items-center justify-end gap-2.5 pt-1">
+        <Button
+          variant="outline"
+          size="sm"
           onClick={onCancel}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            background: "rgba(255, 255, 255, 0.04)",
-            color: "var(--text-secondary)",
-            border: "1px solid var(--border-subtle)",
-            borderRadius: 10,
-            padding: "9px 16px",
-            fontSize: 13,
-            fontWeight: 500,
-            cursor: "pointer",
-          }}
+          className="cursor-pointer"
         >
-          <X size={14} />
-          <span>Cancel</span>
-        </motion.button>
+          <X className="h-3.5 w-3.5" />
+          <span>Cancel & Reject</span>
+        </Button>
+
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={onConfirm}
+          className="bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-600 dark:hover:bg-emerald-500 shadow-emerald-600/20 cursor-pointer"
+        >
+          <Check className="h-3.5 w-3.5" />
+          <span>Authorize & Send</span>
+        </Button>
       </div>
     </motion.div>
   );

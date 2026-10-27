@@ -2,6 +2,7 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowUp, Sparkles, CornerDownLeft } from "lucide-react";
+import { cn } from "../lib/utils";
 
 export default function MessageInput({ onSend, disabled = false }) {
   const [text, setText] = useState("");
@@ -11,7 +12,7 @@ export default function MessageInput({ onSend, disabled = false }) {
   const handleSubmit = (e) => {
     e?.preventDefault();
     if (!text.trim() || disabled) return;
-    onSend(text);
+    onSend(text.trim());
     setText("");
   };
 
@@ -23,104 +24,75 @@ export default function MessageInput({ onSend, disabled = false }) {
   };
 
   return (
-    <div
-      style={{
-        padding: "16px 24px 24px",
-        background: "linear-gradient(180deg, transparent 0%, rgba(7, 9, 14, 0.95) 100%)",
-        position: "relative",
-        zIndex: 20,
-      }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          position: "relative",
-          maxWidth: 900,
-          margin: "0 auto",
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          padding: "8px 12px 8px 18px",
-          background: "var(--bg-glass-strong)",
-          backdropFilter: "blur(18px)",
-          WebkitBackdropFilter: "blur(18px)",
-          borderRadius: 16,
-          border: isFocused
-            ? "1px solid var(--border-focus)"
-            : "1px solid var(--border-glass)",
-          boxShadow: isFocused
-            ? "var(--shadow-lg), var(--glow-primary)"
-            : "var(--shadow-sm)",
-          transition: "all 0.25s ease",
-        }}
-      >
-        <div style={{ color: isFocused ? "var(--accent-primary)" : "var(--text-muted)", display: "flex", alignItems: "center" }}>
-          <Sparkles size={18} />
-        </div>
-
-        <input
-          ref={inputRef}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          onKeyDown={handleKeyDown}
-          placeholder="Ask Nova to check emails, schedule meetings, query GitHub, or search..."
-          disabled={disabled}
-          style={{
-            flex: 1,
-            background: "transparent",
-            border: "none",
-            outline: "none",
-            color: "var(--text-primary)",
-            fontSize: 14.5,
-            fontFamily: "var(--font-sans)",
-          }}
-        />
-
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+    <div className="relative z-20 w-full px-4 pb-5 pt-2 md:px-8">
+      <div className="mx-auto max-w-4xl">
+        <form
+          onSubmit={handleSubmit}
+          className={cn(
+            "relative flex items-center gap-3 rounded-2xl border bg-white/90 p-2 pl-4 shadow-sm backdrop-blur-xl transition-all duration-200 dark:bg-zinc-900/90",
+            isFocused
+              ? "border-indigo-500/80 ring-4 ring-indigo-500/10 shadow-lg dark:border-indigo-500/60 dark:ring-indigo-500/15"
+              : "border-zinc-200/90 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700"
+          )}
+        >
+          {/* Agent sparkle indicator */}
           <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 4,
-              fontSize: 11,
-              fontFamily: "var(--font-mono)",
-              color: "var(--text-muted)",
-              background: "var(--bg-surface)",
-              padding: "3px 7px",
-              borderRadius: 6,
-              border: "1px solid var(--border-subtle)",
-            }}
+            className={cn(
+              "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-colors",
+              isFocused
+                ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/70 dark:text-indigo-400"
+                : "text-zinc-400 dark:text-zinc-500"
+            )}
           >
-            <span>Enter</span>
-            <CornerDownLeft size={10} />
+            <Sparkles className="h-4 w-4" />
           </div>
 
+          {/* Text Input */}
+          <input
+            ref={inputRef}
+            type="text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            onKeyDown={handleKeyDown}
+            placeholder="Ask Nova to summarize emails, inspect GitHub PRs, check events, or run MCP tools..."
+            disabled={disabled}
+            className="flex-1 bg-transparent py-1.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none disabled:opacity-50 dark:text-zinc-100 dark:placeholder:text-zinc-500 font-sans"
+          />
+
+          {/* Keyboard shortcut hint */}
+          <div className="hidden sm:flex items-center gap-1 rounded-md border border-zinc-200/80 bg-zinc-50 px-2 py-1 text-[11px] font-mono text-zinc-400 dark:border-zinc-800 dark:bg-zinc-800/60 dark:text-zinc-500">
+            <span>Enter</span>
+            <CornerDownLeft className="h-3 w-3" />
+          </div>
+
+          {/* Send Button */}
           <motion.button
             type="submit"
             disabled={!text.trim() || disabled}
-            whileHover={text.trim() ? { scale: 1.08 } : {}}
-            whileTap={text.trim() ? { scale: 0.92 } : {}}
-            style={{
-              width: 38,
-              height: 38,
-              borderRadius: 10,
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: text.trim() ? "var(--btn-primary-bg)" : "var(--bg-surface)",
-              color: text.trim() ? "var(--btn-primary-text)" : "var(--text-muted)",
-              cursor: text.trim() && !disabled ? "pointer" : "default",
-              boxShadow: text.trim() ? "var(--shadow-sm)" : "none",
-              transition: "background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease",
-            }}
+            whileHover={text.trim() && !disabled ? { scale: 1.05 } : {}}
+            whileTap={text.trim() && !disabled ? { scale: 0.95 } : {}}
+            className={cn(
+              "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all duration-200 outline-none select-none",
+              text.trim() && !disabled
+                ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30 hover:bg-indigo-500 cursor-pointer dark:bg-indigo-500 dark:hover:bg-indigo-400"
+                : "bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-600 cursor-not-allowed"
+            )}
+            title="Send prompt"
           >
-            <ArrowUp size={18} strokeWidth={2.5} />
+            <ArrowUp className="h-4 w-4 stroke-[2.5]" />
           </motion.button>
+        </form>
+
+        <div className="mt-2 flex items-center justify-center gap-4 text-[11px] text-zinc-400 dark:text-zinc-600">
+          <span>Nova AI Engine v2.4</span>
+          <span>•</span>
+          <span>FastMCP Protocol</span>
+          <span>•</span>
+          <span>Enterprise Guardrails Active</span>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

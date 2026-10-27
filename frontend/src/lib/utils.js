@@ -1,8 +1,6 @@
-// src/lib/utils.js
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 
-/**
- * Utility helper to conditionally join CSS class names.
- */
-export function cn(...classes) {
-  return classes.filter(Boolean).join(" ");
+export function cn(...inputs) {
+  return twMerge(clsx(inputs));
 }

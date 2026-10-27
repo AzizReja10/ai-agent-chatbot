@@ -2,9 +2,14 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { login, signup } from "../api/auth";
-import ThemeToggle from "./ThemeToggle";
 import { Sparkles, Mail, Lock, AlertCircle, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "./ui/card";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
+import { DotPattern } from "./magicui/dot-pattern";
+import { BorderBeam } from "./magicui/border-beam";
 
 export default function AuthForm({ onAuthenticated, onBack, initialMode = "login" }) {
   const [mode, setMode] = useState(initialMode); // "login" | "signup"
@@ -21,428 +26,186 @@ export default function AuthForm({ onAuthenticated, onBack, initialMode = "login
       const user = mode === "login" ? await login(email, password) : await signup(email, password);
       onAuthenticated(user);
     } catch (err) {
-      setError(err.message || "Authentication failed");
+      setError(err.message || "Authentication failed. Please verify credentials.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div
-      style={{
-        position: "relative",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        padding: 24,
-        overflow: "hidden",
-      }}
-    >
-      {/* Background Ambient Glows */}
-      <div className="ambient-bg">
-        <div className="ambient-orb orb-1" />
-        <div className="ambient-orb orb-2" />
+    <div className="relative flex min-h-screen items-center justify-center p-4 bg-zinc-50/50 dark:bg-zinc-950 overflow-hidden font-sans">
+      {/* Background Architectural Dot Pattern */}
+      <DotPattern className="[mask-image:radial-gradient(ellipse_at_center,white_30%,transparent_80%)]" />
+
+      {/* Top Controls */}
+      <div className="absolute top-5 left-5 right-5 flex items-center justify-between z-20 max-w-5xl mx-auto">
+        {onBack && (
+          <Button
+            variant="glass"
+            size="sm"
+            onClick={onBack}
+            className="flex items-center gap-1.5 cursor-pointer text-xs"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" />
+            <span>Back to Home</span>
+          </Button>
+        )}
       </div>
 
+      {/* Main Auth Card */}
       <motion.div
-        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+        initial={{ opacity: 0, y: 15, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        style={{
-          position: "relative",
-          zIndex: 10,
-          width: "100%",
-          maxWidth: 420,
-          padding: "36px 32px",
-          background: "var(--bg-glass)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          border: "1px solid var(--border-glass)",
-          borderRadius: 24,
-          boxShadow: "var(--shadow-lg), var(--glow-primary)",
-        }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 w-full max-w-md"
       >
-        {/* Back to Home button in top-left */}
-        {onBack && (
-          <motion.button
-            whileHover={{ scale: 1.05, x: -2 }}
-            whileTap={{ scale: 0.95 }}
-            type="button"
-            onClick={onBack}
-            aria-label="Back to home page"
-            style={{
-              position: "absolute",
-              top: 18,
-              left: 18,
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              padding: "6px 12px 6px 10px",
-              borderRadius: 20,
-              background: "var(--bg-surface)",
-              border: "1px solid var(--border-subtle)",
-              color: "var(--text-secondary)",
-              fontSize: 12.5,
-              fontWeight: 500,
-              cursor: "pointer",
-              backdropFilter: "blur(10px)",
-              WebkitBackdropFilter: "blur(10px)",
-              boxShadow: "var(--shadow-sm)",
-              transition: "all 0.2s ease",
-            }}
-          >
-            <ArrowLeft size={14} />
-            <span>Home</span>
-          </motion.button>
-        )}
+        <Card className="relative overflow-hidden border-zinc-200/90 dark:border-zinc-800 shadow-xl backdrop-blur-2xl">
+          <BorderBeam size={220} duration={12} colorFrom="#6366F1" colorTo="#A855F7" />
 
-        {/* Day/Night Theme Toggle in top-right */}
-        <div style={{ position: "absolute", top: 18, right: 18 }}>
-          <ThemeToggle size="sm" />
-        </div>
-
-        {/* Header Icon */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 24 }}>
-          <div
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: 16,
-              background: "var(--gradient-brand)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 0 20px rgba(99, 102, 241, 0.5)",
-              marginBottom: 14,
-            }}
-          >
-            <Sparkles size={24} color="#FFFFFF" />
-          </div>
-          <h2
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontSize: 24,
-              fontWeight: 700,
-              margin: "0 0 6px",
-              color: "var(--text-primary)",
-            }}
-          >
-            {mode === "login" ? "Welcome back" : "Create your account"}
-          </h2>
-          <p style={{ color: "var(--text-secondary)", fontSize: 13, margin: 0 }}>
-            {mode === "login" ? "Log in to access your AI agent workspace" : "Get started with your autonomous assistant"}
-          </p>
-        </div>
-
-        {/* Tab Switcher */}
-        <div
-          style={{
-            display: "flex",
-            background: "var(--bg-surface)",
-            padding: 4,
-            borderRadius: 12,
-            border: "1px solid var(--border-subtle)",
-            marginBottom: 24,
-            position: "relative",
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => { setMode("login"); setError(""); }}
-            style={{
-              flex: 1,
-              padding: "8px 0",
-              background: "transparent",
-              border: "none",
-              color: mode === "login" ? "var(--text-primary)" : "var(--text-muted)",
-              fontWeight: 600,
-              fontSize: 13,
-              cursor: "pointer",
-              position: "relative",
-              zIndex: 2,
-              transition: "color 0.2s",
-            }}
-          >
-            Sign In
-            {mode === "login" && (
-              <motion.div
-                layoutId="activeTab"
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: "var(--gradient-glass)",
-                  borderRadius: 8,
-                  border: "1px solid var(--border-glass)",
-                  boxShadow: "var(--shadow-sm)",
-                  zIndex: -1,
-                }}
-                transition={{ type: "spring", stiffness: 350, damping: 30 }}
-              />
-            )}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => { setMode("signup"); setError(""); }}
-            style={{
-              flex: 1,
-              padding: "8px 0",
-              background: "transparent",
-              border: "none",
-              color: mode === "signup" ? "var(--text-primary)" : "var(--text-muted)",
-              fontWeight: 600,
-              fontSize: 13,
-              cursor: "pointer",
-              position: "relative",
-              zIndex: 2,
-              transition: "color 0.2s",
-            }}
-          >
-            Sign Up
-            {mode === "signup" && (
-              <motion.div
-                layoutId="activeTab"
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background: "var(--gradient-glass)",
-                  borderRadius: 8,
-                  border: "1px solid var(--border-glass)",
-                  boxShadow: "var(--shadow-sm)",
-                  zIndex: -1,
-                }}
-                transition={{ type: "spring", stiffness: 350, damping: 30 }}
-              />
-            )}
-          </button>
-        </div>
-
-        {/* OAuth Buttons */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
-          <motion.a
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            href="/auth/google/signin"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 10,
-              padding: "11px 0",
-              borderRadius: 12,
-              background: "var(--bg-surface)",
-              border: "1px solid var(--border-subtle)",
-              color: "var(--text-primary)",
-              textDecoration: "none",
-              fontSize: 13.5,
-              fontWeight: 600,
-              boxShadow: "var(--shadow-sm)",
-              transition: "all 0.2s ease",
-            }}
-          >
-            <FaGoogle size={16} color="#EA4335" />
-            <span>Continue with Google</span>
-          </motion.a>
-
-          <motion.a
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            href="/auth/github/signin"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 10,
-              padding: "11px 0",
-              borderRadius: 12,
-              background: "var(--bg-surface)",
-              border: "1px solid var(--border-subtle)",
-              color: "var(--text-primary)",
-              textDecoration: "none",
-              fontSize: 13.5,
-              fontWeight: 600,
-              boxShadow: "var(--shadow-sm)",
-              transition: "all 0.2s ease",
-            }}
-          >
-            <FaGithub size={17} />
-            <span>Continue with GitHub</span>
-          </motion.a>
-        </div>
-
-        {/* Divider */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            color: "var(--text-muted)",
-            fontSize: 12,
-            margin: "20px 0",
-          }}
-        >
-          <div style={{ flex: 1, height: 1, background: "var(--border-subtle)" }} />
-          <span>or continue with email</span>
-          <div style={{ flex: 1, height: 1, background: "var(--border-subtle)" }} />
-        </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                background: "var(--bg-base)",
-                border: "1px solid var(--border-subtle)",
-                borderRadius: 12,
-                padding: "10px 14px",
-                transition: "border-color 0.2s",
-              }}
-            >
-              <Mail size={16} color="var(--text-muted)" />
-              <input
-                type="email"
-                placeholder="name@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  outline: "none",
-                  color: "var(--text-primary)",
-                  fontSize: 14,
-                  width: "100%",
-                }}
-              />
+          <CardHeader className="text-center pb-4 pt-8">
+            <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-md shadow-indigo-500/25">
+              <Sparkles className="h-5 w-5" />
             </div>
-          </div>
+            <CardTitle className="text-xl font-bold tracking-tight">
+              {mode === "login" ? "Welcome back to Nova" : "Create your Nova account"}
+            </CardTitle>
+            <CardDescription className="text-xs">
+              {mode === "login"
+                ? "Enter your credentials to access your autonomous workspace"
+                : "Sign up in seconds to start building multi-tool agent workflows"}
+            </CardDescription>
+          </CardHeader>
 
-          <div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-                background: "var(--bg-base)",
-                border: "1px solid var(--border-subtle)",
-                borderRadius: 12,
-                padding: "10px 14px",
-                transition: "border-color 0.2s",
-              }}
-            >
-              <Lock size={16} color="var(--text-muted)" />
-              <input
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  outline: "none",
-                  color: "var(--text-primary)",
-                  fontSize: 14,
-                  width: "100%",
-                }}
-              />
+          <CardContent className="space-y-4 px-6 pb-8">
+            {/* Mode Tabs */}
+            <div className="flex justify-center mb-2">
+              <Tabs value={mode} onValueChange={(val) => { setMode(val); setError(""); }}>
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="login" className="text-xs">
+                    Sign In
+                  </TabsTrigger>
+                  <TabsTrigger value="signup" className="text-xs">
+                    Sign Up
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
             </div>
-          </div>
 
-          <AnimatePresence>
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, height: 0, y: -5 }}
-                animate={{ opacity: 1, height: "auto", y: 0 }}
-                exit={{ opacity: 0, height: 0 }}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  color: "#F87171",
-                  background: "rgba(239, 68, 68, 0.1)",
-                  border: "1px solid rgba(239, 68, 68, 0.25)",
-                  padding: "8px 12px",
-                  borderRadius: 8,
-                  fontSize: 13,
-                }}
+            {/* Error Notification */}
+            <AnimatePresence>
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50/90 p-3 text-xs text-red-600 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300"
+                >
+                  <AlertCircle className="h-4 w-4 shrink-0" />
+                  <span>{error}</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-3.5">
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-2.5 h-4 w-4 text-zinc-400" />
+                  <Input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    className="pl-9 text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                    Password
+                  </label>
+                </div>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-2.5 h-4 w-4 text-zinc-400" />
+                  <Input
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="pl-9 text-xs"
+                  />
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={loading}
+                variant="primary"
+                className="w-full mt-2 cursor-pointer text-xs"
               >
-                <AlertCircle size={15} style={{ flexShrink: 0 }} />
-                <span>{error}</span>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                {loading ? (
+                  <>
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    <span>Processing...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>{mode === "login" ? "Sign In to Workspace" : "Get Started Free"}</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </>
+                )}
+              </Button>
+            </form>
 
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            type="submit"
-            disabled={loading}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-              background: "var(--btn-primary-bg)",
-              color: "var(--btn-primary-text)",
-              border: "none",
-              borderRadius: 12,
-              padding: "12px 0",
-              fontWeight: 600,
-              fontSize: 14,
-              cursor: loading ? "not-allowed" : "pointer",
-              boxShadow: "0 2px 10px rgba(0, 0, 0, 0.15)",
-              marginTop: 6,
-              transition: "background 0.2s ease",
-            }}
-          >
-            {loading ? (
-              <Loader2 size={18} className="spin" />
-            ) : (
-              <>
-                <span>{mode === "login" ? "Sign In" : "Create Account"}</span>
-                <ArrowRight size={16} />
-              </>
-            )}
-          </motion.button>
-        </form>
+            {/* Social Divider */}
+            <div className="relative my-4 flex items-center justify-center">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-zinc-200 dark:border-zinc-800" />
+              </div>
+              <span className="relative bg-white px-2 text-[11px] uppercase font-mono text-zinc-400 dark:bg-zinc-900 dark:text-zinc-500">
+                Or Continue With
+              </span>
+            </div>
 
-        {/* Back to Home option */}
-        {onBack && (
-          <div style={{ marginTop: 20, textAlign: "center" }}>
-            <button
-              type="button"
-              onClick={onBack}
-              style={{
-                background: "transparent",
-                border: "none",
-                color: "var(--text-muted)",
-                fontSize: 13,
-                fontWeight: 500,
-                cursor: "pointer",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                padding: "4px 8px",
-                borderRadius: 8,
-                transition: "color 0.2s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = "var(--text-primary)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = "var(--text-muted)";
-              }}
-            >
-              <ArrowLeft size={14} />
-              <span>Back to Home</span>
-            </button>
-          </div>
-        )}
+            {/* Social Logins */}
+            <div className="grid grid-cols-2 gap-2.5">
+              <Button
+                variant="outline"
+                size="sm"
+                asChild
+                className="w-full cursor-pointer text-xs"
+              >
+                <a href="/auth/google/login" className="flex items-center justify-center gap-2">
+                  <FaGoogle className="h-3.5 w-3.5 text-red-500" />
+                  <span>Google</span>
+                </a>
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                asChild
+                className="w-full cursor-pointer text-xs"
+              >
+                <a href="/auth/github/login" className="flex items-center justify-center gap-2">
+                  <FaGithub className="h-3.5 w-3.5" />
+                  <span>GitHub</span>
+                </a>
+              </Button>
+            </div>
+
+            <div className="pt-2 text-center text-[11px] text-zinc-400 dark:text-zinc-500">
+              By continuing, you agree to Nova's Terms of Service and Privacy Policy.
+            </div>
+          </CardContent>
+        </Card>
       </motion.div>
     </div>
   );

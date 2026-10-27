@@ -1,11 +1,236 @@
-/* src/index.css */
-@import "./styles/theme.css";
+@import "tailwindcss";
 
-#root {
-  width: 100%;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
+@layer base {
+  :root {
+    --font-heading: 'Outfit', sans-serif;
+    --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* Light Theme (Clean modern zinc/slate) */
+    --background: #FFFFFF;
+    --background-subtle: #F8FAFC;
+    --surface: #FFFFFF;
+    --surface-elevated: #F1F5F9;
+    --foreground: #0F172A;
+    --foreground-muted: #64748B;
+    --border: #E2E8F0;
+    --border-subtle: #F1F5F9;
+    --border-focus: #6366F1;
+    
+    --primary: #0F172A;
+    --primary-foreground: #FFFFFF;
+    --primary-hover: #1E293B;
+
+    --brand-indigo: #4F46E5;
+    --brand-violet: #7C3AED;
+    --brand-cyan: #0284C7;
+
+    --card: #FFFFFF;
+    --card-foreground: #0F172A;
+    --card-border: #E2E8F0;
+
+    --accent-success: #10B981;
+    --accent-warning: #F59E0B;
+    --accent-danger: #EF4444;
+
+    --shadow-soft: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+    --shadow-elevated: 0 12px 32px -4px rgba(0, 0, 0, 0.08);
+  }
+
+  .dark, [data-theme="dark"] {
+    /* Dark Theme (Obsidian zinc/slate - Linear & Vercel style) */
+    --background: #090A0F;
+    --background-subtle: #0F121C;
+    --surface: #131724;
+    --surface-elevated: #1A2032;
+    --foreground: #F8FAFC;
+    --foreground-muted: #94A3B8;
+    --border: #1E2538;
+    --border-subtle: rgba(255, 255, 255, 0.07);
+    --border-focus: #818CF8;
+
+    --primary: #F8FAFC;
+    --primary-foreground: #090A0F;
+    --primary-hover: #E2E8F0;
+
+    --brand-indigo: #6366F1;
+    --brand-violet: #8B5CF6;
+    --brand-cyan: #06B6D4;
+
+    --card: #111420;
+    --card-foreground: #F8FAFC;
+    --card-border: rgba(255, 255, 255, 0.08);
+
+    --accent-success: #10B981;
+    --accent-warning: #F59E0B;
+    --accent-danger: #EF4444;
+
+    --shadow-soft: 0 4px 24px -2px rgba(0, 0, 0, 0.4);
+    --shadow-elevated: 0 16px 40px -4px rgba(0, 0, 0, 0.6);
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+
+  code, pre, .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.45);
+}
+
+/* Animations */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-reverse {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0%); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@keyframes border-beam {
+  100% {
+    offset-distance: 100%;
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+
+@keyframes radar-sweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-marquee {
   display: flex;
-  flex-direction: column;
+  width: max-content;
+  animation: marquee 35s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.animate-marquee-reverse {
+  display: flex;
+  width: max-content;
+  animation: marquee-reverse 35s linear infinite;
+}
+
+.animate-marquee-reverse:hover {
+  animation-play-state: paused;
+}
+
+.animate-shimmer {
+  animation: shimmer 2.5s infinite;
+}
+
+.animate-radar {
+  animation: radar-sweep 4s linear infinite;
+}
+
+/* Markdown styling in message bubbles */
+.markdown-body {
+  font-size: 14.5px;
+  line-height: 1.65;
+}
+.markdown-body p {
+  margin-top: 0;
+  margin-bottom: 0.8em;
+}
+.markdown-body p:last-child {
+  margin-bottom: 0;
+}
+.markdown-body ul, .markdown-body ol {
+  margin-top: 0.4em;
+  margin-bottom: 0.8em;
+  padding-left: 1.4em;
+}
+.markdown-body li {
+  margin-bottom: 0.3em;
+}
+.markdown-body strong {
+  font-weight: 600;
+  color: var(--foreground);
+}
+.markdown-body pre {
+  margin: 0.8em 0;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.markdown-body code:not(pre code) {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  color: #6366F1;
+}
+.markdown-body blockquote {
+  border-left: 3px solid #6366F1;
+  margin: 0.8em 0;
+  padding-left: 12px;
+  color: var(--foreground-muted);
+}
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 13.5px;
+}
+.markdown-body th, .markdown-body td {
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  text-align: left;
+}
+.markdown-body th {
+  background: var(--surface-elevated);
+  font-weight: 600;
 }

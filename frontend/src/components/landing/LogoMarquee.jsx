@@ -1,50 +1,47 @@
 // src/components/landing/LogoMarquee.jsx
 import React from "react";
 import { cn } from "../../lib/utils";
+import { Marquee } from "../magicui/marquee";
 
-// Default reviews dataset as provided in the MagicUI Marquee demo
 export const reviews = [
   {
-    name: "Jack",
-    username: "@jack",
-    body: "I've never seen anything like this before. It's amazing. I love it.",
-    img: "https://avatar.vercel.sh/jack",
+    name: "Alex Rivera",
+    username: "@arivera_dev",
+    body: "Nova replaced our complex shell scripts with a single autonomous agent. The Card Confirmation for Slack & email saved us from catastrophic accidents.",
+    img: "https://avatar.vercel.sh/alex",
   },
   {
-    name: "Jill",
-    username: "@jill",
-    body: "I don't know what to say. I'm speechless. This is amazing.",
-    img: "https://avatar.vercel.sh/jill",
+    name: "Sarah Chen",
+    username: "@schen_ai",
+    body: "FastMCP integration works out of the box. I can plug local python CLI tools and Nova discovers and calls them seamlessly.",
+    img: "https://avatar.vercel.sh/sarah",
   },
   {
-    name: "John",
-    username: "@john",
-    body: "I'm at a loss for words. This is amazing. I love it.",
-    img: "https://avatar.vercel.sh/john",
+    name: "Marcus Vance",
+    username: "@marcus_v",
+    body: "The latency telemetry and real-time tool logs give me 100% visibility into what the AI agent is thinking before it commits any mutation.",
+    img: "https://avatar.vercel.sh/marcus",
   },
   {
-    name: "Jane",
-    username: "@jane",
-    body: "I'm at a loss for words. This is amazing. I love it.",
-    img: "https://avatar.vercel.sh/jane",
+    name: "Elena Rostova",
+    username: "@elena_builds",
+    body: "Finally an agent chatbot that doesn't just hallucinate text. It actually fetches live pull requests and drafts real Gmail replies accurately.",
+    img: "https://avatar.vercel.sh/elena",
   },
   {
-    name: "Jenny",
-    username: "@jenny",
-    body: "I'm at a loss for words. This is amazing. I love it.",
-    img: "https://avatar.vercel.sh/jenny",
+    name: "David Kim",
+    username: "@dkim_ops",
+    body: "The human-in-the-loop confirmation card is brilliant. We run production commands with complete confidence.",
+    img: "https://avatar.vercel.sh/david",
   },
   {
-    name: "James",
-    username: "@james",
-    body: "I'm at a loss for words. This is amazing. I love it.",
-    img: "https://avatar.vercel.sh/james",
+    name: "Maya Patel",
+    username: "@mayapatel",
+    body: "Multi-tool reasoning is blazing fast. The clean UI and mission control sidebar make this feel like a spacecraft console.",
+    img: "https://avatar.vercel.sh/maya",
   },
 ];
 
-/**
- * Reusable Card component supporting review avatars, icons, badges, and quotes.
- */
 export const ReviewCard = ({
   img,
   icon,
@@ -54,145 +51,80 @@ export const ReviewCard = ({
   body,
   onClick,
   className = "",
-  style = {},
 }) => {
   return (
     <figure
       onClick={onClick}
-      className={cn("magic-card", className)}
-      style={style}
+      className={cn(
+        "relative w-72 md:w-80 cursor-pointer overflow-hidden rounded-2xl border border-zinc-200/80 bg-white/70 p-4 shadow-sm backdrop-blur-md transition-all duration-300 hover:border-zinc-300 hover:bg-zinc-50 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:border-zinc-700 dark:hover:bg-zinc-800/80",
+        className
+      )}
     >
-      <div className="magic-card-header">
+      <div className="flex items-center gap-3 mb-2.5">
         {img ? (
           <img
-            className="magic-card-avatar"
-            width="34"
-            height="34"
+            className="h-8 w-8 rounded-full border border-zinc-200 dark:border-zinc-700 object-cover"
             alt={name || "Avatar"}
             src={img}
             loading="lazy"
           />
         ) : icon ? (
           <div
-            className="magic-card-icon-box"
-            style={{ color: color || "var(--accent-primary)" }}
+            className="flex h-8 w-8 items-center justify-center rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 border border-zinc-200/80 dark:border-zinc-700/80"
+            style={{ color: color }}
           >
             {icon}
           </div>
         ) : (
-          <div
-            className="magic-card-avatar"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: 700,
-              fontSize: 13,
-              color: "var(--accent-primary)",
-            }}
-          >
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-50 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-400 font-bold text-xs">
             {name ? name.charAt(0) : "★"}
           </div>
         )}
-        <div className="magic-card-meta">
-          <figcaption className="magic-card-name">{name}</figcaption>
-          {username && <p className="magic-card-username">{username}</p>}
+        <div className="flex flex-col min-w-0">
+          <figcaption className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+            {name}
+          </figcaption>
+          {username && (
+            <p className="font-mono text-[10px] text-zinc-400 dark:text-zinc-500 truncate">
+              {username}
+            </p>
+          )}
         </div>
       </div>
-      {body && <blockquote className="magic-card-body">{body}</blockquote>}
+      {body && (
+        <blockquote className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed font-sans">
+          {body}
+        </blockquote>
+      )}
     </figure>
   );
 };
 
-/**
- * Marquee Track Row component supporting continuous infinite scroll,
- * pause on hover, reverse direction, custom speed and repetitions.
- */
-export const Marquee = ({
-  className = "",
-  reverse = false,
-  pauseOnHover = true,
-  children,
-  repeat = 4,
-  duration = "24s",
-  style = {},
-}) => {
-  return (
-    <div
-      className={cn("magic-marquee", pauseOnHover && "pause-on-hover", className)}
-      style={{
-        "--duration": duration,
-        ...style,
-      }}
-    >
-      {Array.from({ length: repeat }).map((_, i) => (
-        <div
-          key={i}
-          className={cn("magic-marquee-inner", reverse && "reverse")}
-          aria-hidden={i > 0}
-        >
-          {children}
-        </div>
-      ))}
-    </div>
-  );
-};
-
-/**
- * MagicUI Marquee Demo implementation with dual reversed rows and edge fades.
- */
-export function MarqueeDemo({ duration = "20s", className = "" }) {
-  const firstRow = reviews.slice(0, Math.ceil(reviews.length / 2));
-  const secondRow = reviews.slice(Math.ceil(reviews.length / 2));
-
-  return (
-    <div className={cn("magic-marquee-container", className)}>
-      <Marquee pauseOnHover duration={duration}>
-        {firstRow.map((review) => (
-          <ReviewCard key={review.username} {...review} />
-        ))}
-      </Marquee>
-      <Marquee reverse pauseOnHover duration={duration}>
-        {secondRow.map((review) => (
-          <ReviewCard key={review.username} {...review} />
-        ))}
-      </Marquee>
-      <div className="magic-marquee-fade-left" aria-hidden="true" />
-      <div className="magic-marquee-fade-right" aria-hidden="true" />
-    </div>
-  );
-}
-
-/**
- * Main LogoMarquee component:
- * Accepts `items` (either stack integrations or reviews).
- * If items are omitted, defaults seamlessly to the MagicUI reviews dataset.
- */
 export default function LogoMarquee({
   items,
   pauseOnHover = true,
-  duration = "24s",
   className = "",
-  style = {},
 }) {
   const data = items && items.length > 0 ? items : reviews;
   const firstRow = data.slice(0, Math.ceil(data.length / 2));
   const secondRow = data.slice(Math.ceil(data.length / 2));
 
   return (
-    <div className={cn("magic-marquee-container", className)} style={style}>
-      <Marquee pauseOnHover={pauseOnHover} duration={duration}>
+    <div className={cn("relative flex w-full flex-col items-center justify-center overflow-hidden py-4", className)}>
+      <Marquee pauseOnHover={pauseOnHover}>
         {firstRow.map((item, idx) => (
           <ReviewCard key={item.username || item.name || idx} {...item} />
         ))}
       </Marquee>
-      <Marquee reverse pauseOnHover={pauseOnHover} duration={duration}>
+      <Marquee reverse pauseOnHover={pauseOnHover}>
         {secondRow.map((item, idx) => (
           <ReviewCard key={item.username || item.name || idx} {...item} />
         ))}
       </Marquee>
-      <div className="magic-marquee-fade-left" aria-hidden="true" />
-      <div className="magic-marquee-fade-right" aria-hidden="true" />
+
+      {/* Gradient Edge Masks */}
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white dark:from-[#090A0F] to-transparent z-10" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white dark:from-[#090A0F] to-transparent z-10" />
     </div>
   );
 }

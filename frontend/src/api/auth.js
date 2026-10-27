@@ -7,8 +7,14 @@ async function request(path, body) {
     body: JSON.stringify(body),
   });
   if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.detail || "Request failed");
+    let errMessage = "Request failed";
+    try {
+      const err = await response.json();
+      errMessage = err.detail || errMessage;
+    } catch {
+      // response body was not JSON
+    }
+    throw new Error(errMessage);
   }
   return response.json();
 }
@@ -17,34 +23,63 @@ export const signup = (email, password) => request("/auth/signup", { email, pass
 export const login = (email, password) => request("/auth/login", { email, password });
 
 export async function getCurrentUser() {
-  const response = await fetch("/auth/me", { credentials: "include" });
-  if (!response.ok) return null;
-  return response.json();
+  try {
+    const response = await fetch("/auth/me", { credentials: "include" });
+    if (!response.ok) return null;
+    return await response.json();
+  } catch {
+    return null;
+  }
 }
+
 export async function logout() {
-  await fetch("/auth/logout", { method: "POST", credentials: "include" });
+  try {
+    await fetch("/auth/logout", { method: "POST", credentials: "include" });
+  } catch {
+    // ignore network errors on logout
+  }
 }
+
 export async function getGoogleStatus() {
-  const response = await fetch("/auth/google/status", { credentials: "include" });
-  if (!response.ok) return { connected: false };
-  return response.json();
+  try {
+    const response = await fetch("/auth/google/status", { credentials: "include" });
+    if (!response.ok) return { connected: false };
+    return await response.json();
+  } catch {
+    return { connected: false };
+  }
 }
+
 export async function finalizeGoogleSignin(token) {
-  const response = await fetch(`/auth/google/finalize?token=${encodeURIComponent(token)}`, {
-    method: "POST",
-    credentials: "include",
-  });
-  return response.ok;
+  try {
+    const response = await fetch(`/auth/google/finalize?token=${encodeURIComponent(token)}`, {
+      method: "POST",
+      credentials: "include",
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
 }
+
 export async function getGitHubStatus() {
-  const response = await fetch("/auth/github/status", { credentials: "include" });
-  if (!response.ok) return { connected: false };
-  return response.json();
+  try {
+    const response = await fetch("/auth/github/status", { credentials: "include" });
+    if (!response.ok) return { connected: false };
+    return await response.json();
+  } catch {
+    return { connected: false };
+  }
 }
+
 export async function finalizeSignin(token) {
-  const response = await fetch(`/auth/finalize?token=${encodeURIComponent(token)}`, {
-    method: "POST",
-    credentials: "include",
-  });
-  return response.ok;
+  try {
+    const response = await fetch(`/auth/finalize?token=${encodeURIComponent(token)}`, {
+      method: "POST",
+      credentials: "include",
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
 }

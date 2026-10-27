@@ -1,4 +1,5 @@
 // src/components/ToolActivitySidebar.jsx
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Activity, 
@@ -10,257 +11,175 @@ import {
   FileText, 
   Search, 
   CheckSquare, 
-  MessageSquare, 
-  GitBranch, 
-  Layers,
+  Terminal,
   Cpu
 } from "lucide-react";
 import { FaGithub, FaSlack } from "react-icons/fa";
+import { StatusPill } from "./uiverse/status-pill";
+import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 
 const TOOL_CONFIG = {
-  list_github_issues: { label: "GitHub Issues", icon: <FaGithub size={14} />, color: "#A855F7" },
-  get_weather: { label: "Weather API", icon: <CloudSun size={14} />, color: "#F59E0B" },
-  list_google_tasks: { label: "Google Tasks", icon: <CheckSquare size={14} />, color: "#3B82F6" },
-  list_upcoming_events: { label: "Calendar", icon: <Calendar size={14} />, color: "#06B6D4" },
-  read_google_docs: { label: "Google Docs", icon: <FileText size={14} />, color: "#10B981" },
-  list_recent_emails: { label: "Gmail", icon: <Mail size={14} />, color: "#EF4444" },
-  draft_email: { label: "Draft Email", icon: <Mail size={14} />, color: "#EF4444" },
-  list_slack_channels: { label: "Slack Channels", icon: <FaSlack size={14} />, color: "#EC4899" },
-  draft_slack_message: { label: "Draft Slack", icon: <FaSlack size={14} />, color: "#EC4899" },
-  web_search: { label: "Web Search", icon: <Search size={14} />, color: "#818CF8" },
+  list_github_issues: { label: "GitHub Issues", icon: FaGithub, color: "text-purple-500" },
+  get_weather: { label: "Weather API", icon: CloudSun, color: "text-amber-500" },
+  list_google_tasks: { label: "Google Tasks", icon: CheckSquare, color: "text-blue-500" },
+  list_upcoming_events: { label: "Calendar", icon: Calendar, color: "text-cyan-500" },
+  read_google_docs: { label: "Google Docs", icon: FileText, color: "text-emerald-500" },
+  list_recent_emails: { label: "Gmail Inbox", icon: Mail, color: "text-red-500" },
+  draft_email: { label: "Draft Email", icon: Mail, color: "text-red-500" },
+  list_slack_channels: { label: "Slack Channels", icon: FaSlack, color: "text-pink-500" },
+  draft_slack_message: { label: "Draft Slack", icon: FaSlack, color: "text-pink-500" },
+  web_search: { label: "DuckDuckGo", icon: Search, color: "text-indigo-500" },
 };
 
 const REGISTERED_TOOLS = [
-  { name: "Google Workspace", desc: "Gmail, Calendar, Docs, Tasks", icon: <Mail size={13} color="#EF4444" /> },
-  { name: "GitHub Integration", desc: "Issues & Pull Requests", icon: <FaGithub size={13} color="#A855F7" /> },
-  { name: "Slack Messaging", desc: "Channels & Direct Messages", icon: <FaSlack size={13} color="#EC4899" /> },
-  { name: "Realtime Weather", desc: "OpenMeteo Global Forecast", icon: <CloudSun size={13} color="#F59E0B" /> },
-  { name: "Web Discovery", desc: "DuckDuckGo Live Search", icon: <Search size={13} color="#06B6D4" /> },
+  { name: "Google Workspace", desc: "Gmail, Calendar, Docs, Tasks", icon: Mail, tag: "OAuth 2.0" },
+  { name: "GitHub Integration", desc: "Issues, Repositories & PRs", icon: FaGithub, tag: "REST API" },
+  { name: "Slack Engine", desc: "Channels & Webhooks", icon: FaSlack, tag: "Bot Token" },
+  { name: "Weather Service", desc: "OpenMeteo Global Forecast", icon: CloudSun, tag: "Live API" },
+  { name: "FastMCP Tools", desc: "Custom Python Tool Protocols", icon: Terminal, tag: "FastMCP" },
 ];
 
 export default function ToolActivitySidebar({ activeTools = [] }) {
+  const [activeTab, setActiveTab] = useState("telemetry");
   const runningCount = activeTools.filter(t => !t.done).length;
 
   return (
-    <div
-      style={{
-        width: 260,
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        background: "var(--bg-glass)",
-        backdropFilter: "blur(16px)",
-        WebkitBackdropFilter: "blur(16px)",
-        borderRight: "1px solid var(--border-subtle)",
-        overflowY: "auto",
-        zIndex: 15,
-      }}
-    >
+    <aside className="flex h-full w-72 flex-col border-r border-zinc-200/80 bg-zinc-50/70 backdrop-blur-xl dark:border-zinc-800/80 dark:bg-zinc-950/70">
       {/* Sidebar Header */}
-      <div
-        style={{
-          padding: "20px 18px 14px",
-          borderBottom: "1px solid var(--border-subtle)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Activity size={16} color="var(--accent-primary)" />
-          <span
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 12,
-              fontWeight: 700,
-              letterSpacing: "1px",
-              color: "var(--text-secondary)",
-            }}
-          >
-            TOOL EXECUTION
+      <div className="flex items-center justify-between border-b border-zinc-200/80 px-4 py-3.5 dark:border-zinc-800">
+        <div className="flex items-center gap-2">
+          <Activity className="h-4 w-4 text-indigo-500" />
+          <span className="font-mono text-xs font-semibold tracking-wider uppercase text-zinc-700 dark:text-zinc-300">
+            Mission Control
           </span>
         </div>
 
         {runningCount > 0 ? (
-          <span
-            style={{
-              fontSize: 11,
-              fontFamily: "var(--font-mono)",
-              background: "rgba(99, 102, 241, 0.2)",
-              color: "#A5B4FC",
-              padding: "2px 8px",
-              borderRadius: 10,
-              border: "1px solid rgba(99, 102, 241, 0.3)",
-            }}
-          >
-            {runningCount} active
-          </span>
+          <StatusPill status="active" label={`${runningCount} running`} />
         ) : (
-          <span
-            style={{
-              fontSize: 11,
-              fontFamily: "var(--font-mono)",
-              color: "var(--text-muted)",
-            }}
-          >
-            Idle
-          </span>
+          <StatusPill status="idle" label="Standby" />
         )}
       </div>
 
-      {/* Live Active / Recent Tools Feed */}
-      <div style={{ padding: 14, flex: 1 }}>
-        <div style={{ fontSize: 11, fontFamily: "var(--font-mono)", color: "var(--text-muted)", marginBottom: 8 }}>
-          LIVE FEED
+      {/* Tabs navigation */}
+      <div className="p-3 border-b border-zinc-200/60 dark:border-zinc-800/60">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="w-full grid grid-cols-2">
+            <TabsTrigger value="telemetry" className="text-xs">
+              Live Feed {activeTools.length > 0 && `(${activeTools.length})`}
+            </TabsTrigger>
+            <TabsTrigger value="registry" className="text-xs">
+              Registered
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
+      {/* Tab 1: Live Telemetry Feed */}
+      {activeTab === "telemetry" && (
+        <div className="flex-1 overflow-y-auto p-3 space-y-2.5">
+          {activeTools.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-500 mb-2.5">
+                <Terminal className="h-5 w-5" />
+              </div>
+              <p className="text-xs font-medium text-zinc-600 dark:text-zinc-300">
+                No active tool calls
+              </p>
+              <p className="text-[11px] text-zinc-400 dark:text-zinc-500 mt-1">
+                Trigger a query in chat to watch tool execution telemetry in real-time.
+              </p>
+            </div>
+          ) : (
+            <AnimatePresence initial={false}>
+              {activeTools.map((tool) => {
+                const conf = TOOL_CONFIG[tool.name] || {
+                  label: tool.name,
+                  icon: Cpu,
+                  color: "text-zinc-500",
+                };
+                const IconComponent = conf.icon;
+
+                return (
+                  <motion.div
+                    key={tool.id}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="group relative rounded-xl border border-zinc-200/80 bg-white p-3 text-xs shadow-xs dark:border-zinc-800 dark:bg-zinc-900/80"
+                  >
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center gap-2">
+                        <IconComponent className={`h-3.5 w-3.5 ${conf.color}`} />
+                        <span className="font-semibold text-zinc-800 dark:text-zinc-200">
+                          {conf.label}
+                        </span>
+                      </div>
+
+                      {tool.done ? (
+                        <span className="inline-flex items-center gap-1 font-mono text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
+                          <CheckCircle2 className="h-3 w-3" />
+                          Done
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 font-mono text-[10px] text-indigo-600 dark:text-indigo-400 font-medium">
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                          Running
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="font-mono text-[10.5px] text-zinc-400 dark:text-zinc-500 truncate">
+                      call::{tool.name}()
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          )}
         </div>
+      )}
 
-        {activeTools.length === 0 ? (
-          <div
-            style={{
-              padding: "24px 12px",
-              textAlign: "center",
-              color: "var(--text-muted)",
-              fontSize: 12.5,
-              background: "rgba(255, 255, 255, 0.02)",
-              borderRadius: 12,
-              border: "1px dashed var(--border-subtle)",
-            }}
-          >
-            <Cpu size={24} style={{ opacity: 0.3, margin: "0 auto 8px" }} />
-            <div>No tools currently running. Ask Nova a query to trigger actions.</div>
-          </div>
-        ) : (
-          <AnimatePresence>
-            {activeTools.map((tool) => {
-              const config = TOOL_CONFIG[tool.name] || {
-                label: tool.name,
-                icon: <Activity size={14} />,
-                color: "#6366F1",
-              };
-
-              return (
-                <motion.div
-                  key={tool.id}
-                  initial={{ opacity: 0, x: -12, scale: 0.95 }}
-                  animate={{ opacity: 1, x: 0, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.25 }}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "10px 12px",
-                    marginBottom: 8,
-                    borderRadius: 10,
-                    background: tool.done
-                      ? "rgba(16, 185, 129, 0.08)"
-                      : "rgba(99, 102, 241, 0.12)",
-                    border: tool.done
-                      ? "1px solid rgba(16, 185, 129, 0.25)"
-                      : "1px solid rgba(99, 102, 241, 0.3)",
-                    boxShadow: tool.done
-                      ? "none"
-                      : "0 0 14px rgba(99, 102, 241, 0.2)",
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    <div
-                      style={{
-                        color: config.color,
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      {config.icon}
-                    </div>
-                    <div>
-                      <div
-                        style={{
-                          fontSize: 12.5,
-                          fontWeight: 600,
-                          color: "#F8FAFC",
-                          fontFamily: "var(--font-sans)",
-                        }}
-                      >
-                        {config.label}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: 10.5,
-                          fontFamily: "var(--font-mono)",
-                          color: "var(--text-muted)",
-                        }}
-                      >
-                        {tool.name}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    {tool.done ? (
-                      <motion.div initial={{ scale: 0.6 }} animate={{ scale: 1 }}>
-                        <CheckCircle2 size={16} color="var(--accent-success)" />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                      >
-                        <Loader2 size={15} color="var(--accent-primary)" />
-                      </motion.div>
-                    )}
-                  </div>
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
-        )}
-
-        {/* Capabilities Section */}
-        <div style={{ marginTop: 24 }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              fontSize: 11,
-              fontFamily: "var(--font-mono)",
-              color: "var(--text-muted)",
-              marginBottom: 10,
-            }}
-          >
-            <Layers size={13} />
-            <span>FAST TOOLS CONNECTED</span>
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            {REGISTERED_TOOLS.map((t, idx) => (
+      {/* Tab 2: Registered MCP Tools */}
+      {activeTab === "registry" && (
+        <div className="flex-1 overflow-y-auto p-3 space-y-2">
+          {REGISTERED_TOOLS.map((reg, i) => {
+            const Icon = reg.icon;
+            return (
               <div
-                key={idx}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  padding: "8px 10px",
-                  borderRadius: 8,
-                  background: "var(--bg-surface)",
-                  border: "1px solid var(--border-subtle)",
-                }}
+                key={i}
+                className="flex items-start gap-2.5 rounded-xl border border-zinc-200/60 bg-white/60 p-2.5 dark:border-zinc-800/60 dark:bg-zinc-900/40"
               >
-                <div style={{ display: "flex", alignItems: "center" }}>{t.icon}</div>
-                <div style={{ overflow: "hidden" }}>
-                  <div style={{ fontSize: 12, fontWeight: 500, color: "var(--text-secondary)" }}>
-                    {t.name}
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
+                  <Icon className="h-3.5 w-3.5" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
+                      {reg.name}
+                    </span>
+                    <span className="font-mono text-[9px] text-zinc-400 dark:text-zinc-500">
+                      {reg.tag}
+                    </span>
                   </div>
-                  <div style={{ fontSize: 10, color: "var(--text-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {t.desc}
-                  </div>
+                  <p className="text-[11px] text-zinc-400 dark:text-zinc-500 truncate">
+                    {reg.desc}
+                  </p>
                 </div>
               </div>
-            ))}
-          </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Sidebar Footer telemetry */}
+      <div className="border-t border-zinc-200/80 p-3 bg-white/40 dark:border-zinc-800 dark:bg-zinc-900/40">
+        <div className="flex items-center justify-between text-[11px] font-mono text-zinc-500">
+          <span>Protocol: FastMCP</span>
+          <span className="text-emerald-500">Connected</span>
         </div>
       </div>
-    </div>
+    </aside>
   );
 }

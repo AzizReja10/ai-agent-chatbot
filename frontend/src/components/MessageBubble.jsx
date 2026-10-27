@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Copy, Check, Sparkles, User } from "lucide-react";
+import { cn } from "../lib/utils";
 
 export default function MessageBubble({ role, content }) {
   const isUser = role === "user";
@@ -13,147 +14,89 @@ export default function MessageBubble({ role, content }) {
     if (!content) return;
     await navigator.clipboard.writeText(content);
     setCopied(true);
-    setTimeout(() => setCopied(false), 1800);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 15, scale: 0.98 }}
+      initial={{ opacity: 0, y: 12, scale: 0.99 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-      style={{
-        display: "flex",
-        flexDirection: isUser ? "row-reverse" : "row",
-        alignItems: "flex-start",
-        gap: 12,
-        maxWidth: isUser ? "75%" : "85%",
-        alignSelf: isUser ? "flex-end" : "flex-start",
-        marginBottom: 18,
-        width: "100%",
-      }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      className={cn(
+        "flex w-full gap-3.5 mb-5",
+        isUser ? "flex-row-reverse self-end justify-start" : "flex-row self-start"
+      )}
     >
-      {/* Role Avatar */}
+      {/* Avatar Icon */}
       <div
-        style={{
-          width: 34,
-          height: 34,
-          borderRadius: 12,
-          flexShrink: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: isUser
-            ? "rgba(255, 255, 255, 0.08)"
-            : "linear-gradient(135deg, #6366F1 0%, #A855F7 100%)",
-          border: isUser
-            ? "1px solid rgba(255, 255, 255, 0.12)"
-            : "1px solid rgba(168, 85, 247, 0.4)",
-          boxShadow: isUser ? "none" : "0 0 16px rgba(99, 102, 241, 0.35)",
-          marginTop: 2,
-        }}
-      >
-        {isUser ? (
-          <User size={16} color="#CBD5E1" />
-        ) : (
-          <Sparkles size={16} color="#FFFFFF" />
+        className={cn(
+          "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border transition-all mt-0.5",
+          isUser
+            ? "border-zinc-200 bg-zinc-100 text-zinc-700 dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-300"
+            : "border-indigo-200/70 bg-gradient-to-br from-indigo-500 to-indigo-600 text-white shadow-sm shadow-indigo-500/20 dark:border-indigo-400/30"
         )}
+      >
+        {isUser ? <User className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
       </div>
 
-      {/* Message Content Bubble */}
+      {/* Bubble Container */}
       <div
-        style={{
-          position: "relative",
-          display: "flex",
-          flexDirection: "column",
-          maxWidth: "calc(100% - 46px)",
-        }}
+        className={cn(
+          "flex flex-col max-w-[85%] md:max-w-[78%]",
+          isUser ? "items-end" : "items-start"
+        )}
       >
-        {/* Name / Role Label */}
-        <div
-          style={{
-            fontSize: 11,
-            fontWeight: 600,
-            fontFamily: "var(--font-mono)",
-            color: "var(--text-muted)",
-            marginBottom: 5,
-            textAlign: isUser ? "right" : "left",
-          }}
-        >
-          {isUser ? "You" : "Nova AI"}
+        {/* Role & Time metadata */}
+        <div className="flex items-center gap-2 mb-1.5 px-1">
+          <span className="font-mono text-[11px] font-semibold text-zinc-400 dark:text-zinc-500 tracking-tight">
+            {isUser ? "You" : "Nova Assistant"}
+          </span>
         </div>
 
+        {/* Bubble Box */}
         <div
-          style={{
-            position: "relative",
-            background: isUser
-              ? "var(--gradient-brand)"
-              : "var(--bg-glass)",
-            backdropFilter: isUser ? "none" : "blur(14px)",
-            WebkitBackdropFilter: isUser ? "none" : "blur(14px)",
-            border: isUser
-              ? "none"
-              : "1px solid var(--border-glass)",
-            color: isUser ? "#FFFFFF" : "var(--text-primary)",
-            padding: "12px 18px",
-            borderRadius: isUser ? "18px 4px 18px 18px" : "4px 18px 18px 18px",
-            boxShadow: isUser
-              ? "0 4px 18px rgba(99, 102, 241, 0.3)"
-              : "var(--shadow-sm)",
-            wordBreak: "break-word",
-          }}
+          className={cn(
+            "relative rounded-2xl px-4 py-3 text-sm transition-all duration-200",
+            isUser
+              ? "bg-zinc-900 text-white dark:bg-indigo-600 dark:text-white rounded-tr-xs shadow-sm"
+              : "border border-zinc-200/80 bg-white/90 text-zinc-900 shadow-sm backdrop-blur-md dark:border-zinc-800/80 dark:bg-zinc-900/80 dark:text-zinc-100 rounded-tl-xs"
+          )}
         >
           {isUser ? (
-            <div style={{ fontSize: 14.5, lineHeight: 1.5, whiteSpace: "pre-wrap" }}>
+            <div className="whitespace-pre-wrap leading-relaxed select-text font-sans">
               {content}
             </div>
           ) : (
-            <div className="markdown-body">
+            <div className="markdown-body select-text">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
             </div>
           )}
 
-          {/* Action Bar (Copy Button) for Assistant */}
+          {/* Action Footer for Assistant messages */}
           {!isUser && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginTop: 8,
-                paddingTop: 6,
-                borderTop: "1px solid var(--border-subtle)",
-              }}
-            >
-              <motion.button
+            <div className="mt-2.5 flex items-center justify-between border-t border-zinc-100 pt-2 text-[11px] text-zinc-400 dark:border-zinc-800/80 dark:text-zinc-500">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-zinc-400 dark:text-zinc-600">
+                AI Verified Execution
+              </span>
+
+              <button
+                type="button"
                 onClick={handleCopy}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.92 }}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 5,
-                  background: "var(--bg-surface)",
-                  border: "1px solid var(--border-subtle)",
-                  borderRadius: 6,
-                  padding: "4px 8px",
-                  fontSize: 11.5,
-                  fontFamily: "var(--font-mono)",
-                  color: copied ? "var(--accent-success)" : "var(--text-muted)",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                }}
+                className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 cursor-pointer"
+                title="Copy message"
               >
                 {copied ? (
                   <>
-                    <Check size={12} color="var(--accent-success)" />
-                    <span>Copied</span>
+                    <Check className="h-3 w-3 text-emerald-500" />
+                    <span className="font-mono text-emerald-500 font-medium">Copied</span>
                   </>
                 ) : (
                   <>
-                    <Copy size={12} />
-                    <span>Copy</span>
+                    <Copy className="h-3 w-3" />
+                    <span className="font-mono">Copy</span>
                   </>
                 )}
-              </motion.button>
+              </button>
             </div>
           )}
         </div>
