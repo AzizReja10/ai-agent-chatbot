@@ -142,55 +142,31 @@ export default function ChatWindow({
             }}
           >
             {STARTER_PROMPTS.map((starter, i) => (
-              <motion.div
+              <button
                 key={i}
-                whileHover={{ scale: 1.02, translateY: -2, borderColor: "rgba(99, 102, 241, 0.4)" }}
-                whileTap={{ scale: 0.98 }}
+                type="button"
+                className="button-option starter-prompt-option"
+                role="button"
                 onClick={() => onSelectPrompt && onSelectPrompt(starter.prompt)}
-                style={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  justifyContent: "space-between",
-                  gap: 12,
-                  padding: "16px 18px",
-                  borderRadius: 14,
-                  background: "var(--bg-glass)",
-                  border: "1px solid var(--border-subtle)",
-                  backdropFilter: "blur(10px)",
-                  boxShadow: "var(--shadow-sm)",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                }}
               >
                 <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
-                  <div
-                    style={{
-                      padding: 8,
-                      borderRadius: 10,
-                      background: "var(--bg-surface)",
-                      border: "1px solid var(--border-subtle)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginTop: 2,
-                    }}
-                  >
+                  <div className="starter-icon-wrap">
                     {starter.icon}
                   </div>
                   <div>
-                    <div style={{ fontSize: 13.5, fontWeight: 600, color: "var(--text-primary)", marginBottom: 4 }}>
+                    <div className="starter-title">
                       {starter.title}
                     </div>
-                    <div style={{ fontSize: 12, color: "var(--text-muted)", lineHeight: 1.4 }}>
+                    <div className="starter-desc">
                       {starter.prompt}
                     </div>
                   </div>
                 </div>
 
-                <div style={{ color: "var(--text-muted)", marginTop: 4 }}>
+                <div className="starter-arrow">
                   <ArrowUpRight size={15} />
                 </div>
-              </motion.div>
+              </button>
             ))}
           </div>
         </motion.div>

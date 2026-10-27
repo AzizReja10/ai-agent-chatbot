@@ -54,6 +54,18 @@
   --tag-border: rgba(79, 70, 229, 0.35);
   --tag-text: #3730A3;
   --tag-icon: #4F46E5;
+
+  /* 3D Tactile Option Button Tokens - Light */
+  --btn-option-bg: #FCFCFD;
+  --btn-option-color: #36395A;
+  --btn-option-muted: #64748B;
+  --btn-option-inset: #D6D6E7;
+  --btn-option-shadow: rgba(45, 35, 66, 0.2) 0 2px 4px, rgba(45, 35, 66, 0.15) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+  --btn-option-shadow-hover: rgba(45, 35, 66, 0.3) 0 4px 8px, rgba(45, 35, 66, 0.2) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+  --btn-option-shadow-active: #D6D6E7 0 3px 7px inset;
+  --btn-option-shadow-focus: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+  --btn-option-icon-bg: rgba(45, 35, 66, 0.05);
+  --btn-option-icon-border: rgba(45, 35, 66, 0.09);
 }
 
 /* Night Theme (Dark) */
@@ -109,6 +121,18 @@
   --tag-border: rgba(99, 102, 241, 0.4);
   --tag-text: #E0E7FF;
   --tag-icon: #818CF8;
+
+  /* 3D Tactile Option Button Tokens - Dark */
+  --btn-option-bg: #141926;
+  --btn-option-color: #F1F5F9;
+  --btn-option-muted: #94A3B8;
+  --btn-option-inset: #263045;
+  --btn-option-shadow: rgba(0, 0, 0, 0.45) 0 2px 4px, rgba(0, 0, 0, 0.3) 0 7px 13px -3px, #263045 0 -3px 0 inset;
+  --btn-option-shadow-hover: rgba(0, 0, 0, 0.65) 0 4px 8px, rgba(0, 0, 0, 0.45) 0 7px 13px -3px, #263045 0 -3px 0 inset;
+  --btn-option-shadow-active: #263045 0 3px 7px inset;
+  --btn-option-shadow-focus: #263045 0 0 0 1.5px inset, rgba(99, 102, 241, 0.45) 0 2px 4px, rgba(0, 0, 0, 0.5) 0 7px 13px -3px, #263045 0 -3px 0 inset;
+  --btn-option-icon-bg: rgba(255, 255, 255, 0.06);
+  --btn-option-icon-border: rgba(255, 255, 255, 0.1);
 }
 
 * {
@@ -679,4 +703,136 @@ html, body {
     max-width: 240px;
     padding: 12px;
   }
+}
+
+/* ==========================================================================
+   3D Tactile Option Button Component (Button Option)
+   ========================================================================== */
+.button-name,
+.button-option {
+  align-items: center;
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--btn-option-bg);
+  border-radius: 6px;
+  border-width: 0;
+  box-shadow: var(--btn-option-shadow);
+  box-sizing: border-box;
+  color: var(--btn-option-color);
+  cursor: pointer;
+  display: inline-flex;
+  height: 48px;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding-left: 16px;
+  padding-right: 16px;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.15s ease,
+    background-color 0.25s ease,
+    color 0.25s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow, transform;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.button-name:focus,
+.button-name:focus-visible,
+.button-option:focus,
+.button-option:focus-visible {
+  outline: none;
+  box-shadow: var(--btn-option-shadow-focus);
+}
+
+.button-name:hover,
+.button-option:hover {
+  box-shadow: var(--btn-option-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.button-name:active,
+.button-option:active {
+  box-shadow: var(--btn-option-shadow-active);
+  transform: translateY(2px);
+}
+
+/* Prompt Option Pills Variant (Landing Page) */
+.prompt-pill-option {
+  height: 42px;
+  padding: 0 16px;
+  font-size: 13.5px;
+  border-radius: 8px;
+  gap: 8px;
+  font-weight: 500;
+  border: 1px solid var(--border-subtle);
+}
+
+/* Starter Prompt Option Cards Variant (Chat Window) */
+.starter-prompt-option {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  text-align: left;
+  white-space: normal;
+  height: auto;
+  min-height: 80px;
+  width: 100%;
+  border: 1px solid var(--border-subtle);
+  font-family: inherit;
+}
+
+.starter-prompt-option .starter-icon-wrap {
+  padding: 8px;
+  border-radius: 10px;
+  background: var(--btn-option-icon-bg);
+  border: 1px solid var(--btn-option-icon-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.starter-prompt-option:hover .starter-icon-wrap {
+  transform: scale(1.08);
+}
+
+.starter-prompt-option .starter-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--btn-option-color);
+  margin-bottom: 4px;
+  font-family: var(--font-heading);
+}
+
+.starter-prompt-option .starter-desc {
+  font-size: 12px;
+  color: var(--btn-option-muted);
+  line-height: 1.4;
+}
+
+.starter-prompt-option .starter-arrow {
+  color: var(--btn-option-muted);
+  margin-top: 4px;
+  transition: color 0.15s ease, transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.starter-prompt-option:hover .starter-arrow {
+  color: var(--accent-primary);
+  transform: translate(2px, -2px);
 }

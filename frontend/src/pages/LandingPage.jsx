@@ -360,24 +360,15 @@ export default function LandingPage({ onGetStarted }) {
             "✉️ Check unread emails & summarize",
             "🌤️ What's the weather in San Francisco?",
           ].map((promptText, i) => (
-            <motion.div
+            <button
               key={i}
-              whileHover={{ scale: 1.03, borderColor: "rgba(99, 102, 241, 0.5)" }}
+              type="button"
+              className="button-option prompt-pill-option"
+              role="button"
               onClick={onGetStarted}
-              style={{
-                background: "var(--bg-glass)",
-                border: "1px solid var(--border-subtle)",
-                borderRadius: 24,
-                padding: "8px 16px",
-                fontSize: 13,
-                color: "var(--text-secondary)",
-                cursor: "pointer",
-                backdropFilter: "blur(10px)",
-                transition: "all 0.2s ease",
-              }}
             >
               {promptText}
-            </motion.div>
+            </button>
           ))}
         </motion.div>
       </div>
