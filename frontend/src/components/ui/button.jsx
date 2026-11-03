@@ -1,36 +1,35 @@
-// src/components/ui/button.jsx
 import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import { cn } from "../../lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-medium transition-all duration-200 outline-none select-none disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-950 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 dark:focus-visible:ring-zinc-300",
   {
     variants: {
       variant: {
         default:
-          "bg-zinc-900 text-white hover:bg-zinc-800 shadow-sm dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white",
-        primary:
-          "bg-indigo-600 text-white hover:bg-indigo-500 shadow-sm shadow-indigo-500/20 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:shadow-indigo-500/30",
+          "bg-zinc-900 text-zinc-50 shadow-sm hover:bg-zinc-900/90 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-50/90",
         destructive:
-          "bg-red-600 text-white hover:bg-red-500 shadow-sm dark:bg-red-600/90 dark:hover:bg-red-500",
+          "bg-red-500 text-zinc-50 shadow-xs hover:bg-red-500/90 dark:bg-red-900 dark:text-zinc-50 dark:hover:bg-red-900/90",
         outline:
-          "border border-zinc-200 bg-white/50 hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900/50 dark:hover:bg-zinc-800 dark:hover:text-zinc-50 backdrop-blur-sm",
+          "border border-zinc-200 bg-white shadow-xs hover:bg-zinc-100 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-800 dark:hover:text-zinc-50",
         secondary:
-          "bg-zinc-100 text-zinc-900 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700",
-        ghost:
-          "hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800/80 dark:hover:text-zinc-50",
-        link:
-          "text-indigo-600 underline-offset-4 hover:underline dark:text-indigo-400 p-0 h-auto",
+          "bg-zinc-100 text-zinc-900 shadow-xs hover:bg-zinc-100/80 dark:bg-zinc-800 dark:text-zinc-50 dark:hover:bg-zinc-800/80",
+        ghost: "hover:bg-zinc-100 hover:text-zinc-900 dark:hover:bg-zinc-800 dark:hover:text-zinc-50",
+        link: "text-zinc-900 underline-offset-4 hover:underline dark:text-zinc-50",
+        // Backward-compat aliases
+        primary:
+          "bg-zinc-900 text-zinc-50 shadow-sm hover:bg-zinc-900/90 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-50/90",
         glass:
-          "border border-white/20 bg-white/60 text-zinc-900 shadow-sm backdrop-blur-md hover:bg-white/80 dark:border-white/10 dark:bg-zinc-900/60 dark:text-zinc-100 dark:hover:bg-zinc-800/70",
+          "border border-zinc-200 bg-white/80 backdrop-blur-sm text-zinc-900 shadow-xs hover:bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900/80 dark:text-zinc-50 dark:hover:bg-zinc-800",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-8 rounded-lg px-3 text-xs",
-        lg: "h-12 rounded-xl px-6 text-base font-semibold",
-        icon: "h-9 w-9 p-0",
-        "icon-sm": "h-7 w-7 p-0 rounded-lg",
+        default: "h-9 px-4 py-2",
+        sm: "h-8 rounded-md px-3 text-xs",
+        lg: "h-10 rounded-md px-8 text-sm",
+        icon: "h-9 w-9",
+        "icon-sm": "h-7 w-7 rounded-md",
       },
     },
     defaultVariants: {
@@ -40,16 +39,18 @@ const buttonVariants = cva(
   }
 );
 
-const Button = React.forwardRef(({ className, variant, size, asChild = false, ...props }, ref) => {
-  return (
-    <button
-      className={cn(buttonVariants({ variant, size, className }))}
-      ref={ref}
-      {...props}
-    />
-  );
-});
+const Button = React.forwardRef(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button";
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        {...props}
+      />
+    );
+  }
+);
 Button.displayName = "Button";
 
 export { Button, buttonVariants };
-

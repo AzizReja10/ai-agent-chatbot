@@ -1,125 +1,71 @@
 // src/pages/LandingPage.jsx
-import { motion } from "framer-motion";
-import LogoMarquee from "../components/landing/LogoMarquee";
-import { FaGithub, FaSlack } from "react-icons/fa";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import { Card, CardContent } from "../components/ui/card";
+import { Separator } from "../components/ui/separator";
 import { 
-  Mail, 
-  Calendar, 
-  Sparkles, 
   ArrowRight, 
   ShieldCheck, 
   Cpu, 
   Terminal, 
-  CloudSun, 
-  Search, 
-  FileText, 
-  CheckCircle2, 
   Lock, 
-  ArrowUpRight, 
-  ChevronRight,
-  GitBranch 
+  CheckCircle2, 
+  Mail, 
+  Calendar, 
+  Sparkles,
+  Command,
+  ArrowUpRight,
+  ChevronRight
 } from "lucide-react";
+import { FaGithub, FaSlack } from "react-icons/fa";
 
-import { Button } from "../components/ui/button";
-import { Badge } from "../components/ui/badge";
-import { DotPattern } from "../components/magicui/dot-pattern";
-import { BorderBeam } from "../components/magicui/border-beam";
-import { ShimmerButton } from "../components/magicui/shimmer-button";
-import { AnimatedGradientText } from "../components/magicui/animated-gradient-text";
-import { BentoGrid, BentoCard } from "../components/magicui/bento-grid";
-import { UiverseOptionButton } from "../components/uiverse/uiverse-button";
-import { StatusPill } from "../components/uiverse/status-pill";
+const INTEGRATIONS = [
+  { name: "Google Mail", icon: Mail, tag: "Gmail API", desc: "Triage inbox, search threads, draft responses" },
+  { name: "GitHub", icon: FaGithub, tag: "Git API", desc: "List issues, check PRs, review code changes" },
+  { name: "Slack", icon: FaSlack, tag: "Bot Token", desc: "Team notices, alerts, human notifications" },
+  { name: "Google Calendar", icon: Calendar, tag: "Calendar API", desc: "Inspect schedule, coordinate meetings" },
+  { name: "FastMCP Protocol", icon: Terminal, tag: "MCP Standard", desc: "Plug any local Python or system CLI tools" },
+  { name: "Safe Guardrails", icon: ShieldCheck, tag: "Approval Loop", desc: "Review and approve sensitive actions before execution" },
+];
 
-const marqueeIntegrations = [
-  { 
-    name: "Google Mail", 
-    username: "@gmail", 
-    body: "Triage inbox, search thread histories, and safely draft email responses.", 
-    icon: <Mail size={16} />, 
-    color: "#EA4335" 
-  },
-  { 
-    name: "GitHub Issues & PRs", 
-    username: "@github", 
-    body: "Review diffs, query repository issues, inspect commits, and track releases.", 
-    icon: <FaGithub size={16} />, 
-    color: "#8B5CF6" 
-  },
-  { 
-    name: "Slack Channels", 
-    username: "@slack", 
-    body: "Broadcast live team notices, dispatch alerts, and confirm message drafts.", 
-    icon: <FaSlack size={16} />, 
-    color: "#EC4899" 
-  },
-  { 
-    name: "Google Calendar", 
-    username: "@calendar", 
-    body: "Inspect availability, avoid conflicting invites, and schedule calendar meetings.", 
-    icon: <Calendar size={16} />, 
-    color: "#06B6D4" 
-  },
-  { 
-    name: "Google Docs", 
-    username: "@docs", 
-    body: "Read unstructured briefs, draft specs, and organize documentation cleanly.", 
-    icon: <FileText size={16} />, 
-    color: "#10B981" 
-  },
-  { 
-    name: "OpenMeteo Forecast", 
-    username: "@weather", 
-    body: "Global real-time meteorological forecasts, wind velocity, and hourly alerts.", 
-    icon: <CloudSun size={16} />, 
-    color: "#F59E0B" 
-  },
-  { 
-    name: "FastMCP Engine", 
-    username: "@fastmcp", 
-    body: "Standardized Model Context Protocol exposing local python CLI tools to agents.", 
-    icon: <Terminal size={16} />, 
-    color: "#6366F1" 
-  },
-  { 
-    name: "DuckDuckGo Web Search", 
-    username: "@ddg", 
-    body: "Privacy-first live web search with citations and up-to-the-minute web retrieval.", 
-    icon: <Search size={16} />, 
-    color: "#3B82F6" 
-  },
+const PROMPT_SUGGESTIONS = [
+  "What events do I have scheduled on my calendar today?",
+  "List open issues in my repository",
+  "Check my unread emails and draft a summary",
+  "Query the weather forecast for San Francisco",
 ];
 
 export default function LandingPage({ onGetStarted }) {
   return (
-    <div className="relative min-h-screen bg-white text-zinc-950 dark:bg-[#090A0F] dark:text-zinc-50 overflow-x-hidden font-sans selection:bg-indigo-500 selection:text-white">
-      {/* Background Architectural Patterns */}
-      <DotPattern className="[mask-image:radial-gradient(ellipse_at_center,white_35%,transparent_85%)] opacity-60 dark:opacity-40" />
-
-      {/* Sticky Top Navigation */}
-      <header className="sticky top-0 z-50 w-full border-b border-zinc-200/80 bg-white/80 backdrop-blur-xl dark:border-zinc-800/80 dark:bg-[#090A0F]/80">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          {/* Brand Logo */}
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white shadow-md shadow-indigo-500/25">
-              <Sparkles className="h-4 w-4" />
+    <div className="min-h-screen bg-white text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50 font-sans selection:bg-zinc-900 selection:text-white dark:selection:bg-zinc-100 dark:selection:text-zinc-950">
+      {/* Top Navbar */}
+      <header className="sticky top-0 z-50 w-full border-b border-zinc-200/80 bg-white/80 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/80">
+        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-zinc-900 text-zinc-50 dark:bg-zinc-50 dark:text-zinc-900">
+              <Command className="h-4 w-4" />
             </div>
-            <div className="flex items-center gap-2">
-              <span className="font-heading text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-                Nova
-              </span>
-              <StatusPill status="active" label="FastMCP Online" className="hidden sm:inline-flex text-[10px]" />
-            </div>
+            <span className="font-semibold text-sm tracking-tight">Nova Agent</span>
+            <Badge variant="outline" className="hidden sm:inline-flex text-[11px] font-normal text-zinc-600 dark:text-zinc-400">
+              v2.0
+            </Badge>
           </div>
 
-          {/* Right actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <Button
-              variant="default"
+              variant="outline"
               size="sm"
               onClick={onGetStarted}
-              className="cursor-pointer"
+              className="text-xs"
             >
-              <span>Launch Workspace</span>
+              Sign In
+            </Button>
+            <Button
+              size="sm"
+              onClick={onGetStarted}
+              className="text-xs gap-1.5"
+            >
+              <span>Get Started</span>
               <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           </div>
@@ -127,323 +73,310 @@ export default function LandingPage({ onGetStarted }) {
       </header>
 
       {/* Hero Section */}
-      <section className="relative z-10 mx-auto max-w-5xl px-4 pt-16 pb-12 sm:px-6 md:pt-24 text-center">
-        {/* Magic UI Animated Gradient Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="mb-6 inline-flex"
-        >
-          <AnimatedGradientText>
-            <Sparkles className="h-3.5 w-3.5 text-indigo-500 mr-2" />
-            <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
-              Introducing Nova Autonomous Agent 2.0
-            </span>
-            <ChevronRight className="h-3.5 w-3.5 text-zinc-400 ml-1" />
-          </AnimatedGradientText>
-        </motion.div>
+      <section className="mx-auto max-w-5xl px-4 pt-16 pb-14 sm:px-6 sm:pt-24 sm:pb-20 text-center">
+        {/* Release Pill */}
+        <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 mb-6 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors">
+          <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <span>FastMCP & Multi-Tool Autonomous Runtime</span>
+          <ChevronRight className="h-3 w-3 text-zinc-400" />
+        </div>
 
-        {/* Hero Headline */}
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="font-heading text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-zinc-950 dark:text-white leading-[1.08] mb-6"
-        >
+        {/* Clean, Editorial Headline */}
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50 max-w-3xl mx-auto leading-[1.15]">
           Stop chatting with AI.
           <br />
-          <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">
-            Start executing with it.
-          </span>
-        </motion.h1>
+          <span className="text-zinc-500 dark:text-zinc-400 font-medium">Start executing with it.</span>
+        </h1>
 
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mx-auto max-w-2xl text-base sm:text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed mb-10"
-        >
-          Connect your Google Workspace, GitHub, Slack, and live web tools. Nova reasons across multi-step workflows, streams telemetry in real-time, and safeguards actions with human confirmation.
-        </motion.p>
+        <p className="mx-auto mt-6 max-w-xl text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          Connect your Google Workspace, GitHub, Slack, and live web tools. Nova executes multi-step workflows with real-time logs and human-in-the-loop safeguards.
+        </p>
 
-        {/* Primary CTA Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="flex flex-wrap items-center justify-center gap-4 mb-10"
-        >
-          <ShimmerButton
+        {/* Action CTAs */}
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <Button
+            size="lg"
             onClick={onGetStarted}
-            borderRadius="14px"
-            className="px-8 py-3.5 text-sm font-semibold shadow-lg"
+            className="gap-2 text-sm shadow-xs"
           >
-            <div className="flex items-center gap-2">
-              <span>Launch Autonomous Workspace</span>
-              <ArrowRight className="h-4 w-4" />
-            </div>
-          </ShimmerButton>
-
+            <span>Launch Workspace</span>
+            <ArrowRight className="h-4 w-4" />
+          </Button>
           <Button
             variant="outline"
             size="lg"
             onClick={onGetStarted}
-            className="rounded-xl cursor-pointer"
+            className="text-sm gap-1.5"
           >
-            <span>Live Agent Demo</span>
-            <ArrowUpRight className="h-4 w-4 text-zinc-400" />
+            <span>Live Preview</span>
+            <ArrowUpRight className="h-3.5 w-3.5 text-zinc-400" />
           </Button>
-        </motion.div>
+        </div>
 
-        {/* UIverse Tactile Prompt Options */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex flex-wrap items-center justify-center gap-2.5 max-w-3xl mx-auto"
-        >
-          {[
-            { text: "What events do I have scheduled today?", icon: Calendar },
-            { text: "List open issues in my repository", icon: GitBranch },
-            { text: "Check unread emails & summarize", icon: Mail },
-            { text: "What's the weather in San Francisco?", icon: CloudSun },
-          ].map((item, i) => (
-            <UiverseOptionButton
-              key={i}
-              icon={item.icon}
+        {/* Quick Example Prompts */}
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-2 max-w-2xl mx-auto">
+          {PROMPT_SUGGESTIONS.map((prompt, idx) => (
+            <button
+              key={idx}
+              type="button"
               onClick={onGetStarted}
+              className="inline-flex items-center gap-1.5 rounded-md border border-zinc-200 bg-white px-2.5 py-1.5 text-xs text-zinc-600 transition-colors hover:border-zinc-300 hover:bg-zinc-50 hover:text-zinc-900 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-400 dark:hover:border-zinc-700 dark:hover:bg-zinc-850 dark:hover:text-zinc-100 cursor-pointer"
             >
-              {item.text}
-            </UiverseOptionButton>
+              <Sparkles className="h-3 w-3 text-zinc-400" />
+              <span>{prompt}</span>
+            </button>
           ))}
-        </motion.div>
+        </div>
       </section>
 
-      {/* Interactive Hero Showcase / Mission Control Preview with BorderBeam */}
-      <section className="relative z-10 mx-auto max-w-5xl px-4 pb-20 sm:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.98 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="relative overflow-hidden rounded-2xl border border-zinc-200/90 bg-white/90 shadow-2xl backdrop-blur-2xl dark:border-zinc-800 dark:bg-[#10131E]/90 dark:shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
-        >
-          <BorderBeam size={260} duration={14} colorFrom="#6366F1" colorTo="#06B6D4" />
-
-          {/* Window Frame Header */}
-          <div className="flex items-center justify-between border-b border-zinc-200/80 px-4 py-3 bg-zinc-50/80 dark:border-zinc-800 dark:bg-zinc-900/60">
-            <div className="flex items-center gap-2">
-              <span className="h-3 w-3 rounded-full bg-red-400/80" />
-              <span className="h-3 w-3 rounded-full bg-amber-400/80" />
-              <span className="h-3 w-3 rounded-full bg-emerald-400/80" />
-              <span className="ml-2 font-mono text-xs text-zinc-400 dark:text-zinc-500">
-                nova-workspace — agent-session::active
+      {/* Clean UI Interactive Mockup / Telemetry Card */}
+      <section className="mx-auto max-w-4xl px-4 pb-20 sm:px-6">
+        <div className="rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900/90 overflow-hidden">
+          {/* Mockup Window Titlebar */}
+          <div className="flex items-center justify-between border-b border-zinc-200 bg-zinc-50/80 px-4 py-2.5 text-xs text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/60">
+            <div className="flex items-center gap-2 font-mono">
+              <span className="flex gap-1.5">
+                <span className="h-2.5 w-2.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+                <span className="h-2.5 w-2.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+                <span className="h-2.5 w-2.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
               </span>
+              <span className="ml-2 text-zinc-400">nova-session // execution-engine</span>
             </div>
-
-            <div className="flex items-center gap-2">
-              <StatusPill status="active" label="Telemetry Live" />
+            <div className="flex items-center gap-1.5 font-mono text-[11px] text-emerald-600 dark:text-emerald-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              <span>Telemetry Live</span>
             </div>
           </div>
 
-          {/* Simulated Workspace Flow */}
-          <div className="p-6 md:p-8 space-y-4 text-left">
-            {/* User message */}
-            <div className="flex items-start justify-end gap-3">
-              <div className="rounded-2xl rounded-tr-xs bg-zinc-900 dark:bg-indigo-600 text-white px-4 py-2.5 text-xs max-w-md shadow-sm">
+          {/* Mockup Content */}
+          <div className="p-6 space-y-4 font-sans text-xs">
+            {/* User Message */}
+            <div className="flex justify-end">
+              <div className="rounded-lg bg-zinc-900 text-zinc-50 px-3.5 py-2 max-w-md dark:bg-zinc-100 dark:text-zinc-900 font-medium">
                 Check my unread emails, pull high-priority tasks, and prepare a Slack update for the engineering channel.
               </div>
             </div>
 
-            {/* Simulated Tool execution stream */}
-            <div className="flex items-start gap-3">
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-xs">
-                <Sparkles className="h-3.5 w-3.5" />
+            {/* Agent Tool Execution Stream */}
+            <div className="rounded-lg border border-zinc-200 bg-zinc-50/50 p-4 dark:border-zinc-800 dark:bg-zinc-950/50 space-y-2">
+              <div className="flex items-center justify-between border-b border-zinc-200/80 pb-2 dark:border-zinc-800 font-mono text-[11px] text-zinc-500">
+                <span className="font-semibold text-zinc-700 dark:text-zinc-300">Tool Execution Plan</span>
+                <span>Latency: 380ms</span>
               </div>
-              <div className="flex-1 space-y-3 max-w-xl">
-                <div className="rounded-2xl rounded-tl-xs border border-zinc-200/80 bg-white p-4 text-xs dark:border-zinc-800 dark:bg-zinc-900/90 shadow-sm space-y-2">
-                  <div className="flex items-center justify-between font-mono text-[11px] text-zinc-400 border-b border-zinc-100 dark:border-zinc-800 pb-2">
-                    <span className="text-indigo-500 font-semibold">Chaining 3 MCP Tools</span>
-                    <span>Elapsed: 420ms</span>
-                  </div>
-
-                  <div className="space-y-1.5 font-mono text-[11px]">
-                    <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                      <span>gmail.list_recent_emails() → Found 2 urgent client briefs</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                      <span>github.list_issues() → 1 PR awaiting approval</span>
-                    </div>
-                  </div>
+              <div className="space-y-1.5 font-mono text-[11px]">
+                <div className="flex items-center gap-2 text-zinc-700 dark:text-zinc-300">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                  <span>gmail.list_recent_emails() → 2 urgent client briefs found</span>
                 </div>
-
-                {/* Simulated Human-in-the-Loop Safe Card */}
-                <div className="rounded-xl border border-amber-300/80 bg-amber-50/50 p-3.5 dark:border-amber-500/30 dark:bg-amber-950/20 text-xs flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <ShieldCheck className="h-4 w-4 text-amber-500" />
-                    <div>
-                      <div className="font-semibold text-zinc-900 dark:text-zinc-100 text-[11px]">
-                        Draft Slack Message awaiting your approval
-                      </div>
-                      <div className="text-[10px] text-zinc-500">
-                        Target: #engineering-sync • Channel Mutation
-                      </div>
-                    </div>
-                  </div>
-
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={onGetStarted}
-                    className="h-7 text-[11px] bg-emerald-600 hover:bg-emerald-500 cursor-pointer"
-                  >
-                    Authorize & Run
-                  </Button>
+                <div className="flex items-center gap-2 text-zinc-700 dark:text-zinc-300">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                  <span>github.list_issues() → 1 PR awaiting approval</span>
                 </div>
               </div>
             </div>
+
+            {/* Human Confirmation Guardrail */}
+            <div className="rounded-lg border border-zinc-200 bg-white p-3.5 dark:border-zinc-800 dark:bg-zinc-900 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-start sm:items-center gap-2.5">
+                <ShieldCheck className="h-4 w-4 text-zinc-700 dark:text-zinc-300 shrink-0 mt-0.5 sm:mt-0" />
+                <div>
+                  <div className="font-medium text-zinc-900 dark:text-zinc-100">
+                    Draft Slack message awaiting your confirmation
+                  </div>
+                  <div className="text-[11px] text-zinc-500">
+                    Target: #engineering-sync • Human-in-the-loop validation
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 self-end sm:self-auto">
+                <Button
+                  size="sm"
+                  onClick={onGetStarted}
+                  className="h-8 text-xs cursor-pointer"
+                >
+                  Authorize & Send
+                </Button>
+              </div>
+            </div>
           </div>
-        </motion.div>
-      </section>
-
-      {/* Ecosystem Infinite Marquee */}
-      <section className="relative z-10 py-12 border-y border-zinc-200/80 bg-zinc-50/50 dark:border-zinc-800/80 dark:bg-zinc-950/50">
-        <div className="mx-auto max-w-6xl px-4 text-center mb-6">
-          <span className="font-mono text-xs uppercase tracking-widest text-zinc-400 dark:text-zinc-500 font-semibold">
-            Universal Tool Interoperability
-          </span>
-          <h2 className="font-heading text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 mt-1">
-            Plugs directly into your daily workflow stack
-          </h2>
         </div>
-
-        <LogoMarquee items={marqueeIntegrations} />
       </section>
 
-      {/* Magic UI BentoGrid Section */}
-      <section className="relative z-10 mx-auto max-w-6xl px-4 py-24 sm:px-6">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <Badge variant="indigo" className="mb-3">
+      <Separator />
+
+      {/* Grid Features */}
+      <section className="mx-auto max-w-5xl px-4 py-20 sm:px-6">
+        <div className="mb-12 text-center max-w-xl mx-auto">
+          <Badge variant="outline" className="mb-3">
             Core Architecture
           </Badge>
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 mb-3">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50">
             Engineered for high-trust agentic autonomy
           </h2>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            Unlike simple prompt wrappers, Nova executes as an autonomous runtime with multi-step reasoning loops and hardware-level safety checks.
+          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+            A production-ready stack designed around safety boundaries, verified tool execution, and clear observability.
           </p>
         </div>
 
-        <BentoGrid>
-          <BentoCard
-            name="Autonomous Tool Orchestration"
-            className="md:col-span-2"
-            Icon={Cpu}
-            description="Nova understands intent, breaks down compound goals, and autonomously schedules sequential or parallel tool calls via FastMCP protocol."
-            badge="Reasoning Loop"
-            cta="Explore FastMCP integration"
-            background={
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-transparent" />
-            }
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Card>
+            <CardContent className="p-5 space-y-2">
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 mb-3">
+                <Cpu className="h-4 w-4" />
+              </div>
+              <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">
+                Autonomous Tool Loops
+              </h3>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                Decomposes complex requests into deterministic steps, handling dependencies across local and remote APIs.
+              </p>
+            </CardContent>
+          </Card>
 
-          <BentoCard
-            name="Human-in-the-Loop Safe"
-            className="md:col-span-1"
-            Icon={ShieldCheck}
-            description="Sensitive operations like sending emails or pushing commits require your explicit one-click confirmation card before firing."
-            badge="Zero Accidental Mutations"
-            cta="View Guardrail Specs"
-            background={
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-transparent to-transparent" />
-            }
-          />
+          <Card>
+            <CardContent className="p-5 space-y-2">
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 mb-3">
+                <ShieldCheck className="h-4 w-4" />
+              </div>
+              <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">
+                Human-in-the-Loop Safe
+              </h3>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                Irreversible actions like sending emails or making edits require explicit approval cards before firing.
+              </p>
+            </CardContent>
+          </Card>
 
-          <BentoCard
-            name="Real-Time Telemetry & Logs"
-            className="md:col-span-1"
-            Icon={Terminal}
-            description="Watch every tool invocation with live latency metrics, argument diffs, and token-by-token streaming response."
-            badge="Mission Control"
-            cta="Inspect Live Logs"
-            background={
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-transparent" />
-            }
-          />
+          <Card>
+            <CardContent className="p-5 space-y-2">
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 mb-3">
+                <Terminal className="h-4 w-4" />
+              </div>
+              <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">
+                Real-Time Telemetry
+              </h3>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                Live inspection of arguments, latency, and status for every tool call directly in the mission sidebar.
+              </p>
+            </CardContent>
+          </Card>
 
-          <BentoCard
-            name="OAuth 2.0 Security Boundary"
-            className="md:col-span-2"
-            Icon={Lock}
-            description="Seamless Google Workspace and GitHub OAuth authentication with granular per-session tokens and end-to-end token encryption."
-            badge="Enterprise Ready"
-            cta="Review Security Architecture"
-            background={
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-transparent" />
-            }
-          />
-        </BentoGrid>
+          <Card>
+            <CardContent className="p-5 space-y-2">
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 mb-3">
+                <Lock className="h-4 w-4" />
+              </div>
+              <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">
+                OAuth 2.0 Security
+              </h3>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                Scoped authentication tokens stored securely, avoiding blanket system access and credential leaks.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-5 space-y-2">
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 mb-3">
+                <Command className="h-4 w-4" />
+              </div>
+              <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">
+                FastMCP Standard
+              </h3>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                Compatible with Model Context Protocol standards. Expose any local Python function as a tool.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-5 space-y-2">
+              <div className="flex h-9 w-9 items-center justify-center rounded-md bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 mb-3">
+                <Sparkles className="h-4 w-4" />
+              </div>
+              <h3 className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">
+                FastAPI & LangChain
+              </h3>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                Clean modern backend with streaming responses, clear event handling, and deterministic tool schemas.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
       </section>
 
-      {/* Community Testimonials Marquee */}
-      <section className="relative z-10 py-16 border-t border-zinc-200/80 bg-zinc-50/50 dark:border-zinc-800/80 dark:bg-zinc-950/40">
-        <div className="mx-auto max-w-4xl px-4 text-center mb-8">
-          <Badge variant="outline" className="mb-2">
-            Developer Loved
-          </Badge>
-          <h2 className="font-heading text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-            Trusted by teams automating daily workflows
+      <Separator />
+
+      {/* Clean Integrations Section */}
+      <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+        <div className="mb-10 text-center max-w-xl mx-auto">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50">
+            Supported Integrations
           </h2>
+          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+            Tools and services pre-configured and ready to invoke
+          </p>
         </div>
 
-        <LogoMarquee />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          {INTEGRATIONS.map((tool, idx) => {
+            const Icon = tool.icon;
+            return (
+              <div
+                key={idx}
+                className="flex items-start gap-3 rounded-lg border border-zinc-200 bg-white p-3.5 dark:border-zinc-800 dark:bg-zinc-900"
+              >
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200">
+                  <Icon className="h-4 w-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-1 mb-0.5">
+                    <span className="font-medium text-xs text-zinc-900 dark:text-zinc-100">{tool.name}</span>
+                    <span className="font-mono text-[10px] text-zinc-400">{tool.tag}</span>
+                  </div>
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400 line-clamp-1">{tool.desc}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </section>
 
-      {/* Bottom CTA Banner */}
-      <section className="relative z-10 mx-auto max-w-4xl px-4 py-20 text-center">
-        <div className="relative overflow-hidden rounded-3xl border border-zinc-200/90 bg-gradient-to-b from-white to-zinc-50 p-8 sm:p-12 shadow-xl dark:border-zinc-800 dark:from-zinc-900 dark:to-zinc-950">
-          <BorderBeam size={220} duration={10} colorFrom="#6366F1" colorTo="#A855F7" />
-          
-          <h2 className="font-heading text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-white mb-4">
-            Ready to upgrade your workflow?
+      {/* Bottom CTA */}
+      <section className="border-t border-zinc-200 bg-zinc-50/50 py-16 dark:border-zinc-800 dark:bg-zinc-900/40 text-center">
+        <div className="mx-auto max-w-2xl px-4">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50">
+            Ready to test autonomous execution?
           </h2>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-lg mx-auto mb-8">
-            Experience the next era of autonomous AI agents. Connect tools, test prompts, and supervise executions with complete confidence.
+          <p className="mt-2 text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
+            Open the workspace, connect your accounts, and let Nova handle multi-tool requests.
           </p>
-
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={onGetStarted}
-            className="cursor-pointer"
-          >
-            <span>Launch Nova Workspace Now</span>
-            <ArrowRight className="h-4 w-4" />
-          </Button>
+          <div className="mt-6 flex justify-center">
+            <Button
+              size="lg"
+              onClick={onGetStarted}
+              className="gap-2 text-sm shadow-xs cursor-pointer"
+            >
+              <span>Launch Workspace</span>
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-200/80 bg-white/70 py-8 text-xs text-zinc-500 dark:border-zinc-800 dark:bg-[#090A0F]/80">
-        <div className="mx-auto flex max-w-6xl flex-col sm:flex-row items-center justify-between gap-4 px-4 sm:px-6">
+      <footer className="border-t border-zinc-200 bg-white py-6 text-xs text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="mx-auto flex max-w-5xl flex-col sm:flex-row items-center justify-between gap-3 px-4 sm:px-6">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-3.5 w-3.5 text-indigo-500" />
-            <span className="font-semibold text-zinc-700 dark:text-zinc-300">Nova AI Agent Workspace</span>
-            <span>—</span>
+            <span className="font-medium text-zinc-900 dark:text-zinc-100">Nova AI Agent</span>
+            <span>•</span>
             <span>FastAPI, LangChain & FastMCP</span>
           </div>
-
-          <div className="flex items-center gap-4 text-zinc-400 dark:text-zinc-500">
+          <div className="flex items-center gap-4 text-zinc-400">
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               All Systems Operational
             </span>
-            <span>•</span>
-            <span>Apache 2.0 License</span>
           </div>
         </div>
       </footer>

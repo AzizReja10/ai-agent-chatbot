@@ -1,11 +1,9 @@
 // src/components/ChatWindow.jsx
 import { useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import TypingIndicator from "./TypingIndicator.jsx";
 import MessageBubble from "./MessageBubble.jsx";
 import ConfirmationCard from "./ConfirmationCard.jsx";
-import { Sparkles, Calendar, Mail, CloudSun, GitBranch, ArrowUpRight } from "lucide-react";
-import { AnimatedGradientText } from "./magicui/animated-gradient-text";
+import { Calendar, Mail, CloudSun, GitBranch, ArrowUpRight, Command } from "lucide-react";
 
 const STARTER_PROMPTS = [
   {
@@ -50,33 +48,22 @@ export default function ChatWindow({
 
   return (
     <div className="relative flex flex-1 flex-col overflow-y-auto px-4 py-6 md:px-8">
-      {/* Empty State / Welcome Hero */}
+      {/* Empty State / Welcome */}
       {messages.length === 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="my-auto mx-auto w-full max-w-2xl text-center py-8"
-        >
-          {/* Subtle Tag */}
-          <div className="mb-4 inline-flex">
-            <AnimatedGradientText>
-              <Sparkles className="h-3.5 w-3.5 text-indigo-500 mr-2" />
-              <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200">
-                Ready for Multi-Tool Execution
-              </span>
-            </AnimatedGradientText>
+        <div className="my-auto mx-auto w-full max-w-xl text-center py-8">
+          <div className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-zinc-900 text-zinc-50 dark:bg-zinc-50 dark:text-zinc-900 mb-3">
+            <Command className="h-4 w-4" />
           </div>
 
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 mb-3">
-            What would you like Nova to do?
+          <h2 className="text-xl md:text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50 mb-2">
+            How can Nova assist you today?
           </h2>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-lg mx-auto mb-8 leading-relaxed">
-            Nova can search web knowledge, manage calendars, query GitHub repos, triage emails, and trigger FastMCP automated tools.
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-md mx-auto mb-8 leading-relaxed">
+            Search live web sources, triage emails, coordinate meetings, and trigger local FastMCP tools directly from the prompt.
           </p>
 
-          {/* Quick Starter Pills */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl mx-auto text-left">
+          {/* Quick Starter Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-lg mx-auto text-left">
             {STARTER_PROMPTS.map((starter, i) => {
               const IconComp = starter.icon;
               return (
@@ -84,20 +71,20 @@ export default function ChatWindow({
                   key={i}
                   type="button"
                   onClick={() => onSelectPrompt && onSelectPrompt(starter.prompt)}
-                  className="group relative flex items-start gap-3 rounded-xl border border-zinc-200/80 bg-white/70 p-3.5 text-left shadow-sm transition-all duration-200 hover:border-indigo-400/80 hover:bg-zinc-50/80 hover:shadow-md dark:border-zinc-800/80 dark:bg-zinc-900/60 dark:hover:border-indigo-500/50 dark:hover:bg-zinc-850 cursor-pointer"
+                  className="group flex items-start gap-3 rounded-lg border border-zinc-200 bg-white p-3 text-left shadow-xs transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700 dark:hover:bg-zinc-850 cursor-pointer"
                 >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-700 transition-colors group-hover:bg-indigo-50 group-hover:text-indigo-600 dark:bg-zinc-800 dark:text-zinc-300 dark:group-hover:bg-indigo-950 dark:group-hover:text-indigo-400">
-                    <IconComp className="h-4 w-4" />
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                    <IconComp className="h-3.5 w-3.5" />
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                    <div className="flex items-center justify-between mb-0.5">
+                      <span className="text-xs font-medium text-zinc-900 dark:text-zinc-100">
                         {starter.title}
                       </span>
-                      <ArrowUpRight className="h-3.5 w-3.5 text-zinc-400 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-indigo-500" />
+                      <ArrowUpRight className="h-3 w-3 text-zinc-400 group-hover:text-zinc-700 dark:group-hover:text-zinc-300 transition-colors" />
                     </div>
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed font-sans">
+                    <p className="text-[11px] text-zinc-500 dark:text-zinc-400 line-clamp-1">
                       {starter.prompt}
                     </p>
                   </div>
@@ -105,29 +92,29 @@ export default function ChatWindow({
               );
             })}
           </div>
-        </motion.div>
+        </div>
       )}
 
-      {/* Messages List */}
-      <div className="mx-auto w-full max-w-4xl">
-        <AnimatePresence>
-          {messages.map((msg, i) => (
-            <MessageBubble key={i} role={msg.role} content={msg.content} />
-          ))}
-          {pendingDraft && (
-            <ConfirmationCard
-              key="pending-draft"
-              toolName={pendingDraft.toolName}
-              args={pendingDraft.args}
-              onConfirm={onConfirm}
-              onCancel={onCancel}
-            />
-          )}
-          {isWaiting && <TypingIndicator key="typing-indicator" />}
-        </AnimatePresence>
-      </div>
+      {/* Message List */}
+      <div className="mx-auto w-full max-w-3xl space-y-4">
+        {messages.map((msg, index) => (
+          <MessageBubble key={index} message={msg} />
+        ))}
 
-      <div ref={bottomRef} />
+        {/* Pending Confirmation Card */}
+        {pendingDraft && (
+          <ConfirmationCard
+            draft={pendingDraft}
+            onConfirm={onConfirm}
+            onCancel={onCancel}
+          />
+        )}
+
+        {/* Typing indicator */}
+        {isWaiting && <TypingIndicator />}
+
+        <div ref={bottomRef} />
+      </div>
     </div>
   );
 }

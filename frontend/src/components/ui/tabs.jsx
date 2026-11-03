@@ -1,92 +1,43 @@
-// src/components/ui/tabs.jsx
 import * as React from "react";
+import * as TabsPrimitive from "@radix-ui/react-tabs";
 import { cn } from "../../lib/utils";
 
-const TabsContext = React.createContext({
-  value: "",
-  onValueChange: () => {},
-});
+const Tabs = TabsPrimitive.Root;
 
-function Tabs({ value, defaultValue, onValueChange, className, children, ...props }) {
-  const [currentValue, setCurrentValue] = React.useState(value ?? defaultValue ?? "");
+const TabsList = React.forwardRef(({ className, ...props }, ref) => (
+  <TabsPrimitive.List
+    ref={ref}
+    className={cn(
+      "inline-flex h-9 items-center justify-center rounded-lg bg-zinc-100 p-1 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400",
+      className
+    )}
+    {...props}
+  />
+));
+TabsList.displayName = TabsPrimitive.List.displayName;
 
-  React.useEffect(() => {
-    if (value !== undefined) {
-      setCurrentValue(value);
-    }
-  }, [value]);
+const TabsTrigger = React.forwardRef(({ className, ...props }, ref) => (
+  <TabsPrimitive.Trigger
+    ref={ref}
+    className={cn(
+      "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-zinc-950 data-[state=active]:shadow-xs dark:ring-offset-zinc-950 dark:focus-visible:ring-zinc-300 dark:data-[state=active]:bg-zinc-950 dark:data-[state=active]:text-zinc-50",
+      className
+    )}
+    {...props}
+  />
+));
+TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
 
-  const handleValueChange = (val) => {
-    if (value === undefined) {
-      setCurrentValue(val);
-    }
-    onValueChange?.(val);
-  };
-
-  return (
-    <TabsContext.Provider value={{ value: currentValue, onValueChange: handleValueChange }}>
-      <div className={cn("w-full", className)} {...props}>
-        {children}
-      </div>
-    </TabsContext.Provider>
-  );
-}
-
-function TabsList({ className, children, ...props }) {
-  return (
-    <div
-      className={cn(
-        "inline-flex h-10 items-center justify-center rounded-xl bg-zinc-100 p-1 text-zinc-500 dark:bg-zinc-800/80 dark:text-zinc-400 border border-zinc-200/50 dark:border-zinc-700/40",
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </div>
-  );
-}
-
-function TabsTrigger({ value, className, children, ...props }) {
-  const context = React.useContext(TabsContext);
-  const isSelected = context.value === value;
-
-  return (
-    <button
-      type="button"
-      role="tab"
-      aria-selected={isSelected}
-      onClick={() => context.onValueChange(value)}
-      className={cn(
-        "inline-flex items-center justify-center whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-medium ring-offset-white transition-all focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
-        isSelected
-          ? "bg-white text-zinc-950 shadow-sm dark:bg-zinc-900 dark:text-zinc-50 font-semibold"
-          : "hover:text-zinc-900 dark:hover:text-zinc-100",
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-}
-
-function TabsContent({ value, className, children, ...props }) {
-  const context = React.useContext(TabsContext);
-  if (context.value !== value) return null;
-
-  return (
-    <div
-      role="tabpanel"
-      className={cn(
-        "mt-3 ring-offset-white focus-visible:outline-none animate-in fade-in-50 duration-200",
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </div>
-  );
-}
+const TabsContent = React.forwardRef(({ className, ...props }, ref) => (
+  <TabsPrimitive.Content
+    ref={ref}
+    className={cn(
+      "mt-2 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-950 focus-visible:ring-offset-2 dark:ring-offset-zinc-950 dark:focus-visible:ring-zinc-300",
+      className
+    )}
+    {...props}
+  />
+));
+TabsContent.displayName = TabsPrimitive.Content.displayName;
 
 export { Tabs, TabsList, TabsTrigger, TabsContent };
-

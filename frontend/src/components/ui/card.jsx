@@ -1,4 +1,3 @@
-// src/components/ui/card.jsx
 import * as React from "react";
 import { cn } from "../../lib/utils";
 
@@ -6,7 +5,7 @@ const Card = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(
-      "rounded-2xl border border-zinc-200/80 bg-white text-zinc-950 shadow-sm transition-all dark:border-zinc-800/80 dark:bg-zinc-900/60 dark:text-zinc-50 dark:backdrop-blur-xl",
+      "rounded-xl border border-zinc-200 bg-white text-zinc-950 shadow-xs dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50",
       className
     )}
     {...props}
@@ -24,21 +23,18 @@ const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
 CardHeader.displayName = "CardHeader";
 
 const CardTitle = React.forwardRef(({ className, ...props }, ref) => (
-  <h3
+  <div
     ref={ref}
-    className={cn(
-      "font-semibold text-lg leading-none tracking-tight text-zinc-900 dark:text-zinc-50",
-      className
-    )}
+    className={cn("font-semibold leading-none tracking-tight", className)}
     {...props}
   />
 ));
 CardTitle.displayName = "CardTitle";
 
 const CardDescription = React.forwardRef(({ className, ...props }, ref) => (
-  <p
+  <div
     ref={ref}
-    className={cn("text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed", className)}
+    className={cn("text-sm text-zinc-500 dark:text-zinc-400", className)}
     {...props}
   />
 ));
@@ -59,4 +55,3 @@ const CardFooter = React.forwardRef(({ className, ...props }, ref) => (
 CardFooter.displayName = "CardFooter";
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent };
-
