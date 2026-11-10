@@ -98,7 +98,12 @@ export default function ChatWindow({
       {/* Message List */}
       <div className="mx-auto w-full max-w-3xl space-y-4">
         {messages.map((msg, index) => (
-          <MessageBubble key={index} message={msg} />
+          <MessageBubble
+            key={index}
+            role={msg.role}
+            content={msg.content}
+            message={msg}
+          />
         ))}
 
         {/* Pending Confirmation Card */}

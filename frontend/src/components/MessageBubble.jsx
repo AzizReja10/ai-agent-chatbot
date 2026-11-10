@@ -6,7 +6,11 @@ import remarkGfm from "remark-gfm";
 import { Copy, Check, Sparkles, User } from "lucide-react";
 import { cn } from "../lib/utils";
 
-export default function MessageBubble({ role, content }) {
+export default function MessageBubble(props) {
+  // Support both <MessageBubble message={msg} /> and <MessageBubble role={...} content={...} />
+  const role = props.role || props.message?.role;
+  const content = props.content !== undefined ? props.content : props.message?.content;
+
   const isUser = role === "user";
   const [copied, setCopied] = useState(false);
 
@@ -67,8 +71,8 @@ export default function MessageBubble({ role, content }) {
               {content}
             </div>
           ) : (
-            <div className="markdown-body select-text">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+            <div className="markdown-body select-text min-h-[1.25rem]">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{content || ""}</ReactMarkdown>
             </div>
           )}
 
@@ -82,20 +86,11 @@ export default function MessageBubble({ role, content }) {
               <button
                 type="button"
                 onClick={handleCopy}
-                className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 cursor-pointer"
-                title="Copy message"
+                className="flex items-center gap-1 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors cursor-pointer"
+                title="Copy response"
               >
-                {copied ? (
-                  <>
-                    <Check className="h-3 w-3 text-emerald-500" />
-                    <span className="font-mono text-emerald-500 font-medium">Copied</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="h-3 w-3" />
-                    <span className="font-mono">Copy</span>
-                  </>
-                )}
+                {copied ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+                <span className="text-[10px]">{copied ? "Copied" : "Copy"}</span>
               </button>
             </div>
           )}
