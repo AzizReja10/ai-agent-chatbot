@@ -26,7 +26,6 @@ export default function MessageInput({ onSend, disabled = false }) {
 
   const handleInput = (e) => {
     setText(e.target.value);
-    // Auto grow textarea
     e.target.style.height = "auto";
     e.target.style.height = `${Math.min(e.target.scrollHeight, 200)}px`;
   };
@@ -56,7 +55,7 @@ export default function MessageInput({ onSend, disabled = false }) {
               onKeyDown={handleKeyDown}
               placeholder="Write a message..."
               disabled={disabled}
-              className="flex-1 max-h-48 resize-none bg-transparent text-[15px] text-zinc-900 placeholder:text-zinc-400 focus:outline-none dark:text-zinc-100 dark:placeholder:text-zinc-500 font-sans leading-relaxed"
+              className="flex-1 max-h-48 resize-none bg-transparent text-[15px] text-zinc-900 placeholder:text-zinc-400 focus:outline-none dark:text-zinc-100 dark:placeholder:text-zinc-500 font-sans leading-relaxed caret-zinc-900 dark:caret-zinc-100 selection:bg-zinc-200 dark:selection:bg-zinc-800"
             />
 
             <div className="ml-2 flex items-center gap-1.5">
@@ -93,10 +92,10 @@ export default function MessageInput({ onSend, disabled = false }) {
           </div>
         </form>
 
-        {/* Claude-style footer note */}
+        {/* Minimal footer note */}
         <div className="mt-2 flex items-center justify-between px-1 text-[11px] text-zinc-400 dark:text-zinc-500 font-sans">
           <span>Nova is an AI and can make mistakes. Please verify important actions.</span>
-          <span className="hidden sm:inline font-mono">FastMCP Agent • Active</span>
+          <span className="hidden sm:inline font-mono text-[10px]">Web Search Agent</span>
         </div>
       </div>
     </div>

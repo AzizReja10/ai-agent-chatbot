@@ -12,13 +12,18 @@ import {
   LogOut, 
   PanelLeftClose, 
   PanelLeft, 
-  Share2,
-  ChevronDown
+  ChevronDown,
+  SquarePen
 } from "lucide-react";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { Button } from "./components/ui/button";
 
+function generateThreadId() {
+  return "session_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7);
+}
+
 function App() {
+  const [threadId, setThreadId] = useState(() => generateThreadId());
   const [messages, setMessages] = useState([]);
   const [activeTools, setActiveTools] = useState([]);
   const [pendingDraft, setPendingDraft] = useState(null);
@@ -28,7 +33,7 @@ function App() {
   const [authChecked, setAuthChecked] = useState(false);
   const [googleConnected, setGoogleConnected] = useState(false);
   const [githubConnected, setGithubConnected] = useState(false);
-  const [showSidebar, setShowSidebar] = useState(false); // default collapsed like Claude
+  const [showSidebar, setShowSidebar] = useState(false);
   const finalizeRan = useRef(false);
 
   useEffect(() => {
@@ -62,6 +67,14 @@ function App() {
     }
   }, []);
 
+  const handleNewChat = () => {
+    setThreadId(generateThreadId());
+    setMessages([]);
+    setActiveTools([]);
+    setPendingDraft(null);
+    setIsWaiting(false);
+  };
+
   const handleSend = (text) => {
     setMessages((prev) => [...prev, { role: "user", content: text }]);
     setActiveTools([]);
@@ -72,7 +85,7 @@ function App() {
     let toolIdCounter = 0;
     let firstTokenReceived = false;
 
-    streamChat(text, {
+    streamChat(text, threadId, {
       onToken: (chunk) => {
         if (!firstTokenReceived) {
           firstTokenReceived = true;
@@ -137,12 +150,16 @@ function App() {
     return <AuthForm onAuthenticated={setUser} onBack={() => setStarted(false)} />;
   }
 
+  const chatTitle = messages.length > 0
+    ? (messages[0].content.length > 40 ? messages[0].content.slice(0, 40) + "..." : messages[0].content)
+    : "New Chat";
+
   return (
     <div className="relative flex h-screen w-full flex-col overflow-hidden bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 font-sans">
-      {/* Claude-style Minimal Header */}
+      {/* Claude-style Clean Minimal Header */}
       <header className="flex h-12 shrink-0 items-center justify-between border-b border-zinc-200/80 bg-white px-4 dark:border-zinc-800 dark:bg-zinc-950">
-        {/* Left: Sidebar toggle + Chat title dropdown */}
-        <div className="flex items-center gap-2">
+        {/* Left: Sidebar toggle, New Chat & Chat title dropdown */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <Button
             variant="ghost"
             size="icon-sm"
@@ -153,22 +170,32 @@ function App() {
             {showSidebar ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeft className="h-4 w-4" />}
           </Button>
 
+          {/* New Chat Button */}
           <button
             type="button"
-            className="flex items-center gap-1.5 px-2 py-1 text-sm font-medium text-zinc-800 hover:bg-zinc-100 rounded-md dark:text-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+            onClick={handleNewChat}
+            className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-zinc-700 hover:text-zinc-950 bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 rounded-md dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-300 dark:hover:text-zinc-100 transition-colors cursor-pointer"
+            title="Start new fresh chat"
           >
-            <span>Building an AI agent chatbot with LangChain</span>
-            <ChevronDown className="h-3.5 w-3.5 text-zinc-400" />
+            <SquarePen className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">New Chat</span>
+          </button>
+
+          <button
+            type="button"
+            className="flex items-center gap-1.5 px-2 py-1 text-xs sm:text-sm font-medium text-zinc-800 hover:bg-zinc-100 rounded-md dark:text-zinc-200 dark:hover:bg-zinc-800 transition-colors max-w-[200px] sm:max-w-[320px] truncate"
+          >
+            <span className="truncate">{chatTitle}</span>
+            <ChevronDown className="h-3.5 w-3.5 text-zinc-400 shrink-0" />
           </button>
         </div>
 
-        {/* Right: Plan badge, integrations & share/profile */}
+        {/* Right: Integrations & Logout */}
         <div className="flex items-center gap-2">
-          {/* Integrations */}
           {!googleConnected && (
             <a
               href="/auth/google/login"
-              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 text-xs border border-zinc-200 rounded-md hover:bg-zinc-50 text-zinc-600 dark:border-zinc-800 dark:text-zinc-400"
+              className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 text-xs border border-zinc-200 rounded-md hover:bg-zinc-50 text-zinc-600 dark:border-zinc-800 dark:text-zinc-400"
             >
               <FaGoogle className="h-3 w-3 text-amber-500" />
               <span>Connect Google</span>
@@ -177,27 +204,12 @@ function App() {
           {!githubConnected && (
             <a
               href="/auth/github/login"
-              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 text-xs border border-zinc-200 rounded-md hover:bg-zinc-50 text-zinc-600 dark:border-zinc-800 dark:text-zinc-400"
+              className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 text-xs border border-zinc-200 rounded-md hover:bg-zinc-50 text-zinc-600 dark:border-zinc-800 dark:text-zinc-400"
             >
               <FaGithub className="h-3 w-3" />
               <span>Connect GitHub</span>
             </a>
           )}
-
-          <div className="flex items-center gap-1 text-xs text-zinc-500 rounded-full border border-zinc-200 px-2.5 py-0.5 dark:border-zinc-800">
-            <span>Free plan</span>
-            <span>•</span>
-            <span className="text-zinc-900 dark:text-zinc-100 font-medium">Upgrade</span>
-          </div>
-
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 gap-1 text-xs text-zinc-600 hover:text-zinc-900 dark:text-zinc-400"
-          >
-            <Share2 className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Share</span>
-          </Button>
 
           <Button
             variant="ghost"
@@ -213,7 +225,6 @@ function App() {
 
       {/* Main Content Area */}
       <div className="relative flex flex-1 overflow-hidden">
-        {/* Optional tools sidebar drawer */}
         <AnimatePresence initial={false}>
           {showSidebar && (
             <motion.div
