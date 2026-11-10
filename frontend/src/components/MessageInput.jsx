@@ -1,19 +1,20 @@
 // src/components/MessageInput.jsx
 import { useState, useRef } from "react";
-import { motion } from "framer-motion";
-import { ArrowUp, Sparkles, CornerDownLeft } from "lucide-react";
+import { Plus, Mic, ArrowUp, AudioLines } from "lucide-react";
 import { cn } from "../lib/utils";
 
 export default function MessageInput({ onSend, disabled = false }) {
   const [text, setText] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
-  const inputRef = useRef(null);
+  const textareaRef = useRef(null);
 
   const handleSubmit = (e) => {
     e?.preventDefault();
     if (!text.trim() || disabled) return;
     onSend(text.trim());
     setText("");
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -23,74 +24,79 @@ export default function MessageInput({ onSend, disabled = false }) {
     }
   };
 
+  const handleInput = (e) => {
+    setText(e.target.value);
+    // Auto grow textarea
+    e.target.style.height = "auto";
+    e.target.style.height = `${Math.min(e.target.scrollHeight, 200)}px`;
+  };
+
   return (
-    <div className="relative z-20 w-full px-4 pb-5 pt-2 md:px-8">
-      <div className="mx-auto max-w-4xl">
+    <div className="w-full bg-white dark:bg-zinc-950 pb-5 pt-2">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6">
         <form
           onSubmit={handleSubmit}
-          className={cn(
-            "relative flex items-center gap-3 rounded-2xl border bg-white/90 p-2 pl-4 shadow-sm backdrop-blur-xl transition-all duration-200 dark:bg-zinc-900/90",
-            isFocused
-              ? "border-indigo-500/80 ring-4 ring-indigo-500/10 shadow-lg dark:border-indigo-500/60 dark:ring-indigo-500/15"
-              : "border-zinc-200/90 hover:border-zinc-300 dark:border-zinc-800 dark:hover:border-zinc-700"
-          )}
+          className="relative rounded-2xl border border-zinc-200/90 bg-white shadow-xs focus-within:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-900/60 dark:focus-within:border-zinc-600 transition-colors"
         >
-          {/* Agent sparkle indicator */}
-          <div
-            className={cn(
-              "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition-colors",
-              isFocused
-                ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/70 dark:text-indigo-400"
-                : "text-zinc-400 dark:text-zinc-500"
-            )}
-          >
-            <Sparkles className="h-4 w-4" />
+          {/* Main prompt input */}
+          <div className="flex items-center px-4 pt-3 pb-2">
+            <button
+              type="button"
+              className="mr-2 flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 transition-colors cursor-pointer"
+              title="Add attachment"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
+
+            <textarea
+              ref={textareaRef}
+              rows={1}
+              value={text}
+              onChange={handleInput}
+              onKeyDown={handleKeyDown}
+              placeholder="Write a message..."
+              disabled={disabled}
+              className="flex-1 max-h-48 resize-none bg-transparent text-[15px] text-zinc-900 placeholder:text-zinc-400 focus:outline-none dark:text-zinc-100 dark:placeholder:text-zinc-500 font-sans leading-relaxed"
+            />
+
+            <div className="ml-2 flex items-center gap-1.5">
+              <button
+                type="button"
+                className="flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 transition-colors cursor-pointer"
+                title="Voice input"
+              >
+                <Mic className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                className="hidden sm:flex h-7 w-7 items-center justify-center rounded-md text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 transition-colors cursor-pointer"
+                title="Audio"
+              >
+                <AudioLines className="h-4 w-4" />
+              </button>
+
+              {/* Send Button */}
+              <button
+                type="submit"
+                disabled={!text.trim() || disabled}
+                className={cn(
+                  "flex h-7 w-7 items-center justify-center rounded-lg transition-colors",
+                  text.trim() && !disabled
+                    ? "bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 cursor-pointer"
+                    : "text-zinc-300 dark:text-zinc-700 cursor-not-allowed"
+                )}
+                title="Send"
+              >
+                <ArrowUp className="h-4 w-4 stroke-[2.5]" />
+              </button>
+            </div>
           </div>
-
-          {/* Text Input */}
-          <input
-            ref={inputRef}
-            type="text"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            onKeyDown={handleKeyDown}
-            placeholder="Ask Nova to summarize emails, inspect GitHub PRs, check events, or run MCP tools..."
-            disabled={disabled}
-            className="flex-1 bg-transparent py-1.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none disabled:opacity-50 dark:text-zinc-100 dark:placeholder:text-zinc-500 font-sans"
-          />
-
-          {/* Keyboard shortcut hint */}
-          <div className="hidden sm:flex items-center gap-1 rounded-md border border-zinc-200/80 bg-zinc-50 px-2 py-1 text-[11px] font-mono text-zinc-400 dark:border-zinc-800 dark:bg-zinc-800/60 dark:text-zinc-500">
-            <span>Enter</span>
-            <CornerDownLeft className="h-3 w-3" />
-          </div>
-
-          {/* Send Button */}
-          <motion.button
-            type="submit"
-            disabled={!text.trim() || disabled}
-            whileHover={text.trim() && !disabled ? { scale: 1.05 } : {}}
-            whileTap={text.trim() && !disabled ? { scale: 0.95 } : {}}
-            className={cn(
-              "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-all duration-200 outline-none select-none",
-              text.trim() && !disabled
-                ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30 hover:bg-indigo-500 cursor-pointer dark:bg-indigo-500 dark:hover:bg-indigo-400"
-                : "bg-zinc-100 text-zinc-400 dark:bg-zinc-800 dark:text-zinc-600 cursor-not-allowed"
-            )}
-            title="Send prompt"
-          >
-            <ArrowUp className="h-4 w-4 stroke-[2.5]" />
-          </motion.button>
         </form>
 
-        <div className="mt-2 flex items-center justify-center gap-4 text-[11px] text-zinc-400 dark:text-zinc-600">
-          <span>Nova AI Engine v2.4</span>
-          <span>•</span>
-          <span>FastMCP Protocol</span>
-          <span>•</span>
-          <span>Enterprise Guardrails Active</span>
+        {/* Claude-style footer note */}
+        <div className="mt-2 flex items-center justify-between px-1 text-[11px] text-zinc-400 dark:text-zinc-500 font-sans">
+          <span>Nova is an AI and can make mistakes. Please verify important actions.</span>
+          <span className="hidden sm:inline font-mono">FastMCP Agent • Active</span>
         </div>
       </div>
     </div>

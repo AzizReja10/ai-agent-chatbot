@@ -9,17 +9,14 @@ import LandingPage from "./pages/LandingPage";
 import AuthForm from "./components/AuthForm";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Sparkles, 
   LogOut, 
   PanelLeftClose, 
   PanelLeft, 
-  User as UserIcon
+  Share2,
+  ChevronDown
 } from "lucide-react";
 import { FaGoogle, FaGithub } from "react-icons/fa";
-
 import { Button } from "./components/ui/button";
-import { StatusPill } from "./components/uiverse/status-pill";
-import { DotPattern } from "./components/magicui/dot-pattern";
 
 function App() {
   const [messages, setMessages] = useState([]);
@@ -31,7 +28,7 @@ function App() {
   const [authChecked, setAuthChecked] = useState(false);
   const [googleConnected, setGoogleConnected] = useState(false);
   const [githubConnected, setGithubConnected] = useState(false);
-  const [showSidebar, setShowSidebar] = useState(true);
+  const [showSidebar, setShowSidebar] = useState(false); // default collapsed like Claude
   const finalizeRan = useRef(false);
 
   useEffect(() => {
@@ -44,6 +41,7 @@ function App() {
   useEffect(() => {
     if (user) {
       getGitHubStatus().then((s) => setGithubConnected(s.connected));
+      getGoogleStatus().then((s) => setGoogleConnected(s.connected));
     }
   }, [user]);
 
@@ -63,12 +61,6 @@ function App() {
       });
     }
   }, []);
-
-  useEffect(() => {
-    if (user) {
-      getGoogleStatus().then((s) => setGoogleConnected(s.connected));
-    }
-  }, [user]);
 
   const handleSend = (text) => {
     setMessages((prev) => [...prev, { role: "user", content: text }]);
@@ -128,11 +120,11 @@ function App() {
 
   if (!authChecked) {
     return (
-      <div className="flex h-screen w-full items-center justify-center bg-white dark:bg-[#090A0F]">
+      <div className="flex h-screen w-full items-center justify-center bg-white dark:bg-zinc-950">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-          className="h-9 w-9 rounded-full border-3 border-indigo-600 border-t-transparent dark:border-indigo-400 dark:border-t-transparent"
+          className="h-8 w-8 rounded-full border-2 border-zinc-900 border-t-transparent dark:border-zinc-100 dark:border-t-transparent"
         />
       </div>
     );
@@ -146,99 +138,72 @@ function App() {
   }
 
   return (
-    <div className="relative flex h-screen w-full flex-col overflow-hidden bg-white text-zinc-950 dark:bg-[#090A0F] dark:text-zinc-50 font-sans">
-      {/* Background Architectural Dot Pattern */}
-      <DotPattern className="[mask-image:radial-gradient(ellipse_at_center,white_30%,transparent_80%)] opacity-50 dark:opacity-30" />
-
-      {/* Workspace Header */}
-      <header className="relative z-30 flex h-14 shrink-0 items-center justify-between border-b border-zinc-200/80 bg-white/80 px-4 backdrop-blur-xl dark:border-zinc-800/80 dark:bg-[#090A0F]/80">
-        {/* Left Side: Toggle Sidebar & Brand */}
-        <div className="flex items-center gap-3">
+    <div className="relative flex h-screen w-full flex-col overflow-hidden bg-white text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100 font-sans">
+      {/* Claude-style Minimal Header */}
+      <header className="flex h-12 shrink-0 items-center justify-between border-b border-zinc-200/80 bg-white px-4 dark:border-zinc-800 dark:bg-zinc-950">
+        {/* Left: Sidebar toggle + Chat title dropdown */}
+        <div className="flex items-center gap-2">
           <Button
             variant="ghost"
             size="icon-sm"
             onClick={() => setShowSidebar((prev) => !prev)}
-            className="cursor-pointer text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-            title={showSidebar ? "Hide Mission Control" : "Show Mission Control"}
+            className="cursor-pointer text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            title={showSidebar ? "Close Sidebar" : "Open Sidebar"}
           >
             {showSidebar ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeft className="h-4 w-4" />}
           </Button>
 
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white shadow-xs">
-              <Sparkles className="h-3.5 w-3.5" />
-            </div>
-            <div className="flex items-baseline gap-2">
-              <span className="font-heading text-sm font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-                Nova AI
-              </span>
-              <span className="hidden sm:inline font-mono text-[10px] text-zinc-400 dark:text-zinc-500">
-                autonomous agent
-              </span>
-            </div>
-          </div>
+          <button
+            type="button"
+            className="flex items-center gap-1.5 px-2 py-1 text-sm font-medium text-zinc-800 hover:bg-zinc-100 rounded-md dark:text-zinc-200 dark:hover:bg-zinc-800 transition-colors"
+          >
+            <span>Building an AI agent chatbot with LangChain</span>
+            <ChevronDown className="h-3.5 w-3.5 text-zinc-400" />
+          </button>
         </div>
 
-        {/* Right Side: Integrations Status & User Controls */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
-          {/* Google Integration Status */}
-          {googleConnected ? (
-            <StatusPill
-              status="active"
-              label="Google"
-              icon={FaGoogle}
-              className="text-[11px]"
-            />
-          ) : (
-            <Button
-              variant="outline"
-              size="sm"
-              asChild
-              className="h-7 text-xs border-amber-300 bg-amber-50/50 text-amber-800 dark:border-amber-700/50 dark:bg-amber-950/30 dark:text-amber-300"
+        {/* Right: Plan badge, integrations & share/profile */}
+        <div className="flex items-center gap-2">
+          {/* Integrations */}
+          {!googleConnected && (
+            <a
+              href="/auth/google/login"
+              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 text-xs border border-zinc-200 rounded-md hover:bg-zinc-50 text-zinc-600 dark:border-zinc-800 dark:text-zinc-400"
             >
-              <a href="/auth/google/login" className="flex items-center gap-1.5">
-                <FaGoogle className="h-3 w-3 text-amber-500" />
-                <span className="hidden sm:inline">Connect Google</span>
-              </a>
-            </Button>
+              <FaGoogle className="h-3 w-3 text-amber-500" />
+              <span>Connect Google</span>
+            </a>
+          )}
+          {!githubConnected && (
+            <a
+              href="/auth/github/login"
+              className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 text-xs border border-zinc-200 rounded-md hover:bg-zinc-50 text-zinc-600 dark:border-zinc-800 dark:text-zinc-400"
+            >
+              <FaGithub className="h-3 w-3" />
+              <span>Connect GitHub</span>
+            </a>
           )}
 
-          {/* GitHub Integration Status */}
-          {githubConnected ? (
-            <StatusPill
-              status="active"
-              label="GitHub"
-              icon={FaGithub}
-              className="text-[11px]"
-            />
-          ) : (
-            <Button
-              variant="outline"
-              size="sm"
-              asChild
-              className="h-7 text-xs"
-            >
-              <a href="/auth/github/login" className="flex items-center gap-1.5">
-                <FaGithub className="h-3 w-3" />
-                <span className="hidden sm:inline">Connect GitHub</span>
-              </a>
-            </Button>
-          )}
-
-          {/* User Profile Pill */}
-          <div className="hidden md:flex items-center gap-1.5 rounded-lg border border-zinc-200/80 bg-zinc-50 px-2 py-1 text-xs text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-300">
-            <UserIcon className="h-3.5 w-3.5 text-indigo-500" />
-            <span className="max-w-[110px] truncate font-medium">
-              {user.email || "Account"}
-            </span>
+          <div className="flex items-center gap-1 text-xs text-zinc-500 rounded-full border border-zinc-200 px-2.5 py-0.5 dark:border-zinc-800">
+            <span>Free plan</span>
+            <span>•</span>
+            <span className="text-zinc-900 dark:text-zinc-100 font-medium">Upgrade</span>
           </div>
 
-          {/* Logout Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 gap-1 text-xs text-zinc-600 hover:text-zinc-900 dark:text-zinc-400"
+          >
+            <Share2 className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Share</span>
+          </Button>
+
           <Button
             variant="ghost"
             size="icon-sm"
             onClick={handleLogout}
-            className="cursor-pointer text-zinc-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40"
+            className="cursor-pointer text-zinc-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40"
             title="Log out"
           >
             <LogOut className="h-4 w-4" />
@@ -246,17 +211,17 @@ function App() {
         </div>
       </header>
 
-      {/* Main Workspace Split Body */}
-      <div className="relative z-10 flex flex-1 overflow-hidden">
-        {/* Collapsible Mission Control Sidebar */}
+      {/* Main Content Area */}
+      <div className="relative flex flex-1 overflow-hidden">
+        {/* Optional tools sidebar drawer */}
         <AnimatePresence initial={false}>
           {showSidebar && (
             <motion.div
               initial={{ width: 0, opacity: 0 }}
-              animate={{ width: 288, opacity: 1 }}
+              animate={{ width: 280, opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="overflow-hidden h-full shrink-0"
+              transition={{ duration: 0.2, ease: "easeInOut" }}
+              className="overflow-hidden h-full shrink-0 border-r border-zinc-200 dark:border-zinc-800"
             >
               <ToolActivitySidebar activeTools={activeTools} />
             </motion.div>
@@ -264,7 +229,7 @@ function App() {
         </AnimatePresence>
 
         {/* Central Chat Stream & Input Area */}
-        <main className="flex flex-1 flex-col overflow-hidden bg-white/40 dark:bg-[#090A0F]/40 backdrop-blur-xs">
+        <main className="flex flex-1 flex-col overflow-hidden bg-white dark:bg-zinc-950">
           <ChatWindow
             messages={messages}
             pendingDraft={pendingDraft}
