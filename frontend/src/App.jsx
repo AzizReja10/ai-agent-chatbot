@@ -236,15 +236,13 @@ function App() {
             <FaGoogle className="h-3 w-3 text-amber-500" />
             <span>{googleConnected ? "Reconnect Google" : "Connect Google"}</span>
           </a>
-          {!githubConnected && (
-            <a
-              href="/auth/github/login"
-              className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 text-xs border border-zinc-200 rounded-md hover:bg-zinc-50 text-zinc-600 dark:border-zinc-800 dark:text-zinc-400"
-            >
-              <FaGithub className="h-3 w-3" />
-              <span>Connect GitHub</span>
-            </a>
-          )}
+          <a
+            href="/auth/github/login"
+            className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 text-xs border border-zinc-200 rounded-md hover:bg-zinc-50 text-zinc-600 dark:border-zinc-800 dark:text-zinc-400"
+          >
+            <FaGithub className="h-3 w-3" />
+            <span>{githubConnected ? "Reconnect GitHub" : "Connect GitHub"}</span>
+          </a>
 
           <Button
             variant="ghost"

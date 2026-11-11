@@ -4,13 +4,21 @@ const { cancelPendingAction, toolSchemas } = require("../app/agent/agent_factory
 const { findPendingDraft, isConfirmation } = require("../app/agent/safe_action_flow");
 const { getMessages, setMessages } = require("../app/memory/session_store");
 const { extractText } = require("../app/tools/docs_tool");
-const { parseRepoIdentifier } = require("../app/tools/github_tool");
+const {
+  formatGitHubProfile,
+  parseRepoIdentifier,
+} = require("../app/tools/github_tool");
 const { mergeGoogleTokens } = require("../app/google_oauth_routes");
+const githubOAuthRouter = require("../app/github_oauth_routes");
 
 test("agent exposes the available tools but not irreversible send actions", () => {
   const names = toolSchemas.map((tool) => tool.function.name);
   assert.ok(names.includes("draft_email"));
   assert.ok(names.includes("draft_slack_message"));
+  assert.ok(names.includes("get_google_profile"));
+  assert.ok(names.includes("get_github_profile"));
+  assert.ok(names.includes("list_github_repositories"));
+  assert.ok(names.includes("list_my_recent_github_issues"));
   assert.ok(!names.includes("send_email"));
   assert.ok(!names.includes("send_slack_message"));
 });
@@ -55,6 +63,20 @@ test("cancelling a draft records the cancellation and consumes the pending actio
 test("GitHub repository names and URLs are parsed", () => {
   assert.deepEqual(parseRepoIdentifier("octocat/hello-world"), ["octocat", "hello-world"]);
   assert.deepEqual(parseRepoIdentifier("https://github.com/octocat/hello-world"), ["octocat", "hello-world"]);
+});
+
+test("GitHub profile output includes the user's account identity", () => {
+  assert.equal(
+    formatGitHubProfile(
+      { name: "Ada Lovelace", login: "ada" },
+      "ada@example.com",
+    ),
+    "Name: Ada Lovelace\nUsername: @ada\nEmail: ada@example.com",
+  );
+});
+
+test("GitHub OAuth sign-in requests profile, email, and repository access", () => {
+  assert.deepEqual(githubOAuthRouter.signInScopes, ["read:user", "user:email", "repo"]);
 });
 
 test("Google Docs paragraph content is extracted", () => {

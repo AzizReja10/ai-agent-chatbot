@@ -11,6 +11,7 @@ const { backendUrl, frontendUrl, githubOAuthClientId, githubOAuthClientSecret } 
 
 const router = Router();
 const redirectUri = `${backendUrl}/auth/github/callback`;
+const githubSignInScopes = ["read:user", "user:email", "repo"];
 
 function requireGithubConfig() {
   if (!githubOAuthClientId || !githubOAuthClientSecret) {
@@ -27,7 +28,7 @@ router.get("/auth/github/signin", async (_request, response, next) => {
     url.search = new URLSearchParams({
       client_id: githubOAuthClientId,
       redirect_uri: redirectUri,
-      scope: "read:user user:email",
+      scope: githubSignInScopes.join(" "),
       state,
     });
     response.redirect(url.toString());
@@ -47,7 +48,7 @@ router.get("/auth/github/login", async (request, response, next) => {
     url.search = new URLSearchParams({
       client_id: githubOAuthClientId,
       redirect_uri: redirectUri,
-      scope: "repo",
+      scope: githubSignInScopes.join(" "),
       state,
     });
     response.redirect(url.toString());
@@ -104,6 +105,10 @@ router.get("/auth/github/callback", async (request, response, next) => {
     }
     let user = await get("SELECT id FROM users WHERE email = ?", [primaryEmail]);
     if (!user) user = await createUser(primaryEmail);
+    await run(
+      "INSERT INTO github_credentials (user_id, access_token) VALUES (?, ?) ON CONFLICT(user_id) DO UPDATE SET access_token = excluded.access_token",
+      [user.id, tokenData.access_token],
+    );
     const handoffToken = await createSigninHandoff(user.id);
     return response.redirect(`${frontendUrl}?signin_token=${encodeURIComponent(handoffToken)}`);
   } catch (error) {
@@ -111,4 +116,5 @@ router.get("/auth/github/callback", async (request, response, next) => {
   }
 });
 
+router.signInScopes = githubSignInScopes;
 module.exports = router;

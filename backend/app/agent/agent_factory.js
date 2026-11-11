@@ -3,9 +3,15 @@ const { getMessages, setMessages } = require("../memory/session_store");
 const { getWeather, schema: weatherSchema } = require("../tools/weather_tool");
 const { webSearch, schema: webSearchSchema } = require("../tools/web_search_tool");
 const {
+  getGitHubProfile,
+  getGitHubProfileSchema,
   getGitHubRepoInfo,
+  listGitHubRepositories,
+  listGitHubRepositoriesSchema,
   listGitHubIssues,
   listIssuesSchema,
+  listMyRecentGitHubIssues,
+  listMyRecentGitHubIssuesSchema,
   repoInfoSchema,
 } = require("../tools/github_tool");
 const {
@@ -41,12 +47,19 @@ const {
   sendSlackMessage,
 } = require("../tools/slack_tool");
 const { handleConfirmedAction, findPendingDraft, isConfirmation } = require("./safe_action_flow");
+const {
+  getGoogleProfile,
+  getGoogleProfileSchema,
+} = require("../tools/google_profile_tool");
 
 const tools = [
   [weatherSchema, getWeather],
   [webSearchSchema, webSearch],
   [listIssuesSchema, listGitHubIssues],
   [repoInfoSchema, getGitHubRepoInfo],
+  [getGitHubProfileSchema, getGitHubProfile],
+  [listGitHubRepositoriesSchema, listGitHubRepositories],
+  [listMyRecentGitHubIssuesSchema, listMyRecentGitHubIssues],
   [listGoogleTasksSchema, listGoogleTasks],
   [createGoogleTaskSchema, createGoogleTask],
   [listUpcomingEventsSchema, listUpcomingEvents],
@@ -54,6 +67,7 @@ const tools = [
   [readGoogleDocsSchema, readGoogleDocs],
   [appendGoogleDocSchema, appendToGoogleDoc],
   [listRecentEmailsSchema, listRecentEmails],
+  [getGoogleProfileSchema, getGoogleProfile],
   [draftEmailSchema, draftEmail],
   [draftSlackSchema, draftSlackMessage],
   [listSlackChannelsSchema, listSlackChannels],

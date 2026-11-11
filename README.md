@@ -8,7 +8,7 @@ Live Link : https://ai-agent-chatbot-tan.vercel.app/
 
 - **Tools** across distinct auth patterns:
   - API key (live weather)
-  - Per-user OAuth (GitHub read; Google Gmail, Calendar, Tasks, and Docs)
+  - Per-user OAuth (GitHub profile, repository listing and issues; Google profile, Gmail, Calendar, Tasks, and Docs)
   - Bot token (Slack — read + gated send)
   - No-auth (DuckDuckGo web search)
 - **Human-in-the-loop safety gate** for irreversible actions (email, Slack messages): the agent can only *draft*, never *send* — a separate code path outside the LLM's reach detects explicit user confirmation and executes the real action.
@@ -113,6 +113,7 @@ npm run dev
 ## Known limitations
 
 - Slack access uses the configured shared bot token; GitHub and Google access use per-user OAuth credentials.
+- GitHub sign-in requests repository access so the agent can inspect repositories and their issues; users can reconnect GitHub to grant or renew that access.
 - Confirmation text is intentionally limited to explicit affirmative phrases; the frontend's Send/Cancel controls provide the clearest path.
 - Google sign-in also requests and saves the Google API authorization used by Gmail and the other Google tools. Refresh tokens for an OAuth consent screen in Testing can expire after seven days; reconnect Google from the signed-in app if that happens.
 - Not yet deployed publicly; configure `DATABASE_URL` with a PostgreSQL connection string for production. SQLite remains the local default.

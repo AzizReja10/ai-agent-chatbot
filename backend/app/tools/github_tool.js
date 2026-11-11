@@ -32,6 +32,151 @@ const repoInfoSchema = {
   },
 };
 
+const getGitHubProfileSchema = {
+  type: "function",
+  function: {
+    name: "get_github_profile",
+    description:
+      "Get the signed-in user's GitHub username, display name, and verified primary email. Use this when they ask about their GitHub account or email.",
+    parameters: {
+      type: "object",
+      properties: {},
+      additionalProperties: false,
+    },
+  },
+};
+
+const listGitHubRepositoriesSchema = {
+  type: "function",
+  function: {
+    name: "list_github_repositories",
+    description:
+      "List the signed-in user's recently pushed GitHub repositories. Use this when they refer to their repository but do not give its name.",
+    parameters: {
+      type: "object",
+      properties: {
+        max_results: { type: "integer", minimum: 1, maximum: 30 },
+      },
+      additionalProperties: false,
+    },
+  },
+};
+
+const listMyRecentGitHubIssuesSchema = {
+  type: "function",
+  function: {
+    name: "list_my_recent_github_issues",
+    description:
+      "Find recent open issues across the signed-in user's recently pushed GitHub repositories. Use this when they ask for issues in 'my repository' without naming a repository; include each repository name in the results.",
+    parameters: {
+      type: "object",
+      properties: {},
+      additionalProperties: false,
+    },
+  },
+};
+
+function formatGitHubProfile(profile, email) {
+  const details = [];
+  if (profile.name) details.push(`Name: ${profile.name}`);
+  if (profile.login) details.push(`Username: @${profile.login}`);
+  if (email) details.push(`Email: ${email}`);
+  return details.length
+    ? details.join("\n")
+    : "GitHub did not return a name, username, or verified email for this account.";
+}
+
+async function getVerifiedPrimaryEmail(fallbackEmail = null) {
+  const response = await githubRequest("https://api.github.com/user/emails");
+  if (!response.ok) return fallbackEmail;
+  const emails = await response.json();
+  return emails.find((item) => item.primary && item.verified)?.email || fallbackEmail;
+}
+
+async function getGitHubProfile() {
+  try {
+    const response = await githubRequest("https://api.github.com/user");
+    if (!response.ok) {
+      return `Could not retrieve your GitHub profile: GitHub API returned ${response.status}.`;
+    }
+    const profile = await response.json();
+    const email = await getVerifiedPrimaryEmail(profile.email);
+    return formatGitHubProfile(profile, email);
+  } catch (error) {
+    return `Could not retrieve your GitHub profile: ${error.message}`;
+  }
+}
+
+async function listGitHubRepositories({ max_results = 20 } = {}) {
+  try {
+    const limit = Math.max(1, Math.min(30, Number(max_results) || 20));
+    const url = new URL("https://api.github.com/user/repos");
+    url.search = new URLSearchParams({
+      sort: "pushed",
+      direction: "desc",
+      per_page: String(limit),
+      affiliation: "owner,collaborator,organization",
+    });
+    const response = await githubRequest(url);
+    if (!response.ok) {
+      return `Could not list your GitHub repositories: GitHub API returned ${response.status}.`;
+    }
+    const repositories = await response.json();
+    return repositories.length
+      ? repositories
+          .map((repository) =>
+            `${repository.full_name}${repository.private ? " (private)" : ""}${repository.description ? ` — ${repository.description}` : ""}`,
+          )
+          .join("\n")
+      : "No GitHub repositories were found for this account.";
+  } catch (error) {
+    return `Could not list your GitHub repositories: ${error.message}`;
+  }
+}
+
+async function listMyRecentGitHubIssues() {
+  try {
+    const repositoriesResponse = await githubRequest(
+      "https://api.github.com/user/repos?sort=pushed&direction=desc&per_page=10&affiliation=owner,collaborator,organization",
+    );
+    if (!repositoriesResponse.ok) {
+      return `Could not list your GitHub repositories: GitHub API returned ${repositoriesResponse.status}.`;
+    }
+    const repositories = await repositoriesResponse.json();
+    if (!repositories.length) return "No GitHub repositories were found for this account.";
+
+    const issueResults = await Promise.all(
+      repositories.map(async (repository) => {
+        const response = await githubRequest(
+          `https://api.github.com/repos/${encodeURIComponent(repository.owner.login)}/${encodeURIComponent(repository.name)}/issues?state=open&sort=updated&direction=desc&per_page=5`,
+        );
+        if (!response.ok) return [];
+        const issues = await response.json();
+        return issues
+          .filter((issue) => !issue.pull_request)
+          .map((issue) => ({
+            repository: repository.full_name,
+            number: issue.number,
+            title: issue.title,
+            updatedAt: issue.updated_at,
+            url: issue.html_url,
+          }));
+      }),
+    );
+    const issues = issueResults
+      .flat()
+      .sort((left, right) => Date.parse(right.updatedAt) - Date.parse(left.updatedAt))
+      .slice(0, 20);
+    return issues.length
+      ? issues
+          .map((issue) => `${issue.repository} #${issue.number}: ${issue.title}\n${issue.url}`)
+          .join("\n")
+      : `No open issues found in your ${repositories.length} most recently pushed repositories.`;
+  } catch (error) {
+    return `Could not retrieve your recent GitHub issues: ${error.message}`;
+  }
+}
+
 function parseRepoIdentifier(repo) {
   const value = repo.trim();
   if (/^https?:\/\//i.test(value)) {
@@ -106,11 +251,19 @@ async function getGitHubRepoInfo({ repo }) {
 }
 
 module.exports = {
+  formatGitHubProfile,
+  getGitHubProfile,
+  getGitHubProfileSchema,
   getGitHubRepoInfo,
   getGitHubToken,
+  getVerifiedPrimaryEmail,
   githubRequest,
   listGitHubIssues,
+  listGitHubRepositories,
+  listGitHubRepositoriesSchema,
   listIssuesSchema,
+  listMyRecentGitHubIssues,
+  listMyRecentGitHubIssuesSchema,
   parseRepoIdentifier,
   repoInfoSchema,
 };
