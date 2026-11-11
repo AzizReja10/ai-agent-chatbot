@@ -5,6 +5,7 @@ const { findPendingDraft, isConfirmation } = require("../app/agent/safe_action_f
 const { getMessages, setMessages } = require("../app/memory/session_store");
 const { extractText } = require("../app/tools/docs_tool");
 const { parseRepoIdentifier } = require("../app/tools/github_tool");
+const { mergeGoogleTokens } = require("../app/google_oauth_routes");
 
 test("agent exposes the available tools but not irreversible send actions", () => {
   const names = toolSchemas.map((tool) => tool.function.name);
@@ -68,5 +69,19 @@ test("Google Docs paragraph content is extracted", () => {
       },
     }),
     "Hello world",
+  );
+});
+
+test("Google reconnect preserves an existing refresh token when Google omits a new one", () => {
+  assert.deepEqual(
+    mergeGoogleTokens(
+      { access_token: "old-access", refresh_token: "long-lived-refresh" },
+      { access_token: "new-access", expiry_date: 1234 },
+    ),
+    {
+      access_token: "new-access",
+      refresh_token: "long-lived-refresh",
+      expiry_date: 1234,
+    },
   );
 });

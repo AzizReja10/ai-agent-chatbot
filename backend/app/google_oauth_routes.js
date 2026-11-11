@@ -15,6 +15,7 @@ const signInScopes = [
   "openid",
   "https://www.googleapis.com/auth/userinfo.email",
   "https://www.googleapis.com/auth/userinfo.profile",
+  ...scopes,
 ];
 const connectRedirectUri = `${backendUrl}/auth/google/callback`;
 const signinRedirectUri = `${backendUrl}/auth/google/signin/callback`;
@@ -41,7 +42,7 @@ async function beginGoogleFlow(response, { userId, signin = false }) {
     code_challenge: pkceChallenge(codeVerifier),
     code_challenge_method: "S256",
     access_type: "offline",
-    prompt: signin ? "select_account" : "consent",
+    prompt: signin ? "select_account consent" : "consent",
   });
   response.redirect(url.toString());
 }
@@ -71,6 +72,27 @@ async function exchangeCode(code, state, { signin = false } = {}) {
   return { pending, tokens };
 }
 
+function mergeGoogleTokens(previousTokens, tokens) {
+  return {
+    ...previousTokens,
+    ...tokens,
+    refresh_token: tokens.refresh_token || previousTokens.refresh_token,
+  };
+}
+
+async function saveGoogleCredentials(userId, tokens) {
+  const previous = await get(
+    "SELECT token_json FROM google_credentials WHERE user_id = ?",
+    [userId],
+  );
+  const previousTokens = previous ? JSON.parse(previous.token_json) : {};
+  const credentials = mergeGoogleTokens(previousTokens, tokens);
+  await run(
+    "INSERT INTO google_credentials (user_id, token_json) VALUES (?, ?) ON CONFLICT(user_id) DO UPDATE SET token_json = excluded.token_json",
+    [userId, JSON.stringify(credentials)],
+  );
+}
+
 router.get("/auth/google/signin", async (_request, response, next) => {
   try {
     await beginGoogleFlow(response, { signin: true });
@@ -97,10 +119,7 @@ router.get("/auth/google/callback", async (request, response, next) => {
       return response.status(400).send("Missing Google authorization code or state.");
     }
     const { pending, tokens } = await exchangeCode(code, state);
-    await run(
-      "INSERT INTO google_credentials (user_id, token_json) VALUES (?, ?) ON CONFLICT(user_id) DO UPDATE SET token_json = excluded.token_json",
-      [pending.user_id, JSON.stringify(tokens)],
-    );
+    await saveGoogleCredentials(pending.user_id, tokens);
     return response.redirect(`${frontendUrl}?google_connected=true`);
   } catch (error) {
     next(error);
@@ -124,6 +143,7 @@ router.get("/auth/google/signin/callback", async (request, response, next) => {
     }
     let user = await get("SELECT id FROM users WHERE email = ?", [userInfo.email]);
     if (!user) user = await createUser(userInfo.email);
+    await saveGoogleCredentials(user.id, tokens);
     const handoffToken = await createSigninHandoff(user.id);
     return response.redirect(`${frontendUrl}?signin_token=${encodeURIComponent(handoffToken)}`);
   } catch (error) {
@@ -131,4 +151,5 @@ router.get("/auth/google/signin/callback", async (request, response, next) => {
   }
 });
 
+router.mergeGoogleTokens = mergeGoogleTokens;
 module.exports = router;
