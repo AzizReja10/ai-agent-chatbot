@@ -1,0 +1,110 @@
+backend/app/agent/agent_factory.js
+  s_7b339d7b808621::t_bbef72a56bbb6d 50-53,70
+  s_7b339d7b808621::t_4b82257e09d8ca 6-7,9-10,13-14,60-62
+backend/app/github_oauth_routes.js
+  s_7b339d7b808621::t_4eec05ec263aac 14,31,108-111,119
+  s_7b339d7b808621::t_28284bdc7a3e1f 51
+frontend/src/App.jsx
+  s_7b339d7b808621::t_4b82257e09d8ca 239-245
+backend/tests/test_tool_calling.test.js
+  s_7b339d7b808621::t_4b82257e09d8ca 7-10,12,19-21,68-79
+  s_7b339d7b808621::t_bbef72a56bbb6d 18,80-81
+backend/app/agent/prompts.js
+  s_7b339d7b808621::t_4b82257e09d8ca 3
+  s_7b339d7b808621::t_bbef72a56bbb6d 2
+README.md
+  s_7b339d7b808621::t_4b82257e09d8ca 11,116
+backend/app/tools/google_profile_tool.js
+  s_7b339d7b808621::t_bbef72a56bbb6d 1-31
+backend/app/tools/github_tool.js
+  s_7b339d7b808621::t_4eec05ec263aac 35-71,75-78
+  s_7b339d7b808621::t_4a3c4cb9abbc50 72-74,79-88,96-102,104-179
+  s_7b339d7b808621::t_b56f7ee679f531 254-256,259,262-263,265-266
+  s_7b339d7b808621::t_28284bdc7a3e1f 89-95,103
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "autter_version": "2.2.1",
+  "base_commit_sha": "3629436ed2156056646bb4607fd05f7b2cbd44f6",
+  "branch": "main",
+  "prompts": {
+    "s_7b339d7b808621": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "a04c78ea-6a78-4963-bdf5-aee02c0187d9",
+        "model": "github-copilot-cli/unknown-model"
+      },
+      "human_author": "AzizReja10 <rejaaziz686@gmail.com>",
+      "total_additions": 275,
+      "total_deletions": 48,
+      "accepted_lines": 1184,
+      "overriden_lines": 0
+    }
+  },
+  "sessions": {
+    "s_7b339d7b808621": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "a04c78ea-6a78-4963-bdf5-aee02c0187d9",
+        "model": "github-copilot-cli/unknown-model"
+      },
+      "human_author": "AzizReja10 <rejaaziz686@gmail.com>",
+      "stats": {
+        "total_additions": 275,
+        "total_deletions": 48,
+        "accepted_lines": 1184,
+        "overriden_lines": 0,
+        "files": {
+          "README.md": {
+            "total_additions": 3,
+            "total_deletions": 2,
+            "accepted_lines": 123,
+            "overriden_lines": 0
+          },
+          "backend/app/agent/agent_factory.js": {
+            "total_additions": 14,
+            "total_deletions": 0,
+            "accepted_lines": 235,
+            "overriden_lines": 0
+          },
+          "backend/app/agent/prompts.js": {
+            "total_additions": 2,
+            "total_deletions": 0,
+            "accepted_lines": 5,
+            "overriden_lines": 0
+          },
+          "backend/app/github_oauth_routes.js": {
+            "total_additions": 8,
+            "total_deletions": 2,
+            "accepted_lines": 120,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/github_tool.js": {
+            "total_additions": 187,
+            "total_deletions": 34,
+            "accepted_lines": 269,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/google_profile_tool.js": {
+            "total_additions": 31,
+            "total_deletions": 0,
+            "accepted_lines": 31,
+            "overriden_lines": 0
+          },
+          "backend/tests/test_tool_calling.test.js": {
+            "total_additions": 23,
+            "total_deletions": 1,
+            "accepted_lines": 109,
+            "overriden_lines": 0
+          },
+          "frontend/src/App.jsx": {
+            "total_additions": 7,
+            "total_deletions": 9,
+            "accepted_lines": 292,
+            "overriden_lines": 0
+          }
+        }
+      }
+    }
+  }
+}
