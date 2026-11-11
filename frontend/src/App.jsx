@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import ChatWindow from "./components/ChatWindow";
 import MessageInput from "./components/MessageInput";
 import ToolActivitySidebar from "./components/ToolActivitySidebar";
-import { streamChat } from "./api/chat";
+import { cancelPendingAction, streamChat } from "./api/chat";
 import { getCurrentUser, logout, getGoogleStatus, finalizeSignin, getGitHubStatus } from "./api/auth";
 import LandingPage from "./pages/LandingPage";
 import AuthForm from "./components/AuthForm";
@@ -112,6 +112,21 @@ function App() {
         );
       },
       onDone: () => setIsWaiting(false),
+    }).catch((error) => {
+      setIsWaiting(false);
+      setMessages((prev) => {
+        const updated = [...prev];
+        const message = `Request failed: ${error.message}`;
+        if (updated.at(-1)?.role === "assistant") {
+          updated[updated.length - 1] = {
+            ...updated[updated.length - 1],
+            content: `${updated.at(-1).content}\n\n${message}`.trim(),
+          };
+        } else {
+          updated.push({ role: "assistant", content: message });
+        }
+        return updated;
+      });
     });
   };
 
@@ -120,8 +135,30 @@ function App() {
     handleSend("yes send it");
   };
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     setPendingDraft(null);
+    try {
+      const result = await cancelPendingAction();
+      if (!result.cancelled) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: "There was no pending server draft to cancel. No message was sent.",
+          },
+        ]);
+        return;
+      }
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: `Could not record cancellation: ${error.message}. The draft may still be pending on the server.`,
+        },
+      ]);
+      return;
+    }
     setMessages((prev) => [...prev, { role: "assistant", content: "Action cancelled. I did not send it." }]);
   };
 

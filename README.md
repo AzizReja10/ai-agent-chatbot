@@ -1,31 +1,31 @@
 # AI Agent Chatbot
 
-A multi-user, multi-tool AI agent chatbot built from scratch with **pure LangChain** — no LangGraph or CrewAI abstractions beyond LangChain's own `create_agent`. The agent connects to Gmail, Google Calendar, Google Tasks, Google Docs, GitHub, Slack, and the web, and can take real actions (sending email, posting to Slack, creating calendar events) on a user's behalf — with a human-in-the-loop safety gate for anything irreversible.
+A multi-user, multi-tool AI agent chatbot with a Node.js/Express backend. The agent connects to Gmail, Google Calendar, Google Tasks, Google Docs, GitHub, Slack, and the web, and can take real actions (sending email, posting to Slack, creating calendar events) on a user's behalf — with a human-in-the-loop safety gate for anything irreversible.
 
 Built as a learning project to understand agent architecture from the ground up: the reason → act → observe loop, tool design, OAuth (single- and multi-user), streaming, and production hardening.
 Live Link : https://ai-agent-chatbot-tan.vercel.app/
 ## Features
 
-- **12 tools** across 4 distinct auth patterns:
-  - Mock (weather)
-  - Static token (GitHub — read; Slack — read + gated send)
-  - Per-user OAuth (Google: Gmail read + gated send, Calendar read/write, Tasks read/write, Docs read/append; GitHub read)
+- **Tools** across distinct auth patterns:
+  - API key (live weather)
+  - Per-user OAuth (GitHub read; Google Gmail, Calendar, Tasks, and Docs)
+  - Bot token (Slack — read + gated send)
   - No-auth (DuckDuckGo web search)
 - **Human-in-the-loop safety gate** for irreversible actions (email, Slack messages): the agent can only *draft*, never *send* — a separate code path outside the LLM's reach detects explicit user confirmation and executes the real action.
 - **Streaming responses** (Server-Sent Events) with live tool-activity visualization in the UI.
-- **Short-term memory** via LangGraph's checkpointer, keyed per user/thread.
+- **Short-term conversation memory** keyed per user, held in process memory.
 - **Full multi-user auth**: email/password signup+login, "Sign in with Google," "Sign in with GitHub," secure sessions, logout.
 - **Per-user OAuth connections**: each user connects their own Google and GitHub accounts; the agent acts on *their* data, not the developer's.
-- **Production-hardened**: Postgres-backed (not SQLite), database-backed OAuth state (no fragile in-memory dicts), session expiry, environment-aware secure cookies, rate-limited auth endpoints.
+- **Production-hardened**: SQLite or PostgreSQL, database-backed OAuth state (no fragile in-memory dicts), session expiry, environment-aware secure cookies, rate-limited auth endpoints.
 - **Polished React frontend**: animated landing page, streaming chat with markdown rendering, a live tool-activity sidebar, and a distinct animated confirmation card for the draft-then-send safety gate — all built with framer-motion.
 
 ## Tech Stack
 
-**Backend**: Python, FastAPI, LangChain (`create_agent`), LangGraph (checkpointer), SQLAlchemy, PostgreSQL, bcrypt, slowapi (rate limiting)
+**Backend**: Node.js, Express, OpenAI-compatible tool calling, SQLite or PostgreSQL, bcryptjs, express-rate-limit
 
 **Frontend**: React (Vite), framer-motion, react-markdown
 
-**LLM**: OpenRouter (`nvidia/nemotron-3-ultra-550b-a55b`) — chosen and verified specifically for reliable native tool-calling
+**LLM**: Groq or OpenRouter through an OpenAI-compatible streaming API
 
 **Auth providers**: Google OAuth 2.0 (web flow, PKCE), GitHub OAuth Apps
 
@@ -34,27 +34,27 @@ Live Link : https://ai-agent-chatbot-tan.vercel.app/
 ```
 backend/
 ├── app/
-│   ├── main.py                  # FastAPI app, routes, streaming endpoint
-│   ├── auth.py                  # sessions, password hashing, OAuth state helpers
-│   ├── db.py / models.py        # SQLAlchemy models (User, Session, GoogleCredential,
+│   ├── main.js                  # Express app, routes, streaming endpoint
+│   ├── auth.js                  # sessions, password hashing, OAuth state helpers
+│   ├── db.js / models.js        # database access (User, Session, GoogleCredential,
 │   │                               GitHubCredential, OAuthState)
-│   ├── user_context.py          # contextvars-based per-request user identity
-│   ├── google_oauth_routes.py   # Google connect + sign-in flows
-│   ├── github_oauth_routes.py   # GitHub connect + sign-in flows
+│   ├── user_context.js          # AsyncLocalStorage per-request user identity
+│   ├── google_oauth_routes.js   # Google connect + sign-in flows
+│   ├── github_oauth_routes.js  # GitHub connect + sign-in flows
 │   ├── agent/
-│   │   ├── agent_factory.py     # builds the LLM + tool list + checkpointer
-│   │   └── safe_action_flow.py  # the draft → confirm → send safety gate
+│   │   ├── agent_factory.js     # streams model responses and dispatches tools
+│   │   └── safe_action_flow.js  # the draft → confirm → send safety gate
 │   └── tools/
-│       ├── weather_tool.py
-│       ├── github_tool.py
-│       ├── slack_tool.py
-│       ├── web_search_tool.py
-│       ├── google_auth.py       # per-user Google credential lookup + refresh
-│       ├── tasks_tool.py
-│       ├── calendar_tool.py
-│       ├── docs_tool.py
-│       └── gmail_tool.py
-└── requirements.txt
+│       ├── weather_tool.js
+│       ├── github_tool.js
+│       ├── slack_tool.js
+│       ├── web_search_tool.js
+│       ├── google_auth.js       # per-user Google credential lookup + refresh
+│       ├── tasks_tool.js
+│       ├── calender_tool.js
+│       ├── docs_tool.js
+│       └── gmail_tool.js
+└── tests/                       # Node.js backend tests
 
 frontend/
 └── src/
@@ -72,22 +72,22 @@ frontend/
 
 ### Key design decisions
 
-- **Safety gate lives outside the LLM's reach.** `send_email` and `send_slack_message` are never included in the agent's tool list — only `draft_email`/`draft_slack_message` are. A separate function (`safe_action_flow.py`) inspects conversation history for a pending draft plus an explicit user confirmation, then calls the real send function directly. This was hardened after discovering the LLM could otherwise hallucinate its own "yes, send it" approval.
-- **Per-user identity flows through `contextvars`**, not tool arguments — the LLM never needs to know about user IDs; `current_user_id.set()` at the top of each request makes it transparently available to any tool function, including deep inside credential-lookup helpers.
-- **OAuth state (PKCE verifiers, sign-in handoff tokens) is stored in the database**, not in-memory dicts — required for surviving server restarts and multi-worker deployments, and hardened against a race condition where two near-simultaneous requests could both consume the same one-time token.
+- **Safety gate lives outside the LLM's reach.** `send_email` and `send_slack_message` are never included in the agent's tool list — only `draft_email`/`draft_slack_message` are. A separate function (`safe_action_flow.js`) inspects conversation history for a pending draft plus an explicit user confirmation, then calls the real send function directly.
+- **Per-user identity flows through `AsyncLocalStorage`**, not tool arguments — the LLM never needs to know about user IDs; request context makes identity available to tool functions and credential helpers.
+- **OAuth state (PKCE verifiers, sign-in handoff tokens) is stored in the database**, not in-memory dicts, and is consumed once with a ten-minute lifetime.
 - **A one-time handoff token bridges OAuth sign-in redirects and the frontend's dev proxy.** Google/GitHub redirect the browser directly to the backend, bypassing Vite's proxy — a cookie set at that point would land on the wrong origin. Instead, the backend redirects with a short-lived token, and the frontend exchanges it via a same-origin, proxied request that correctly sets the session cookie.
 
 ## Setup
 
 ### Backend
 ```bash
-cd backend
-pip install -r requirements.txt
-cp .env.example .env  # fill in your own keys
-uvicorn app.main:app --reload --reload-exclude "*.db"
+npm install
+npm run backend
 ```
 
-Required environment variables: `DATABASE_URL`, `OPENROUTER_API_KEY`, `GITHUB_OAUTH_CLIENT_ID`, `GITHUB_OAUTH_CLIENT_SECRET`, `GOOGLE_CREDENTIALS_JSON` (or a local `credentials_web.json`), `ENVIRONMENT`.
+Required environment variables: `GROQ_API_KEY` (or `OPENROUTER_API_KEY`), `GITHUB_OAUTH_CLIENT_ID`, `GITHUB_OAUTH_CLIENT_SECRET`, `GOOGLE_CREDENTIALS_JSON` (or `backend/credentials_web.json`), and optionally `DATABASE_URL`, `OPENWEATHER_API_KEY`, `SLACK_BOT_TOKEN`, `ENVIRONMENT`, `FRONTEND_URL`, and `BACKEND_URL`. The default database is the existing `backend/app.db`; PostgreSQL URLs are also supported.
+
+Run backend tests with `npm run test:backend`.
 
 ### Frontend
 ```bash
@@ -102,9 +102,9 @@ npm run dev
 
 ## Known limitations
 
-- Slack and GitHub *read* access uses the developer's own tokens for some legacy tool paths where per-user OAuth wasn't extended; GitHub write/connect is per-user, Slack remains shared by deliberate scope decision.
-- `is_confirmation()`'s keyword matching for the safety gate is intentionally simple — the frontend's explicit Send/Cancel buttons are the more robust path.
-- Not yet deployed publicly; local/dev-tested against Postgres with production-hardening applied (session expiry, rate limiting, secure cookies, DB-backed OAuth state).
+- Slack access uses the configured shared bot token; GitHub and Google access use per-user OAuth credentials.
+- Confirmation text is intentionally limited to explicit affirmative phrases; the frontend's Send/Cancel controls provide the clearest path.
+- Not yet deployed publicly; configure `DATABASE_URL` with a PostgreSQL connection string for production. SQLite remains the local default.
 
 ## What this project demonstrates
 
