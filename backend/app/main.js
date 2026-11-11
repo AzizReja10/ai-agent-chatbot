@@ -15,7 +15,7 @@ const { createUser, get, initializeDatabase, run } = require("./db");
 const { isProduction, port } = require("./config");
 const { buildAgent } = require("./agent/agent_factory");
 const googleOAuthRouter = require("./google_oauth_routes");
-const githubOAuthRouter = require("./github_oauth_routes");
+// const githubOAuthRouter = require("./github_oauth_routes"); // GitHub OAuth disabled
 
 const app = express();
 const agent = buildAgent();
@@ -171,10 +171,10 @@ async function connectionStatus(tableName, request, response, next) {
 
 app.get("/auth/google/status", (request, response, next) =>
   connectionStatus("google_credentials", request, response, next));
-app.get("/auth/github/status", (request, response, next) =>
-  connectionStatus("github_credentials", request, response, next));
+// app.get("/auth/github/status", (request, response, next) =>
+//   connectionStatus("github_credentials", request, response, next)); // GitHub OAuth disabled
 app.use(googleOAuthRouter);
-app.use(githubOAuthRouter);
+// app.use(githubOAuthRouter); // GitHub OAuth disabled
 
 app.post("/chat/cancel", async (request, response, next) => {
   try {
