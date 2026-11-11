@@ -1,0 +1,79 @@
+README.md
+  s_7b339d7b808621::t_d90085d8f9b022 84
+render.yaml
+  s_7b339d7b808621::t_d90085d8f9b022 5
+package.json
+  s_7b339d7b808621::t_d90085d8f9b022 9-10
+.gitignore
+  s_7b339d7b808621::t_d90085d8f9b022 9
+backend/package.json
+  s_7b339d7b808621::t_d90085d8f9b022 1-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "autter_version": "2.2.1",
+  "base_commit_sha": "e661d39d2a2e4e8febc9b87dcc72dd8765c9cdb7",
+  "branch": "main",
+  "prompts": {
+    "s_7b339d7b808621": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "a04c78ea-6a78-4963-bdf5-aee02c0187d9",
+        "model": "github-copilot-cli/unknown-model"
+      },
+      "human_author": "AzizReja10 <rejaaziz686@gmail.com>",
+      "total_additions": 27,
+      "total_deletions": 20,
+      "accepted_lines": 177,
+      "overriden_lines": 0
+    }
+  },
+  "sessions": {
+    "s_7b339d7b808621": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "a04c78ea-6a78-4963-bdf5-aee02c0187d9",
+        "model": "github-copilot-cli/unknown-model"
+      },
+      "human_author": "AzizReja10 <rejaaziz686@gmail.com>",
+      "stats": {
+        "total_additions": 27,
+        "total_deletions": 20,
+        "accepted_lines": 177,
+        "overriden_lines": 0,
+        "files": {
+          ".gitignore": {
+            "total_additions": 1,
+            "total_deletions": 1,
+            "accepted_lines": 9,
+            "overriden_lines": 0
+          },
+          "README.md": {
+            "total_additions": 1,
+            "total_deletions": 1,
+            "accepted_lines": 121,
+            "overriden_lines": 0
+          },
+          "backend/package.json": {
+            "total_additions": 20,
+            "total_deletions": 0,
+            "accepted_lines": 20,
+            "overriden_lines": 0
+          },
+          "package.json": {
+            "total_additions": 4,
+            "total_deletions": 17,
+            "accepted_lines": 15,
+            "overriden_lines": 0
+          },
+          "render.yaml": {
+            "total_additions": 1,
+            "total_deletions": 1,
+            "accepted_lines": 12,
+            "overriden_lines": 0
+          }
+        }
+      }
+    }
+  }
+}
