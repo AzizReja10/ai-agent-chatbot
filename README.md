@@ -81,7 +81,7 @@ frontend/
 
 ### Backend
 ```bash
-npm install
+npm ci --prefix backend
 npm run backend
 ```
 

@@ -2,7 +2,7 @@ services:
   - type: web
     name: ai-agent-chatbot
     runtime: node
-    buildCommand: npm install
+    buildCommand: npm ci --prefix backend
     startCommand: npm run backend
     healthCheckPath: /health
     envVars:

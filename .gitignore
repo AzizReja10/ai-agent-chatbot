@@ -6,4 +6,4 @@ credentials_web.json
 test.db
 node_modules/
 package-lock.json
-
+!backend/package-lock.json

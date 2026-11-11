@@ -6,23 +6,10 @@
   },
   "scripts": {
     "dev": "npm run dev --prefix frontend",
-    "backend": "node backend/app/main.js",
-    "test:backend": "node --test backend/tests/*.test.js",
+    "backend": "npm start --prefix backend",
+    "test:backend": "npm test --prefix backend",
     "build": "npm run build --prefix frontend",
     "lint": "npm run lint --prefix frontend",
     "preview": "npm run preview --prefix frontend"
-  },
-  "dependencies": {
-    "bcryptjs": "^3.0.2",
-    "better-sqlite3": "^12.2.0",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "cookie-parser": "^1.4.7",
-    "dotenv": "^18.0.10",
-    "express": "^5.1.0",
-    "express-rate-limit": "^8.1.0",
-    "lucide-react": "^1.67.0",
-    "pg": "^8.16.3",
-    "tailwind-merge": "^3.7.0"
   }
 }
