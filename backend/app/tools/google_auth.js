@@ -70,7 +70,9 @@ async function getGoogleAccessToken() {
   });
   const refreshed = await response.json();
   if (!response.ok) {
-    throw new Error(`Google token refresh failed: ${refreshed.error_description || refreshed.error || response.status}`);
+    throw new Error(
+      `Google token refresh failed (${refreshed.error_description || refreshed.error || response.status}). Reconnect Google from the app and grant access again.`,
+    );
   }
 
   const updatedTokens = {

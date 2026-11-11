@@ -114,6 +114,7 @@ npm run dev
 
 - Slack access uses the configured shared bot token; GitHub and Google access use per-user OAuth credentials.
 - Confirmation text is intentionally limited to explicit affirmative phrases; the frontend's Send/Cancel controls provide the clearest path.
+- Google sign-in and Google API access are separate: users must connect or reconnect Google from the signed-in app to authorize Gmail and the other Google tools. Refresh tokens for an OAuth consent screen in Testing can expire after seven days.
 - Not yet deployed publicly; configure `DATABASE_URL` with a PostgreSQL connection string for production. SQLite remains the local default.
 
 ## What this project demonstrates
