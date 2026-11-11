@@ -1,0 +1,409 @@
+backend/tests/test_tool_calling.test.js
+  s_7b339d7b808621::t_371823c19e0b07 20-23
+  s_7b339d7b808621::t_87d78633c4b1e3 3
+  s_7b339d7b808621::t_a099e821ea9c31 5,39-51
+backend/app/tools/slack_tool.js
+  s_7b339d7b808621::t_087d47e0ab5fb4 1-74
+backend/app/tools/gmail_tool.js
+  s_7b339d7b808621::t_dbce00b2d30b63 1-48,50-88
+backend/app/google_oauth_routes.js
+  s_7b339d7b808621::t_f21e6e69c7b56f 1-134
+backend/app/tools/weather_tool.js
+  s_7b339d7b808621::t_087d47e0ab5fb4 1-34
+backend/app/tools/calender_tool.js
+  s_7b339d7b808621::t_dbce00b2d30b63 1-86
+backend/app/main.js
+  s_7b339d7b808621::t_7f5e62ce2fd951 179-189
+  s_7b339d7b808621::t_329f2c79f096ce 2-178,190-256
+backend/app/github_oauth_routes.js
+  s_7b339d7b808621::t_f21e6e69c7b56f 1-114
+backend/app/agent/safe_action_flow.js
+  s_7b339d7b808621::t_371823c19e0b07 12
+  s_7b339d7b808621::t_1ef418df8bc958 1-9,13-46
+backend/app/tools/github_tool.js
+  s_7b339d7b808621::t_087d47e0ab5fb4 1-116
+README.md
+  s_7b339d7b808621::t_8a73f5081d41e8 11
+  s_7b339d7b808621::t_71abf0c01af325 3,9-10,12,16,28,48-56,77
+  s_7b339d7b808621::t_42c6950e571189 19,24,37-39,41-43,45-46,57,75-76,84-85,88-90,107
+  s_7b339d7b808621::t_5a2d5d6d60907e 105-106
+frontend/src/App.jsx
+  s_7b339d7b808621::t_a099e821ea9c31 155-158,160
+  s_7b339d7b808621::t_7f5e62ce2fd951 6,115-129,138,140,152-154,159,161
+  s_7b339d7b808621::t_bb0dccee1c083d 141-151
+backend/app/db.js
+  s_7b339d7b808621::t_87d78633c4b1e3 2
+  s_7b339d7b808621::t_b47bb61f4cd78c 1,3-116,128-144
+  s_7b339d7b808621::t_329f2c79f096ce 117-127
+backend/app/agent/agent_factory.js
+  s_7b339d7b808621::t_1ef418df8bc958 1-205,217,219-220
+  s_7b339d7b808621::t_7f5e62ce2fd951 206-216,218,221
+backend/app/user_context.js
+  s_7b339d7b808621::t_b47bb61f4cd78c 1-11
+backend/app/auth.js
+  s_7b339d7b808621::t_b47bb61f4cd78c 1-45,48-75
+  s_7b339d7b808621::t_329f2c79f096ce 46-47
+backend/app/config.js
+  s_7b339d7b808621::t_b47bb61f4cd78c 1-16
+backend/app/models.js
+  s_7b339d7b808621::t_b47bb61f4cd78c 1-3
+backend/app/tools/docs_tool.js
+  s_7b339d7b808621::t_dbce00b2d30b63 1-95
+backend/app/agent/prompts.js
+  s_7b339d7b808621::t_1ef418df8bc958 1-3
+backend/app/memory/session_store.js
+  s_7b339d7b808621::t_1ef418df8bc958 1-11
+backend/app/auth/prompts.js
+  s_7b339d7b808621::t_1ef418df8bc958 1
+backend/app/tools/tasks_tool.js
+  s_7b339d7b808621::t_dbce00b2d30b63 1-63
+backend/app/tools/web_search_tool.js
+  s_7b339d7b808621::t_087d47e0ab5fb4 1-46
+backend/app/tools/google_auth.js
+  s_7b339d7b808621::t_087d47e0ab5fb4 1-111
+backend/app/auth/agent_factory.js
+  s_7b339d7b808621::t_1ef418df8bc958 1
+frontend/src/api/chat.js
+  s_7b339d7b808621::t_7f5e62ce2fd951 10-21,36,38,41-49,54-71
+package.json
+  s_7b339d7b808621::t_b47bb61f4cd78c 6-7,13,19-20,22
+  s_7b339d7b808621::t_88b92c51a7be08 14,17-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "autter_version": "2.2.1",
+  "base_commit_sha": "2cf126058ab7b06b59305a6f3ed2f5d5146734cc",
+  "branch": "main",
+  "prompts": {
+    "s_7b339d7b808621": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "a04c78ea-6a78-4963-bdf5-aee02c0187d9",
+        "model": "github-copilot-cli/unknown-model"
+      },
+      "human_author": "AzizReja10 <rejaaziz686@gmail.com>",
+      "total_additions": 1911,
+      "total_deletions": 1488,
+      "accepted_lines": 2266,
+      "overriden_lines": 1
+    }
+  },
+  "sessions": {
+    "s_7b339d7b808621": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "a04c78ea-6a78-4963-bdf5-aee02c0187d9",
+        "model": "github-copilot-cli/unknown-model"
+      },
+      "human_author": "AzizReja10 <rejaaziz686@gmail.com>",
+      "stats": {
+        "total_additions": 1911,
+        "total_deletions": 1488,
+        "accepted_lines": 2266,
+        "overriden_lines": 1,
+        "files": {
+          "README.md": {
+            "total_additions": 41,
+            "total_deletions": 41,
+            "accepted_lines": 111,
+            "overriden_lines": 0
+          },
+          "backend/app/agent/agent_factory.js": {
+            "total_additions": 223,
+            "total_deletions": 2,
+            "accepted_lines": 221,
+            "overriden_lines": 0
+          },
+          "backend/app/agent/agent_factory.py": {
+            "total_additions": 0,
+            "total_deletions": 48,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/agent/prompts.js": {
+            "total_additions": 3,
+            "total_deletions": 0,
+            "accepted_lines": 3,
+            "overriden_lines": 0
+          },
+          "backend/app/agent/safe_action_flow.js": {
+            "total_additions": 47,
+            "total_deletions": 1,
+            "accepted_lines": 43,
+            "overriden_lines": 1
+          },
+          "backend/app/agent/safe_action_flow.py": {
+            "total_additions": 0,
+            "total_deletions": 45,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/auth.js": {
+            "total_additions": 77,
+            "total_deletions": 2,
+            "accepted_lines": 75,
+            "overriden_lines": 0
+          },
+          "backend/app/auth.py": {
+            "total_additions": 0,
+            "total_deletions": 77,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/auth/agent_factory.js": {
+            "total_additions": 1,
+            "total_deletions": 0,
+            "accepted_lines": 1,
+            "overriden_lines": 0
+          },
+          "backend/app/auth/prompts.js": {
+            "total_additions": 1,
+            "total_deletions": 0,
+            "accepted_lines": 1,
+            "overriden_lines": 0
+          },
+          "backend/app/config.js": {
+            "total_additions": 16,
+            "total_deletions": 0,
+            "accepted_lines": 16,
+            "overriden_lines": 0
+          },
+          "backend/app/config.py": {
+            "total_additions": 0,
+            "total_deletions": 11,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/db.js": {
+            "total_additions": 149,
+            "total_deletions": 5,
+            "accepted_lines": 144,
+            "overriden_lines": 0
+          },
+          "backend/app/db.py": {
+            "total_additions": 0,
+            "total_deletions": 11,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/github_oauth_routes.js": {
+            "total_additions": 114,
+            "total_deletions": 0,
+            "accepted_lines": 114,
+            "overriden_lines": 0
+          },
+          "backend/app/github_oauth_routes.py": {
+            "total_additions": 0,
+            "total_deletions": 109,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/google_oauth_routes.js": {
+            "total_additions": 134,
+            "total_deletions": 0,
+            "accepted_lines": 134,
+            "overriden_lines": 0
+          },
+          "backend/app/google_oauth_routes.py": {
+            "total_additions": 0,
+            "total_deletions": 135,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/main.js": {
+            "total_additions": 255,
+            "total_deletions": 0,
+            "accepted_lines": 255,
+            "overriden_lines": 0
+          },
+          "backend/app/main.py": {
+            "total_additions": 0,
+            "total_deletions": 239,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/memory/session_store.js": {
+            "total_additions": 11,
+            "total_deletions": 0,
+            "accepted_lines": 11,
+            "overriden_lines": 0
+          },
+          "backend/app/models.js": {
+            "total_additions": 3,
+            "total_deletions": 0,
+            "accepted_lines": 3,
+            "overriden_lines": 0
+          },
+          "backend/app/models.py": {
+            "total_additions": 0,
+            "total_deletions": 41,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/calender_tool.js": {
+            "total_additions": 86,
+            "total_deletions": 0,
+            "accepted_lines": 86,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/calender_tool.py": {
+            "total_additions": 0,
+            "total_deletions": 57,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/docs_tool.js": {
+            "total_additions": 95,
+            "total_deletions": 0,
+            "accepted_lines": 95,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/docs_tool.py": {
+            "total_additions": 0,
+            "total_deletions": 84,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/github_tool.js": {
+            "total_additions": 116,
+            "total_deletions": 0,
+            "accepted_lines": 116,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/github_tool.py": {
+            "total_additions": 0,
+            "total_deletions": 128,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/gmail_tool.js": {
+            "total_additions": 88,
+            "total_deletions": 0,
+            "accepted_lines": 88,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/gmail_tool.py": {
+            "total_additions": 0,
+            "total_deletions": 60,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/google_auth.js": {
+            "total_additions": 111,
+            "total_deletions": 0,
+            "accepted_lines": 111,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/google_auth.py": {
+            "total_additions": 0,
+            "total_deletions": 70,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/slack_tool.js": {
+            "total_additions": 74,
+            "total_deletions": 0,
+            "accepted_lines": 74,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/slack_tool.py": {
+            "total_additions": 0,
+            "total_deletions": 37,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/tasks_tool.js": {
+            "total_additions": 63,
+            "total_deletions": 0,
+            "accepted_lines": 63,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/tasks_tool.py": {
+            "total_additions": 0,
+            "total_deletions": 45,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/weather_tool.js": {
+            "total_additions": 34,
+            "total_deletions": 0,
+            "accepted_lines": 34,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/weather_tool.py": {
+            "total_additions": 0,
+            "total_deletions": 34,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/web_search_tool.js": {
+            "total_additions": 46,
+            "total_deletions": 0,
+            "accepted_lines": 46,
+            "overriden_lines": 0
+          },
+          "backend/app/tools/web_search_tool.py": {
+            "total_additions": 0,
+            "total_deletions": 11,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/app/user_context.js": {
+            "total_additions": 11,
+            "total_deletions": 0,
+            "accepted_lines": 11,
+            "overriden_lines": 0
+          },
+          "backend/app/user_context.py": {
+            "total_additions": 0,
+            "total_deletions": 4,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/requirements.txt": {
+            "total_additions": 0,
+            "total_deletions": 150,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/test_agent.py": {
+            "total_additions": 0,
+            "total_deletions": 17,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/tests/test_test_tool_calling.py": {
+            "total_additions": 0,
+            "total_deletions": 6,
+            "accepted_lines": 0,
+            "overriden_lines": 0
+          },
+          "backend/tests/test_tool_calling.test.js": {
+            "total_additions": 19,
+            "total_deletions": 2,
+            "accepted_lines": 18,
+            "overriden_lines": 0
+          },
+          "frontend/src/App.jsx": {
+            "total_additions": 41,
+            "total_deletions": 4,
+            "accepted_lines": 296,
+            "overriden_lines": 0
+          },
+          "frontend/src/api/chat.js": {
+            "total_additions": 41,
+            "total_deletions": 9,
+            "accepted_lines": 71,
+            "overriden_lines": 0
+          },
+          "package.json": {
+            "total_additions": 11,
+            "total_deletions": 3,
+            "accepted_lines": 25,
+            "overriden_lines": 0
+          }
+        }
+      }
+    }
+  }
+}
