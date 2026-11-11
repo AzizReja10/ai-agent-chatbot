@@ -1,0 +1,63 @@
+render.yaml
+  s_7b339d7b808621::t_62117c8aa5e178 1-12
+package.json
+  s_7b339d7b808621::t_62117c8aa5e178 4-6
+README.md
+  s_7b339d7b808621::t_62117c8aa5e178 92-101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "autter_version": "2.2.1",
+  "base_commit_sha": "776bd6dc0574070f8b9927238a4b8cc25f54ac32",
+  "branch": "main",
+  "prompts": {
+    "s_7b339d7b808621": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "a04c78ea-6a78-4963-bdf5-aee02c0187d9",
+        "model": "github-copilot-cli/unknown-model"
+      },
+      "human_author": "AzizReja10 <rejaaziz686@gmail.com>",
+      "total_additions": 25,
+      "total_deletions": 0,
+      "accepted_lines": 161,
+      "overriden_lines": 0
+    }
+  },
+  "sessions": {
+    "s_7b339d7b808621": {
+      "agent_id": {
+        "tool": "github-copilot-cli",
+        "id": "a04c78ea-6a78-4963-bdf5-aee02c0187d9",
+        "model": "github-copilot-cli/unknown-model"
+      },
+      "human_author": "AzizReja10 <rejaaziz686@gmail.com>",
+      "stats": {
+        "total_additions": 25,
+        "total_deletions": 0,
+        "accepted_lines": 161,
+        "overriden_lines": 0,
+        "files": {
+          "README.md": {
+            "total_additions": 10,
+            "total_deletions": 0,
+            "accepted_lines": 121,
+            "overriden_lines": 0
+          },
+          "package.json": {
+            "total_additions": 3,
+            "total_deletions": 0,
+            "accepted_lines": 28,
+            "overriden_lines": 0
+          },
+          "render.yaml": {
+            "total_additions": 12,
+            "total_deletions": 0,
+            "accepted_lines": 12,
+            "overriden_lines": 0
+          }
+        }
+      }
+    }
+  }
+}
