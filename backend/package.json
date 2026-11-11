@@ -5,6 +5,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "dev": "node app/main.js", // dev script for rapid iteration
     "start": "node app/main.js",
     "test": "node --test tests/*.test.js"
   },
