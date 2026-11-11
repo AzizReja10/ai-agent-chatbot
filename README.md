@@ -89,6 +89,16 @@ Required environment variables: `GROQ_API_KEY` (or `OPENROUTER_API_KEY`), `GITHU
 
 Run backend tests with `npm run test:backend`.
 
+### Render deployment
+Deploy from the repository root with the included `render.yaml`, or update the existing Render web service settings to:
+- **Runtime:** Node
+- **Root Directory:** leave blank (repository root)
+- **Build Command:** `npm install`
+- **Start Command:** `npm run backend`
+- **Health Check Path:** `/health`
+
+The service also needs the environment variables listed above (especially `GROQ_API_KEY` or `OPENROUTER_API_KEY`). If using PostgreSQL, set `DATABASE_URL` to the Render database connection string.
+
 ### Frontend
 ```bash
 cd frontend

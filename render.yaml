@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: ai-agent-chatbot
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm run backend
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ENVIRONMENT
+        value: production
